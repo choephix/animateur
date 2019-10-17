@@ -6,7 +6,7 @@ import exporter from './export.js'
 let loadingManager = new THREE.LoadingManager()
 var loader = new GLTFLoader( loadingManager )
 
-loader.load( 'gltf/ybot.glb', onLoaded ) //// default.gltf
+loader.load( 'gltf/default.gltf', onLoaded ) //// default.gltf
 
 function onLoaded( gltf ) 
 {
