@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node serve.js",
-    "dev": "nodemon --watch serve.js serve.js 4333 & browser-sync start --proxy '0.0.0.0:4333' --files 'www'",
-    "dev2": "nodemon --watch src serve.js & browser-sync start --proxy '0.0.0.0:4333' --files 'www'"
+    "dev": "nodemon --watch serve.js serve.js 4333 & browser-sync start --proxy '0.0.0.0:4333' --files 'www' --no-open",
+    "dev2": "nodemon --watch src serve.js & browser-sync start --proxy '0.0.0.0:4333' --files 'www' --no-opene"
   },
   "author": "",
   "license": "ISC",
