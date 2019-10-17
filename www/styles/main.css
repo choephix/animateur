@@ -48,7 +48,7 @@ button:focus {outline:0;}
 
 #subpanel-nodes.dragover .contents::after { content: "Replace character with model from .FBX file" }
 #subpanel-props.dragover .contents::after { content: "Add new prop model from .FBX file" }
-#subpanel-animations.dragover .contents::after { content: "Add character animation(s) from .FBX file" }
+#subpanel-anims.dragover .contents::after { content: "Add character animation(s) from .FBX file" }
 .dragover header { 
   color: #008cff !important; 
 }
@@ -107,7 +107,7 @@ button:focus {outline:0;}
   display: block;
   flex-grow: 1;
 }
-#subpanel-animations {
+#subpanel-anims {
   flex-grow: 1;
 }
 

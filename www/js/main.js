@@ -29,7 +29,7 @@ function initialize()
   new DropField( document.getElementById('viewport') ).onAssetLoaded = onAssetLoaded
   new DropField( document.getElementById('subpanel-nodes') )
   new DropField( document.getElementById('subpanel-props') )
-  new DropField( document.getElementById('subpanel-animations') )
+  new DropField( document.getElementById('subpanel-anims') )
 }
 
 function onAssetLoaded( gltf ) 

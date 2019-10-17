@@ -15,54 +15,23 @@ function map_node( node, depth=0 ) {
 
 export default
 {
-  trees: { nodes : null, props : null, animations : null },
+  trees: { nodes : null, props : null, anims : null },
   setup: function ()
   {
-    this.trees.nodes = $('#subpanel-nodes tree').jstree( {
-      core : {
-        data : [],
-        themes : {
-          icons : false,
-          responsive: true,
-          ellipsis: true,
-        }
-      },
-      plugins : [ "state" , "dnd" ],
+    let themes = { icons : false, responsive: true, ellipsis: true, }
+      // plugins : [ "state" , "dnd" ],
       // state : { key : model.name || "default" },
-    } ).jstree( true )
+    let settings = { core : { data : [], themes : themes } }
 
-    this.trees.props = $( '#subpanel-props tree' ).jstree( {
-      core : {
-        data : [],
-        themes : {
-          icons : false,
-          responsive: true,
-          ellipsis: true,
-          // variant : "large",
-        }
-      },
-      // checkbox : { keep_selected_style : false },
-      // plugins : [ "wholerow", "checkbox", "contextmenu" ]
-    } ).jstree( true )
-
-    this.trees.animations = $('#subpanel-animations tree').jstree( {
-      core : {
-        data : [],
-        themes : {
-          icons : false,
-          responsive: true,
-          ellipsis: true,
-          // variant : "large",
-        }
-      },
-    } ).jstree( true )
-    console.log( this )
+    this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
+    this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
+    this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
   },
   update: function ( model, props, animations )
   {
     this.trees.nodes.settings.core.data = map_node( model )
     this.trees.props.settings.core.data = [ ...props.map( prop => prop.name ) ]
-    this.trees.animations.settings.core.data = [ ...animations.map( animation => animation.name ) ]
+    this.trees.anims.settings.core.data = [ ...animations.map( animation => animation.name ) ]
 
     for ( let key in this.trees )
       this.trees[key].refresh(true)
