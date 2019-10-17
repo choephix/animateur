@@ -7,12 +7,12 @@ const exporter = new GLTFExporter()
 
 export default
 {
-  save: ( scene, animations, binary, local ) => 
+  save: ( model, animations, binary, local ) => 
   {
-    scene.userData = { message : "This worked, damnit!" }
+    model.userData = { message : "This worked, damnit!" }
 
-    exporter.parse( scene, function ( data ) {
-      const name = "lescene"
+    exporter.parse( model, function ( data ) {
+      const name = model.name || "LeScene"
       let binary = data instanceof ArrayBuffer
       let output = binary ? data : JSON.stringify( data, null, 2 )
       let filename = `${ name }.${ binary ? "glb" : "gltf" }`

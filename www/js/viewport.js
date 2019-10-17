@@ -38,12 +38,16 @@ export default
     // var sphere = new THREE.Mesh( new THREE.SphereGeometry( .5, 32, 32 ), material );
     // scene.add( sphere );
 
-    scene.add( subject );
+    scene.add( subject )
+
+    function resize( W, H ) {
+      renderer.setSize( W, H )
+      camera.aspect = W / H;
+      camera.updateProjectionMatrix();
+    }
 
     function animate() {
-      renderer.setSize( 
-        viewportElem.clientWidth, 
-        viewportElem.clientHeight );
+      resize( viewportElem.clientWidth, viewportElem.clientHeight )
     
       controls.update();
       requestAnimationFrame( animate );
