@@ -1,0 +1,27 @@
+{
+  "name": "herocom-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node serve.js",
+    "dev": "nodemon --watch src serve.js & browser-sync start --proxy '0.0.0.0:4333' --files 'www'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/three": "^0.103.2",
+    "eslint": "^6.5.1",
+    "nodemon": "^1.19.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "1000"
+  }
+}

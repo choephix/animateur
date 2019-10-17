@@ -1,0 +1,57 @@
+body, html{
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background: #000;
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  line-height: 1;
+}
+h1, p {
+  margin: 0;
+}
+div {
+  position: relative;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
+main {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  color: skyblue;
+}
+canvas { width: 100%; height: 100% }
+
+[id^="panel"] {
+  background: #222;
+  color:#ccd;
+}
+#panel-navigation {
+  min-width: 300px;
+  max-width: 25vw;
+  overflow: auto;
+}
+#panel-toolbar {
+  width: 64px;
+}
+#viewport {
+  flex-grow: 1;
+  width: 100%; 
+  height: 100%;
+}
+.jstree-default .jstree-clicked {
+  background: #bd6c03;
+  border-radius: 2px;
+  box-shadow: inset 0 0 1px #999;
+}
+.jstree-default .jstree-hovered {
+  background: #033e57;
+  border-radius: 2px;
+  box-shadow: inset 0 0 1px #999;
+}
