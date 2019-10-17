@@ -15,22 +15,46 @@ function map_node( node, depth=0 ) {
 
 export default
 {
-  update: ( model ) =>
+  update: ( model, props, animations ) =>
   {
-    let jstree_data = {
+    $('#subpanel-nodes tree').jstree( {
       core : {
         data : [ map_node( model ) ],
         themes : {
           icons : false,
-          // variant : "large"
+          responsive: true,
+          ellipsis: true,
         }
       },
-      // "checkbox" : { "keep_selected_style" : false },
-      // "plugins" : [ "wholerow", "checkbox" ]
-    }
+      plugins : [ "state" , "dnd" ],
+      state : { key : model.name || "default" },
+    } )
 
-    // console.log( jstree_data )
+    $('#subpanel-props tree').jstree( {
+      core : {
+        data : [ ...props.map( prop => prop.name ) ],
+        themes : {
+          icons : false,
+          responsive: true,
+          ellipsis: true,
+          // variant : "large",
+        }
+      },
+      // checkbox : { keep_selected_style : false },
+      // plugins : [ "wholerow", "checkbox", "contextmenu" ]
+    } )
 
-    $('#node-tree').jstree( jstree_data )
+    $('#subpanel-animations tree').jstree( {
+      core : {
+        data : [ ...animations.map( animation => animation.name ) ],
+        themes : {
+          icons : false,
+          responsive: true,
+          ellipsis: true,
+          // variant : "large",
+        }
+      },
+    } )
+
   }
 }

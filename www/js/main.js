@@ -11,9 +11,11 @@ function onLoaded( gltf )
 {
   $("loading").hide()
   
-  let subject = gltf.scene.children[0]
-  console.log( gltf, subject )
+  let model = gltf.scene.children.shift()
+  let props = gltf.scene.children.concat()
+  let animations = gltf.animations
+  // console.log( gltf, model, props, animations )
 
-  viewport.setup( subject )
-  sidebar.update( subject ) 
+  viewport.setup( model )
+  sidebar.update( model, props, animations ) 
 }
