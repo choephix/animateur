@@ -8,8 +8,9 @@ body, html{
   color: #fff;
   line-height: 1;
 }
-h1, p {
+h1, p, h1, h2, h3 {
   margin: 0;
+  line-height: 1em;
 }
 div {
   position: relative;
@@ -24,13 +25,21 @@ main {
   user-select: none;
   display: flex;
   flex-direction: row;
-  color: skyblue;
+  color: gold;
 }
 canvas { width: 100%; height: 100% }
 
+h3 {
+  text-transform: uppercase;
+  padding: 4px;
+  color: #888;
+  background: #292929;
+  border: 1px solid #303030;
+}
+
 [id^="panel"] {
   background: #222;
-  color:#ccd;
+  color:#bbb;
 }
 #panel-navigation {
   min-width: 300px;
@@ -45,12 +54,12 @@ canvas { width: 100%; height: 100% }
   width: 100%; 
   height: 100%;
 }
-.jstree-default .jstree-clicked {
+#node-tree .jstree-default .jstree-clicked {
   background: #bd6c03;
   border-radius: 2px;
   box-shadow: inset 0 0 1px #999;
 }
-.jstree-default .jstree-hovered {
+#node-tree .jstree-default .jstree-hovered {
   background: #033e57;
   border-radius: 2px;
   box-shadow: inset 0 0 1px #999;

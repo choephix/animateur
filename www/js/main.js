@@ -43,7 +43,7 @@ function initialize( subject )
     // "plugins" : [ "wholerow", "checkbox" ]
   }
   console.log( jstree_data )
-  $(function () { $('#jstree').jstree( jstree_data ) } )
+  $(function () { $('#node-tree').jstree( jstree_data ) } )
   
   setupScene( subject )
 }
