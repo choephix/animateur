@@ -33,4 +33,44 @@ function onLoaded( gltf )
   $( "button.save" ).click( e => exporter.save( model, animations, 
                                                 e.currentTarget.getAttribute("binary") == "true",
                                                 e.currentTarget.getAttribute("local") == "true" ) )
+
+  setupDragDrop()
+}
+
+function setupDragDrop() {
+  var holder = document.getElementById('viewport');
+
+  holder.ondragover = function() {
+    viewport.scene.background = new THREE.Color(0x001166)
+    return false;
+  };
+
+  holder.ondragend = function() {
+    viewport.scene.background = new THREE.Color(0x0)
+    return false;
+  };
+
+  holder.ondrop = function(e) {
+    this.className = '';
+    e.preventDefault();
+
+    var file = e.dataTransfer.files[0]
+    var reader = new FileReader();
+    console.log( file )
+    reader.onload = function(event) {
+
+      var image = document.createElement('img');
+      image.src = event.target.result;
+      var texture = new THREE.Texture(image);
+      texture.needsUpdate = true;
+
+      viewport.scene.getObjectByName('Alpha_Surface').material.color = new THREE.Color(0xFFFFFF);
+      viewport.scene.getObjectByName('Alpha_Surface').material.map = texture;
+      viewport.scene.getObjectByName('Alpha_Surface').material.needsUpdate = true;
+
+      console.log( viewport.scene.getObjectByName('Alpha_Surface').material )
+    };
+    reader.readAsDataURL(file);
+    return false;
+  }
 }
