@@ -1,7 +1,10 @@
 import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js'
 
-let loadingManager = new THREE.LoadingManager()
-var loader = new GLTFLoader( loadingManager )
+const loadingManager = new THREE.LoadingManager()
+
+const loaders = {
+  gltf : new GLTFLoader( loadingManager )
+}
 
 export class DropField 
 {
@@ -32,7 +35,7 @@ export class DropField
 
         console.log( event.target, data )
         
-        loader.parse( data, file.name, this.onAssetLoaded )
+        loaders.gltf.parse( data, file.name, this.onAssetLoaded )
 
         return
 

@@ -33,7 +33,7 @@ export default
     controls.update()
     controls.mouseButtons.LEFT = 0
     controls.mouseButtons.RIGHT = 2
-    controls.mouseButtons.MIDDLE = 1
+    controls.mouseButtons.MIDDLE = -1
     
     var light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
     light_directional.position.set( 1, 1, 1 ).normalize()

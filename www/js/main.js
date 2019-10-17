@@ -4,10 +4,12 @@ import sidebar from './sidebar.js'
 import exporter from './export.js'
 import { DropField } from './utils.js'
 
-let loadingManager = new THREE.LoadingManager()
-var loader = new GLTFLoader( loadingManager )
-
-initialize()
+export const context = 
+{
+  selection : {
+    node : null
+  }
+}
 
 function initialize() 
 {
@@ -44,3 +46,5 @@ function onAssetLoaded( gltf )
 
   console.log( viewport.scene )
 }
+
+initialize()
