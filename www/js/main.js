@@ -41,9 +41,9 @@ function onLoaded( gltf )
   // new DropField( $('#subpanel-props .contents') )
   // new DropField( $('#subpanel-animations .contents') )
   new DropField( document.getElementById('viewport') )
-  new DropField( document.getElementById('subpanel-nodes').getElementsByClassName("contents")[ 0 ] )
-  new DropField( document.getElementById('subpanel-props').getElementsByClassName("contents")[ 0 ] )
-  new DropField( document.getElementById('subpanel-animations').getElementsByClassName("contents")[ 0 ] )
+  new DropField( document.getElementById('subpanel-nodes') )
+  new DropField( document.getElementById('subpanel-props') )
+  new DropField( document.getElementById('subpanel-animations') )
 }
 
 // loader.load( 'gltf/default.gltf', onLoaded ) //// default.gltf

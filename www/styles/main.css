@@ -46,16 +46,19 @@ button:focus {outline:0;}
   z-index: 99;
 }
 
-#subpanel-nodes .contents.dragover::after { content: "Replace character with model from .FBX file" }
-#subpanel-props .contents.dragover::after { content: "Add new prop model from .FBX file" }
-#subpanel-animations .contents.dragover::after { content: "Add character animation(s) from .FBX file" }
-*.dragover::after { 
+#subpanel-nodes.dragover .contents::after { content: "Replace character with model from .FBX file" }
+#subpanel-props.dragover .contents::after { content: "Add new prop model from .FBX file" }
+#subpanel-animations.dragover .contents::after { content: "Add character animation(s) from .FBX file" }
+.dragover header { 
+  color: #008cff !important; 
+}
+.dragover .contents::after { 
   color: #008cff !important; 
   background: #008cff0F !important; 
   padding: 16px; 
   text-align: center;
   justify-content: center;
-  border: 1px solid #008cff;
+  border: 2px solid #008cff;
   /* outline: 1px dashed #008cff; */
   /* outline-offset: -6px; */
   top: 0;
@@ -73,7 +76,7 @@ button:focus {outline:0;}
   height: 100%;
   position: relative;
 }
-#viewport.dragover::after { 
+#viewport.dragover .contents::after { 
   content: "Open new .GLTF or .GLB character scene";
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
