@@ -5,9 +5,10 @@ let canvasElem = document.getElementById( "webgl-canvas" )
 
 export default 
 {
-  setup: ( subject ) =>
+  scene : new THREE.Scene(),
+  setup : function( subject )
   {
-    var scene = new THREE.Scene();
+    var scene = this.scene
     var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.position.z = 80;
     camera.position.y = 40;

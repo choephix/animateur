@@ -37,6 +37,7 @@ h3 {
   border: 1px solid #303030;
 }
 
+button:focus {outline:0;}
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #0003; }
 ::-webkit-scrollbar-thumb { background: #8883; }
@@ -50,9 +51,6 @@ h3 {
   min-width: 300px;
   max-width: 25vw;
   overflow: auto;
-}
-#panel-toolbar {
-  width: 64px;
 }
 #viewport {
   flex-grow: 1;
@@ -68,4 +66,24 @@ h3 {
   background: #033e57;
   border-radius: 2px;
   box-shadow: inset 0 0 1px #999;
+}
+
+
+
+#panel-toolbar {
+  width: 64px;
+}
+#panel-toolbar button {
+  width: 100%;
+  font-size: 28px;
+  height: 48px;
+  background: #444;
+  color: #CCC;
+  border: 1px solid #555;
+  margin: 1px;
+  cursor: pointer;
+}
+#panel-toolbar button:hover {
+  background: #555;
+  border: 1px solid #666;
 }
