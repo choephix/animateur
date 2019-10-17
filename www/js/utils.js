@@ -1,16 +1,16 @@
 export class DropField 
 {
-  constructor( element, callback ) {
-    
+  constructor( element, callback ) 
+  {
     element.ondragover = function() {
       element.classList.add("dragover")
-      // viewport.scene.background = new THREE.Color(0x001166)
+      // console.log( element )
       return false;
     };
 
     element.ondragleave = function() {
       element.classList.remove("dragover")
-      // viewport.scene.background = new THREE.Color(0x0)
+      // console.log( element )
       return false;
     };
 
