@@ -59,14 +59,14 @@ export default
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
     
-    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d ) )
-    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d ) )
-    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d ) )
+    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'node' ) )
+    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'prop' ) )
+    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'anim' ) )
   },
-  onSelect( event, data ) 
+  onSelect( event, data, key ) 
   {
-    // context.selection.node = data.node.data
-    // console.log( data.node.data )
+    context.selection[key] = data.node.data
+    console.log( context.selection )
   },
   update: function ( model, props, animations )
   {

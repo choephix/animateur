@@ -1,12 +1,14 @@
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import exporter from './export.js'
-import { DropField, loaders as loader } from './utils.js'
+import { DropField, loadFromUrl } from './utils.js'
 
 export const context = 
 {
   selection : {
-    node : null
+    node : null,
+    prop : null,
+    anim : null,
   },
   data : {
     model : null,
@@ -31,13 +33,14 @@ function initialize()
   new DropField( document.getElementById('subpanel-props') )
   new DropField( document.getElementById('subpanel-anims') )
 
-  loader.loadFromUrl( "/gltf/captain.gltf" )
-        .then( gltf => onAssetLoaded( gltf ) )
+  loadFromUrl( "/gltf/captain.gltf" ).then( gltf => onAssetLoaded( gltf ) )
 }
 
 function onAssetLoaded( gltf ) 
 {
   $( "loading" ).hide()
+
+  console.log( gltf )
 
   viewport.scene.remove( context.data.model )
 
