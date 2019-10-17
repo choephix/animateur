@@ -1,4 +1,3 @@
-import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js'
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import exporter from './export.js'
@@ -8,6 +7,11 @@ export const context =
 {
   selection : {
     node : null
+  },
+  data : {
+    model : null,
+    props : [],
+    animations : []
   }
 }
 
@@ -16,6 +20,7 @@ function initialize()
   $( "loading" ).hide()
 
   viewport.setup()
+  sidebar.setup()
 
   $( "button.save" ).click( e => exporter.save( model, animations, 
                                                 e.currentTarget.getAttribute("binary") == "true",
@@ -33,16 +38,17 @@ function onAssetLoaded( gltf )
 
   let model, props, animations
 
-  console.log( 555, gltf )
-  
-  model = gltf.scene.children.shift()
-  props = gltf.scene.children.concat()
-  animations = gltf.animations
+  // console.log( 555, gltf )
+
+  viewport.scene.remove( context.data.model )
+
+  context.data.model = gltf.scene.children.shift()
+  context.data.props.push( ...gltf.scene.children )
+  context.data.animations.push( ...gltf.animations )
   // console.log( gltf, model, props, animations )
 
-  viewport.setup()
-  viewport.add( model )
-  sidebar.update( model, props, animations )
+  viewport.scene.add( context.data.model )
+  sidebar.update( context.data.model, context.data.props, context.data.animations )
 
   console.log( viewport.scene )
 }

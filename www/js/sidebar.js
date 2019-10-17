@@ -15,11 +15,12 @@ function map_node( node, depth=0 ) {
 
 export default
 {
-  update: ( model, props, animations ) =>
+  trees: { nodes : null, props : null, animations : null },
+  setup: function ()
   {
-    $('#subpanel-nodes tree').jstree( {
+    this.trees.nodes = $('#subpanel-nodes tree').jstree( {
       core : {
-        data : [ map_node( model ) ],
+        data : [],
         themes : {
           icons : false,
           responsive: true,
@@ -27,12 +28,12 @@ export default
         }
       },
       plugins : [ "state" , "dnd" ],
-      state : { key : model.name || "default" },
-    } )
+      // state : { key : model.name || "default" },
+    } ).jstree( true )
 
-    $('#subpanel-props tree').jstree( {
+    this.trees.props = $( '#subpanel-props tree' ).jstree( {
       core : {
-        data : [ ...props.map( prop => prop.name ) ],
+        data : [],
         themes : {
           icons : false,
           responsive: true,
@@ -42,11 +43,11 @@ export default
       },
       // checkbox : { keep_selected_style : false },
       // plugins : [ "wholerow", "checkbox", "contextmenu" ]
-    } )
+    } ).jstree( true )
 
-    $('#subpanel-animations tree').jstree( {
+    this.trees.animations = $('#subpanel-animations tree').jstree( {
       core : {
-        data : [ ...animations.map( animation => animation.name ) ],
+        data : [],
         themes : {
           icons : false,
           responsive: true,
@@ -54,6 +55,16 @@ export default
           // variant : "large",
         }
       },
-    } )
+    } ).jstree( true )
+    console.log( this )
+  },
+  update: function ( model, props, animations )
+  {
+    this.trees.nodes.settings.core.data = map_node( model )
+    this.trees.props.settings.core.data = [ ...props.map( prop => prop.name ) ]
+    this.trees.animations.settings.core.data = [ ...animations.map( animation => animation.name ) ]
+
+    for ( let key in this.trees )
+      this.trees[key].refresh(true)
   }
 }

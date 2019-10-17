@@ -112,6 +112,55 @@ button:focus {outline:0;}
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#subpanel-properties .i-vector-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#subpanel-properties .i-vector-row input {
+  width: 50px;
+  flex: 1 1 0;
+  color: gold;
+  background: #FFF2;
+  border: 1px solid #FFF3;
+  font-weight: bold;
+  margin: 2px;
+  padding: 4px;
+}
+
+#subpanel-properties .i-vector-row input:focus,
+#subpanel-properties .i-vector-row.linked:focus-within input {
+  border: 1px solid orange;
+  outline:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #panel-toolbar {
   width: 64px;
 }

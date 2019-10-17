@@ -8,7 +8,7 @@ app.use( express.static( 'www' ) )
 app.use( express.json( { extended: true } ) )
 app.post('/api/save', ( req, res ) => {
   console.log( req.url, req.body, '\n' )
-  return res.json({ok:true}).end()
+  return res.json( { ok : true } ).end()
 })
 
 server = app.listen( PORT, () => onServerStarted() )
