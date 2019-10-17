@@ -1,27 +1,40 @@
+import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js'
+
+let loadingManager = new THREE.LoadingManager()
+var loader = new GLTFLoader( loadingManager )
+
 export class DropField 
 {
   constructor( element, callback ) 
   {
     element.ondragover = function() {
       element.classList.add("dragover")
-      // console.log( element )
       return false;
     };
 
     element.ondragleave = function() {
       element.classList.remove("dragover")
-      // console.log( element )
       return false;
     };
 
-    element.ondrop = function(e) {
-      this.className = '';
+    element.ondrop = (e) => 
+    {
       e.preventDefault();
+      element.classList.remove("dragover")
 
       var file = e.dataTransfer.files[0]
       var reader = new FileReader();
       console.log( file )
-      reader.onload = function(event) {
+
+      reader.onload = (event) => {
+
+        let data = event.target.result
+
+        console.log( event.target, data )
+        
+        loader.parse( data, file.name, this.onAssetLoaded )
+
+        return
 
         var image = document.createElement('img');
         image.src = event.target.result;
@@ -34,8 +47,11 @@ export class DropField
 
         console.log( viewport.scene.getObjectByName('Alpha_Surface').material )
       };
-      reader.readAsDataURL(file);
-      return false;
+      reader.readAsArrayBuffer( file )
+      return false
     }
   }
+
+  /// replace this function with your own callback...
+  onAssetLoaded( result ) { console.log( result ) }
 }
