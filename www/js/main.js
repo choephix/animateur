@@ -11,7 +11,7 @@ export const context =
   data : {
     model : null,
     props : [],
-    animations : []
+    anims : []
   }
 }
 
@@ -36,21 +36,16 @@ function onAssetLoaded( gltf )
 {
   $( "loading" ).hide()
 
-  let model, props, animations
-
-  // console.log( 555, gltf )
-
   viewport.scene.remove( context.data.model )
 
   context.data.model = gltf.scene.children.shift()
   context.data.props.push( ...gltf.scene.children )
-  context.data.animations.push( ...gltf.animations )
-  // console.log( gltf, model, props, animations )
+  context.data.anims.push( ...gltf.animations )
 
   viewport.scene.add( context.data.model )
-  sidebar.update( context.data.model, context.data.props, context.data.animations )
+  sidebar.update( context.data.model, context.data.props, context.data.anims )
 
-  console.log( viewport.scene )
+  // console.log( gltf, context, viewport.scene )
 }
 
 initialize()

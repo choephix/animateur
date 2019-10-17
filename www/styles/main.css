@@ -55,6 +55,7 @@ button:focus {outline:0;}
 .dragover .contents::after { 
   color: #008cff !important; 
   background: #008cff0F !important; 
+  background: #0c426eda !important; 
   padding: 16px; 
   text-align: center;
   justify-content: center;
@@ -68,6 +69,7 @@ button:focus {outline:0;}
   display: flex;
   position: absolute;
   user-select: none;
+  z-index: 999;
 }
 
 #viewport {

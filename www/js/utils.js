@@ -10,19 +10,28 @@ export class DropField
 {
   constructor( element, callback ) 
   {
-    element.ondragover = function() {
+    element.ondragover = function(e) {
+      if ( e.ctrlKey || e.altKey ) 
+        return true
+      e.preventDefault()
       element.classList.add("dragover")
       return false;
     };
 
-    element.ondragleave = function() {
+    element.ondragleave = function(e) {
+      if ( e.ctrlKey || e.altKey ) 
+        return true
+      e.preventDefault()
       element.classList.remove("dragover")
       return false;
     };
 
     element.ondrop = (e) => 
     {
-      e.preventDefault();
+      if ( e.ctrlKey || e.altKey ) 
+        return true
+
+      e.preventDefault()
       element.classList.remove("dragover")
 
       var file = e.dataTransfer.files[0]

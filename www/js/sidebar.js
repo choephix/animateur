@@ -3,13 +3,14 @@ function map_node( node, depth=0 ) {
   return {
     id : node.uuid,
     text : node.name,
-    'state' : {
-      'opened' : depth < 3,
-      'selected' : false
+    data : node,
+    state : {
+      opened : depth < 3,
+      selected : false
     },
     children : node.children
-                    .filter( child => child.name !== node.name )
-                    .map( child => map_node( child, ++depth ) )
+              .filter( child => child.name !== node.name )
+              .map( child => map_node( child, ++depth ) )
   }
 }
 
@@ -26,6 +27,10 @@ export default
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
+    
+    $('#subpanel-nodes tree').on( "select_node.jstree", e => console.log( e ) )
+    $('#subpanel-props tree').on( "select_node.jstree", e => console.log( e ) )
+    $('#subpanel-anims tree').on( "select_node.jstree", e => console.log( e ) )
   },
   update: function ( model, props, animations )
   {
