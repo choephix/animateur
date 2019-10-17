@@ -43,6 +43,24 @@ button:focus {outline:0;}
 ::-webkit-scrollbar-thumb { background: #8883; }
 ::-webkit-scrollbar-thumb:hover { background: #9994; }
 
+*.dragover {
+  outline: 2px solid #008cff;
+  outline-offset: -2px;
+  z-index: 99;
+}
+
+*.dragover::after { color: #008cff !important; padding: 5px; display: block; }
+#subpanel-nodes.dragover::after { content: "Replace character with model from .FBX file" }
+#subpanel-props.dragover::after { content: "Add new prop model from .FBX file" }
+#subpanel-animations.dragover::after { content: "Add character animation(s) from .FBX file" }
+#viewport.dragover::before { content: "Open new .GLTF or .GLB character scene" }
+
+#viewport {
+  flex-grow: 1;
+  width: 100%; 
+  height: 100%;
+}
+
 [id^="panel"] {
   background: #222;
   color:#bbb;
@@ -51,23 +69,15 @@ button:focus {outline:0;}
   min-width: 300px;
   max-width: 25vw;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
-#viewport {
+.subpanel {
+  min-height: 250px;
+}
+#subpanel-animations {
   flex-grow: 1;
-  width: 100%; 
-  height: 100%;
 }
-#node-tree .jstree-default .jstree-clicked {
-  background: #bd6c03;
-  border-radius: 2px;
-  box-shadow: inset 0 0 1px #999;
-}
-#node-tree .jstree-default .jstree-hovered {
-  background: #033e57;
-  border-radius: 2px;
-  box-shadow: inset 0 0 1px #999;
-}
-
 
 
 #panel-toolbar {
