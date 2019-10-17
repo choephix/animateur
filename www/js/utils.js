@@ -2,8 +2,11 @@ import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.
 
 const loadingManager = new THREE.LoadingManager()
 
-const loaders = {
-  gltf : new GLTFLoader( loadingManager )
+export const loaders = {
+  gltf : new GLTFLoader( loadingManager ),
+  loadFromUrl : function( url ) {
+    return new Promise( ( resolve ) => this.gltf.load( url, resolve ) )
+  }
 }
 
 export class DropField 

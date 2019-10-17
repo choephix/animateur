@@ -1,7 +1,7 @@
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import exporter from './export.js'
-import { DropField } from './utils.js'
+import { DropField, loaders as loader } from './utils.js'
 
 export const context = 
 {
@@ -30,6 +30,9 @@ function initialize()
   new DropField( document.getElementById('subpanel-nodes') )
   new DropField( document.getElementById('subpanel-props') )
   new DropField( document.getElementById('subpanel-anims') )
+
+  loader.loadFromUrl( "/gltf/captain.gltf" )
+        .then( gltf => onAssetLoaded( gltf ) )
 }
 
 function onAssetLoaded( gltf ) 
