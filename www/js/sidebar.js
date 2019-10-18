@@ -1,4 +1,5 @@
 import { context } from "./main.js"
+import viewport from './viewport.js'
 
 function map_node( node, depth=0 ) {
   return {
@@ -62,11 +63,26 @@ export default
     $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'node' ) )
     $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'prop' ) )
     $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'anim' ) )
+    
+    console.log( inspector )
+
+    function onFrame() {
+      inspector.update()
+      requestAnimationFrame( onFrame )
+    }
+
+    onFrame()
   },
   onSelect( event, data, key ) 
   {
     context.selection[key] = data.node.data
-    console.log( context.selection )
+    // console.log( context.selection )
+
+    // if ( key != "anim" )
+      // context.selection.transformable = data.node.data 
+    if ( data.node.data.object !== undefined )
+      context.selection.transformable = 
+        viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
   },
   update: function ( model, props, animations )
   {
@@ -76,5 +92,55 @@ export default
 
     for ( let key in this.trees )
       this.trees[key].refresh(true)
+  }
+}
+
+function getSele() {
+  return context.selection.transformable
+}
+
+class Row {
+  constructor( property, isInvalid ) {
+    const subs = [ ..."xyz" ]
+    this.dom = $( `.i-vector-row.${property}` )[ 0 ]
+    this.fields = $( `.i-vector-row.${property} input` ).toArray()
+    this.fields.forEach( ( dom, i ) => {
+      $( dom ).on( "input keyup paste", e => {
+        let sele = getSele(), val = $(dom).val()
+        if ( ! sele || isInvalid( val ) ) return
+        sele[ property ][ subs[i] ] = val
+      } )
+    } )
+  }
+
+  // isValueInvalid( n ) { return isNaN( n ) }
+  // setIsValid( func ) { this.isValid = func }
+  // convertValue( n ) { return n }
+  // setConvert( func ) { this.convertValue = func }
+  // unconvertValue( n ) { return n }
+  // setUnconvert( func ) { this.unconvertValue = func }
+  
+  updateMaybe( vector ) {
+    if ( ! $( this.dom ).is(":focus-within") ) {
+      $(this.fields[0]).val( vector.x )
+      $(this.fields[1]).val( vector.y )
+      $(this.fields[2]).val( vector.z )
+    }
+  }
+}
+
+const inspector = 
+{
+  rows : {
+    position : new Row( "position", n => isNaN(n) ),
+    rotation : new Row( "rotation", n => isNaN(n) ),
+    scale :    new Row( "scale", n => isNaN(n) || n == 0.0 ),
+  },
+  update() 
+  {
+    let sele = getSele()
+    if ( ! sele ) return
+    for ( let property in this.rows )
+      this.rows[ property ].updateMaybe( sele[ property ] )
   }
 }

@@ -6,6 +6,7 @@ import { DropField, loadFromUrl } from './utils.js'
 export const context = 
 {
   selection : {
+    transformable : null,
     node : null,
     prop : null,
     anim : null,
@@ -14,7 +15,13 @@ export const context =
     model : null,
     props : [],
     anims : []
-  }
+  },
+  viewport : viewport,
+  sidebar : sidebar,
+}
+
+export const events = {
+
 }
 
 function initialize() 
@@ -43,15 +50,20 @@ function onAssetLoaded( gltf )
   console.log( gltf )
 
   viewport.scene.remove( context.data.model )
+  context.data.props.forEach( o => viewport.scene.remove( o ) )
 
   context.data.model = gltf.scene.children.shift()
   context.data.props.push( ...gltf.scene.children )
   context.data.anims.push( ...gltf.animations )
 
   viewport.scene.add( context.data.model )
+  context.data.props.forEach( o => viewport.scene.add( o ) )
+
   sidebar.update( context.data.model, context.data.props, context.data.anims )
 
   // console.log( gltf, context, viewport.scene )
 }
 
 initialize()
+
+window.context = context
