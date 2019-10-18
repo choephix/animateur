@@ -63,8 +63,6 @@ export default
     $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelectProp( e, d ) )
     $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( e, d ) )
     
-    console.log( inspector )
-
     function onFrame() {
       inspector.update()
       requestAnimationFrame( onFrame )
