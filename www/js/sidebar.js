@@ -6,10 +6,7 @@ function map_node( node, depth=0 ) {
     text : node.name,
     data : node,
     type : node.object ? node.object.type : "default",
-    state : {
-      opened : depth < 3,
-      selected : false
-    },
+    state : { opened : depth < 3, selected : false },
     children : node.children
               .filter( child => child.name !== node.name )
               .map( child => map_node( child, ++depth ) )
@@ -37,8 +34,6 @@ export default
   {
     let settings = { core: { data: [], multiple: true } }
     settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
-    settings.hotkeys = { "del" : function () { console.warn(this) } }
-    settings.plugins = [ "hotkeys" ]
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
@@ -50,10 +45,20 @@ export default
     
     function onFrame() {
       inspector.update()
-      requestAnimationFrame( onFrame )
+      requestAnimationFrame( () => onFrame() )
     }
     
-    $('#subpanel-nodes tree').bind( "keydown", "alt+a", console.warn )
+    $('#subpanel-props tree').bind( "keydown", "del", e => {
+      this.trees.props.get_selected(false).forEach( uuid => {
+        let prop = context.viewport.scene.getObjectByProperty( "uuid", uuid )
+        context.viewport.transformer.detach()
+        console.log( "will delete ", prop )
+        prop.parent.remove( prop )
+        // context.viewport.scene.remove( prop )
+        context.data.props.splice( context.data.props.indexOf( prop ), 1 )
+        this.update()
+      } )
+    } )
 
     onFrame()
   },
@@ -101,11 +106,11 @@ export default
     
     context.viewport.transformer.detach()
   },
-  update( model, props, animations )
+  update()
   {
-    this.trees.nodes.settings.core.data = map_node( model )
-    this.trees.props.settings.core.data = [ ...props.map( map_prop ) ]
-    this.trees.anims.settings.core.data = [ ...animations.map( map_anim ) ]
+    this.trees.nodes.settings.core.data = map_node( context.data.model )
+    this.trees.props.settings.core.data = [ ...context.data.props.map( map_prop ) ]
+    this.trees.anims.settings.core.data = [ ...context.data.anims.map( map_anim ) ]
     this.refresh()
   },
   refresh() {

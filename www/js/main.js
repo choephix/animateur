@@ -87,7 +87,7 @@ function onPropLoaded( prop )
   context.data.props.push( prop )
   context.data.model.add( prop )
 
-  sidebar.update( context.data.model, context.data.props, context.data.anims )
+  sidebar.update()
 }
 
 function onSceneLoaded( gltf ) 
@@ -121,22 +121,7 @@ function onSceneLoaded( gltf )
   if ( idle_anim )
     context.viewport.animPlay( idle_anim )
 
-  sidebar.update( context.data.model, context.data.props, context.data.anims )
-  return
-
-
-  viewport.scene.remove(  )
-  context.data.props.forEach( o => viewport.scene.remove( o ) )
-
-  context.data.model = 
-  context.data.props.push( ...gltf.scene.children )
-  context.data.anims.push( ...gltf.animations )
-
-  viewport.scene.add( context.data.model )
-
-  sidebar.update( context.data.model, context.data.props, context.data.anims )
-
-  // console.log( gltf, context, viewport.scene )
+  sidebar.update()
 }
 
 initialize()
