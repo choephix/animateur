@@ -1,17 +1,24 @@
 import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js'
 import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js'
+import { OBJLoader } from 'https://threejs.org/examples/jsm/loaders/OBJLoader.js'
+import { ColladaLoader } from 'https://threejs.org/examples/jsm/loaders/ColladaLoader.js'
 
-const loadingManager = new THREE.LoadingManager()
+function test(...rest) { console.warn( "TEST TEST", ...rest )}
+
+const loadingManager = new THREE.LoadingManager( test, test, test )
 const loaders = {
   gltf : new GLTFLoader( loadingManager ),
   fbx : new FBXLoader( loadingManager ),
-
+  obj : new OBJLoader( loadingManager ),
+  dae : new ColladaLoader( loadingManager ),
   load : function( data, ext ) {
     return new Promise( ( resolve ) => {
       switch ( ext ) {
         case "gltf":
-        case "glb": this.gltf.parse( data, "SCENO", resolve ); break;
+        case "glb": this.gltf.load( data, resolve ); break;
         case "fbx": resolve( this.fbx.parse( data ) ); break;
+        case "obj": this.obj.load( data, resolve ); break;
+        case "dae": this.dae.load( data, o => resolve( o.scene ) ); break;
         default:
           alert( `Sorry, no loaders for files with extension "${ext}"` )
           reject()
@@ -34,7 +41,6 @@ export class DropField
         return true
       e.preventDefault()
       element.classList.add("dragover")
-      $( "loading" ).show()
       return false;
     };
 
@@ -43,7 +49,6 @@ export class DropField
         return true
       e.preventDefault()
       element.classList.remove("dragover")
-      $( "loading" ).hide()
       return false;
     };
 
@@ -54,21 +59,29 @@ export class DropField
 
       e.preventDefault()
       element.classList.remove("dragover")
-      $( "loading" ).hide()
+      
+      $( "loading" ).show()
 
       let file = e.dataTransfer.files[0]
-      let reader = new FileReader();
+      let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
+
+      let reader = new FileReader()
       console.log( file )
 
       reader.onload = (event) => 
       {
         console.log( event.target )
         let data = event.target.result
-        let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
-        loaders.load( data, ext ).then( this.onAssetLoaded )
+        loaders.load( data, ext ).then( o => {
+          $( "loading" ).hide()
+          this.onAssetLoaded( o )
+        } )
       }
 
-      reader.readAsArrayBuffer( file )
+      // if ( ext === "obj ")
+        reader.readAsDataURL( file )
+      // else
+      //   reader.readAsArrayBuffer( file )
       return false
     }
   }

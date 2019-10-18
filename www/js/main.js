@@ -74,12 +74,17 @@ function refreshPropsList()
 
 function onPropLoaded( prop ) 
 {
-  prop.children[0].material = context.data.model.children[1].material.clone()
+  console.log( prop )
 
-  context.data.props.push( prop )
+  prop.traverse( o => { 
+    if ( o.material ) 
+      o.material = context.data.model.children[1].material.clone() 
+  } )
+
   // let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
   // let bone = context.viewport.scene.getChildByName( bone_name )
   // bone.add( prop )
+  context.data.props.push( prop )
   context.data.model.add( prop )
 
   sidebar.update( context.data.model, context.data.props, context.data.anims )
@@ -100,13 +105,16 @@ function onSceneLoaded( gltf )
   viewport.setModel( model_source )
   context.data.model = viewport.scene.getObjectByProperty( "uuid", model_source.uuid )
   
-  // context.data.model.getChildByName("batarang-injustice").children[0].material = 
-  //   context.data.model.children[2].material.clone()
-  gltf.scene.children.forEach( prop => context.data.model.add( prop ) )
+  while ( gltf.scene.children.length )
+    context.data.model.add( gltf.scene.children.shift() )
+  // gltf.scene.children.forEach( prop => context.data.model.add( prop ) )
 
   refreshPropsList()
 
   context.data.anims.push( ...gltf.animations )
+  
+  for ( let prop of context.data.props )
+    prop.children[0].material = context.data.model.children[1].material.clone()
 
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
                   context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )
@@ -133,9 +141,9 @@ function onSceneLoaded( gltf )
 
 initialize()
 
-loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
-  onSceneLoaded( gltf )
-  context.data.model.scale.setScalar( .01 )
- } )
+// loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
+//   onSceneLoaded( gltf )
+//   context.data.model.scale.setScalar( .01 )
+//  } )
 
 window.context = context

@@ -25,7 +25,7 @@ export default
     this.mixer.currentAction.weight = 1.0
     this.mixer.currentAction.play()
   },
-  animTPose( anim ) {
+  animTPose() {
     this.mixer.stopAllAction()
     if ( this.mixer.currentAction ) {
       this.mixer.currentAction.enabled = false

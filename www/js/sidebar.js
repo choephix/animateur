@@ -35,10 +35,10 @@ export default
   trees: { nodes : null, props : null, anims : null },
   setup: function ()
   {
-    // plugins : [ "state" , "dnd" ],
-    // state : { key : model.name || "default" },
-    let themes = { icons : false, responsive: true, ellipsis: true, }
-    let settings = { core: { data: [], multiple: false, themes: themes } }
+    let settings = { core: { data: [], multiple: true } }
+    settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
+    settings.hotkeys = { "del" : function () { console.warn(this) } }
+    settings.plugins = [ "hotkeys" ]
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
@@ -52,6 +52,8 @@ export default
       inspector.update()
       requestAnimationFrame( onFrame )
     }
+    
+    $('#subpanel-nodes tree').bind( "keydown", "alt+a", console.log )
 
     onFrame()
   },
