@@ -44,8 +44,7 @@ function initialize()
     if ( ! context.selection.prop ) return
     let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
     let bone = context.viewport.scene.getChildByName( bone_name )
-    let prop = context.viewport.scene.getObjectByProperty( "uuid", context.selection.prop.object.uuid )
-    bone.add( prop )
+    bone.add( context.selection.prop )
   } )
 
   new DropField( document.getElementById('viewport') ).onAssetLoaded = onSceneLoaded

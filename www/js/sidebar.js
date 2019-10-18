@@ -4,7 +4,6 @@ function map_node( node, depth=0 ) {
   return {
     id : node.uuid,
     text : node.name,
-    data : node,
     type : node.object ? node.object.type : "default",
     state : { opened : depth < 3, selected : false },
     children : node.children
@@ -16,14 +15,12 @@ function map_prop( prop ) {
   return {
     id : prop.uuid,
     text : prop.name,
-    data : prop,
   }
 }
 function map_anim( anim ) {
   return {
     id : anim.uuid,
     text : anim.name,
-    data : anim,
   }
 }
 
@@ -66,20 +63,15 @@ export default
   },
   onSelectNode( event, data ) 
   {
-    console.log( data.node.data )
+    console.log( data.node )
 
     context.viewport.mixer.stopAllAction()
 
-    context.selection.node = data.node.data
-    if ( data.node.data.object !== undefined )
-    {
-      context.selection.transformable = 
-        context.viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
-      if ( context.selection.transformable )
-        context.viewport.transformer.attach( context.selection.transformable )
-    } else {
-      context.selection.transformable = null
-    }
+    let node = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
+
+    context.selection.node = node
+    context.selection.transformable = node
+    context.viewport.transformer.attach( node )
   },
   onSelectProp( event, data ) 
   {
@@ -87,25 +79,19 @@ export default
 
     context.viewport.animTPose()
 
-    context.selection.prop = data.node.data
-    if ( data.node.data.object !== undefined )
-    {
-      context.selection.transformable = 
-        context.viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
-      if ( context.selection.transformable )
-        context.viewport.transformer.attach( context.selection.transformable )
-    } else {
-      context.selection.transformable = null
-    }
+    let prop = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
+
+    context.selection.prop = 
+    context.selection.transformable = prop
+    context.viewport.transformer.attach( prop )
   },
   onSelectAnim( event, data ) 
   {
     console.log( data.node.data )
 
-    context.selection.anim = data.node.data
     let clip = context.data.anims.find( anim => anim.uuid === data.node.data.uuid )
+    context.selection.anim = clip
     context.viewport.animPlay( clip )
-    
     context.viewport.transformer.detach()
   },
   update()
