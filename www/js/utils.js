@@ -34,6 +34,7 @@ export class DropField
         return true
       e.preventDefault()
       element.classList.add("dragover")
+      $( "loading" ).show()
       return false;
     };
 
@@ -42,6 +43,7 @@ export class DropField
         return true
       e.preventDefault()
       element.classList.remove("dragover")
+      $( "loading" ).hide()
       return false;
     };
 
@@ -52,6 +54,7 @@ export class DropField
 
       e.preventDefault()
       element.classList.remove("dragover")
+      $( "loading" ).hide()
 
       let file = e.dataTransfer.files[0]
       let reader = new FileReader();

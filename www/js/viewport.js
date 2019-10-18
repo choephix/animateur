@@ -10,16 +10,11 @@ export default
   scene : new THREE.Scene(),
   clock : new THREE.Clock(),
   mixer : new THREE.AnimationMixer( null ),
+  characterModel : null,
   transformer: null,
   setModel( subject )
   {
-    // var material = new THREE.MeshNormalMaterial( { color: 0xCCff00 } );
-    // var material = new THREE.MeshStandardMaterial( { color: 0xCCff00 } );
-    // var cube = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), material );
-    // scene.add( cube );
-    // var sphere = new THREE.Mesh( new THREE.SphereGeometry( .5, 32, 32 ), material );
-    // scene.add( sphere );
-
+    this.characterModel = subject
     this.scene.add( subject )
     this.mixer = new THREE.AnimationMixer( subject )
   },
@@ -91,5 +86,11 @@ export default
     this.orbit.update()
     this.renderer.render( this.scene, this.camera )
     requestAnimationFrame( () => this.animate() )
+  },
+  clear() {
+    if ( this.characterModel !== undefined ) {
+      this.scene.remove( this.characterModel )
+      this.characterModel = null
+    }  
   },
 }

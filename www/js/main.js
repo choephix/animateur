@@ -87,19 +87,25 @@ function onPropLoaded( prop )
 
 function onSceneLoaded( gltf ) 
 {
-  $( "loading" ).hide()
-
   console.log( gltf )
+
+  if ( context.data.model )
+  {
+    viewport.clear()
+    context.data.anims.length = 0
+    context.data.props.length = 0
+  }
 
   let model_source = gltf.scene.children.shift()
   viewport.setModel( model_source )
   context.data.model = viewport.scene.getObjectByProperty( "uuid", model_source.uuid )
   
+  // context.data.model.getChildByName("batarang-injustice").children[0].material = 
+  //   context.data.model.children[2].material.clone()
   gltf.scene.children.forEach( prop => context.data.model.add( prop ) )
 
   refreshPropsList()
 
-  context.data.anims.length = []
   context.data.anims.push( ...gltf.animations )
 
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
