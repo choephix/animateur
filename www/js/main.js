@@ -45,13 +45,22 @@ function initialize()
     bone.add( prop )
   } )
 
-  new DropField( document.getElementById('viewport') ).onAssetLoaded = onAssetLoaded
+  new DropField( document.getElementById('viewport') ).onAssetLoaded = onSceneLoaded
   new DropField( document.getElementById('subpanel-nodes') )
-  new DropField( document.getElementById('subpanel-props') )
+  new DropField( document.getElementById('subpanel-props') ).onAssetLoaded = onPropLoaded
   new DropField( document.getElementById('subpanel-anims') )
 }
 
-function onAssetLoaded( gltf ) 
+function onPropLoaded( prop ) 
+{
+  context.data.props.push( prop )
+  let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
+  let bone = context.viewport.scene.getChildByName( bone_name )
+  bone.add( prop )
+  context.sidebar.refresh()
+}
+
+function onSceneLoaded( gltf ) 
 {
   $( "loading" ).hide()
 
@@ -70,15 +79,19 @@ function onAssetLoaded( gltf )
   console.log( context.viewport.scene.getObjectByName( "mixamorigHips" ) )
 
   function findPropsIn( o ) {
+    if ( o.type === "Group" && o.children && o.children.length )
+      context.data.props.push( o )
+    else 
     if ( o.type === "Object3D" && o.children && o.children.length )
       context.data.props.push( o )
-    else if ( o.type === "Mesh" )
+    else 
+    if ( o.type === "Mesh" )
       context.data.props.push( o )
-    else if ( o.children && o.children.length )
+    else 
+    if ( o.children && o.children.length )
       o.children.forEach( child => findPropsIn( child ) )
   }
   findPropsIn( context.viewport.scene.getObjectByName( "mixamorigHips" ) )
-
 
   sidebar.update( context.data.model, context.data.props, context.data.anims )
 

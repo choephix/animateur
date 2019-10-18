@@ -1,9 +1,26 @@
 import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js'
+import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js'
 
 const loadingManager = new THREE.LoadingManager()
 const loaders = {
   gltf : new GLTFLoader( loadingManager ),
+  fbx : new FBXLoader( loadingManager ),
+
+  load : function( data, ext ) {
+    return new Promise( ( resolve ) => {
+      switch ( ext ) {
+        case "gltf":
+        case "glb": this.gltf.parse( data, "SCENO", resolve ); break;
+        case "fbx": resolve( this.fbx.parse( data ) ); break;
+        default:
+          alert( `Sorry, no loaders for files with extension "${ext}"` )
+          reject()
+      }
+    } )
+  }
 }
+
+window.loaders = loaders
 
 export const loadFromUrl = ( url ) => 
        new Promise( ( resolve ) => loaders.gltf.load( url, resolve ) )
@@ -44,7 +61,8 @@ export class DropField
       {
         console.log( event.target )
         let data = event.target.result
-        loaders.gltf.parse( data, file.name, this.onAssetLoaded )
+        let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
+        loaders.load( data, ext ).then( this.onAssetLoaded )
       }
 
       reader.readAsArrayBuffer( file )

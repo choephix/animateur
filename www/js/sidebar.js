@@ -88,12 +88,14 @@ export default
     if ( context.selection.transformable )
       context.viewport.transformer.attach( context.selection.transformable )
   },
-  update: function ( model, props, animations )
+  update( model, props, animations )
   {
     this.trees.nodes.settings.core.data = map_node( model )
     this.trees.props.settings.core.data = [ ...props.map( map_prop ) ]
     this.trees.anims.settings.core.data = [ ...animations.map( map_anim ) ]
-
+    this.refresh()
+  },
+  refresh() {
     for ( let key in this.trees )
       this.trees[key].refresh(true)
   }
