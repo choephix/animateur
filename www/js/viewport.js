@@ -44,8 +44,8 @@ export default
     this.clock.start()
 
     this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 )
-    this.camera.position.z = 80
-    this.camera.position.y = 40
+    this.camera.position.z = 3
+    this.camera.position.y = 2
     this.camera.lookAt( new THREE.Vector3() )
 
     this.scene.background = new THREE.Color( 0x112233 )
@@ -53,7 +53,7 @@ export default
     this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 
     this.orbit = new OrbitControls( this.camera, this.renderer.domElement )
-    this.orbit.target = new THREE.Vector3( 0, 5, 0 )
+    this.orbit.target = new THREE.Vector3( 0, 1, 0 )
     this.orbit.update()
     this.orbit.mouseButtons.LEFT = 0
     this.orbit.mouseButtons.RIGHT = 2

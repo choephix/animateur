@@ -129,7 +129,7 @@ initialize()
 
 loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
   onSceneLoaded( gltf )
-  context.data.model.scale.setScalar( .1 )
+  context.data.model.scale.setScalar( .01 )
  } )
 
 window.context = context
