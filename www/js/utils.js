@@ -3,9 +3,10 @@ import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js
 import { OBJLoader } from 'https://threejs.org/examples/jsm/loaders/OBJLoader.js'
 import { ColladaLoader } from 'https://threejs.org/examples/jsm/loaders/ColladaLoader.js'
 
-function test(...rest) { console.warn( "TEST TEST", ...rest )}
+const loadingManager = new THREE.LoadingManager()
+loadingManager.onStart = () => $( "loading" ).show()
+loadingManager.onLoad  = () => $( "loading" ).hide()
 
-const loadingManager = new THREE.LoadingManager( test, test, test )
 const loaders = {
   gltf : new GLTFLoader( loadingManager ),
   fbx : new FBXLoader( loadingManager ),
@@ -16,9 +17,9 @@ const loaders = {
       switch ( ext ) {
         case "gltf":
         case "glb": this.gltf.load( data, resolve ); break;
-        case "fbx": resolve( this.fbx.parse( data ) ); break;
         case "obj": this.obj.load( data, resolve ); break;
         case "dae": this.dae.load( data, o => resolve( o.scene ) ); break;
+        case "fbx": resolve( this.fbx.parse( data ) ); break;
         default:
           alert( `Sorry, no loaders for files with extension "${ext}"` )
           reject()
@@ -59,8 +60,6 @@ export class DropField
 
       e.preventDefault()
       element.classList.remove("dragover")
-      
-      $( "loading" ).show()
 
       let file = e.dataTransfer.files[0]
       let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
@@ -73,7 +72,6 @@ export class DropField
         console.log( event.target )
         let data = event.target.result
         loaders.load( data, ext ).then( o => {
-          $( "loading" ).hide()
           this.onAssetLoaded( o )
         } )
       }
