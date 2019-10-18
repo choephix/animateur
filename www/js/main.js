@@ -102,7 +102,7 @@ function onSceneLoaded( gltf )
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
                   context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )
   if ( idle_anim )
-    context.viewport.playAnim( idle_anim )
+    context.viewport.animPlay( idle_anim )
 
   sidebar.update( context.data.model, context.data.props, context.data.anims )
   return
@@ -126,7 +126,7 @@ initialize()
 
 loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
   onSceneLoaded( gltf )
-  context.data.model.scale.setScalar( .05 )
+  context.data.model.scale.setScalar( .1 )
  } )
 
 window.context = context

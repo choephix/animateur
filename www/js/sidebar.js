@@ -76,6 +76,8 @@ export default
   {
     console.log( data.node.data )
 
+    context.viewport.mixer.stopAllAction()
+
     context.selection.node = data.node.data
     if ( data.node.data.object !== undefined )
     {
@@ -90,6 +92,8 @@ export default
   onSelectProp( event, data ) 
   {
     console.log( data.node.data )
+
+    context.viewport.animTPose()
 
     context.selection.prop = data.node.data
     if ( data.node.data.object !== undefined )
@@ -108,7 +112,9 @@ export default
 
     context.selection.anim = data.node.data
     let clip = context.data.anims.find( anim => anim.uuid === data.node.data.uuid )
-    context.viewport.playAnim( clip )
+    context.viewport.animPlay( clip )
+    
+    context.viewport.transformer.attach( null )
   },
   update( model, props, animations )
   {

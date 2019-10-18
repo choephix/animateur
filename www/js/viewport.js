@@ -23,12 +23,21 @@ export default
     this.scene.add( subject )
     this.mixer = new THREE.AnimationMixer( subject )
   },
-  playAnim( anim ) {
+  animPlay( anim ) {
     this.mixer.stopAllAction()
-    let action = this.mixer.clipAction( anim )
-    action.setLoop( THREE.LoopRepeat )
-    action.enabled = true
-    action.play()
+    this.mixer.currentAction = this.mixer.clipAction( anim )
+    this.mixer.currentAction.setLoop( THREE.LoopRepeat )
+    this.mixer.currentAction.enabled = true
+    this.mixer.currentAction.weight = 1.0
+    this.mixer.currentAction.play()
+  },
+  animTPose( anim ) {
+    this.mixer.stopAllAction()
+    if ( this.mixer.currentAction ) {
+      this.mixer.currentAction.enabled = false
+      this.mixer.currentAction.weight = 0.0
+    }
+    this.mixer.currentAction = undefined
   },
   setup()
   {
