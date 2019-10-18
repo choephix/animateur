@@ -53,7 +53,7 @@ export default
       requestAnimationFrame( onFrame )
     }
     
-    $('#subpanel-nodes tree').bind( "keydown", "alt+a", console.log )
+    $('#subpanel-nodes tree').bind( "keydown", "alt+a", console.warn )
 
     onFrame()
   },
