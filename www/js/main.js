@@ -51,13 +51,35 @@ function initialize()
   new DropField( document.getElementById('subpanel-anims') )
 }
 
+function refreshPropsList()
+{
+  function findPropsIn( o ) {
+    let push = false 
+    push |= ( ( o.type === "Object3D" || o.type === "Group" ) && o.children && o.children.length )
+    push |= o.type === "Mesh"
+    push &= o !== context.data.model
+    if ( push )
+      context.data.props.push( o )
+    else 
+    if ( o.children )
+      o.children.forEach( child => findPropsIn( child ) )
+  }
+
+  context.data.props.length = 0
+  findPropsIn( context.data.model )
+}
+
 function onPropLoaded( prop ) 
 {
+  prop.children[0].material = context.data.model.children[1].material.clone()
+
   context.data.props.push( prop )
-  let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
-  let bone = context.viewport.scene.getChildByName( bone_name )
-  bone.add( prop )
-  context.sidebar.refresh()
+  // let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
+  // let bone = context.viewport.scene.getChildByName( bone_name )
+  // bone.add( prop )
+  context.data.model.add( prop )
+
+  sidebar.update( context.data.model, context.data.props, context.data.anims )
 }
 
 function onSceneLoaded( gltf ) 
@@ -66,32 +88,29 @@ function onSceneLoaded( gltf )
 
   console.log( gltf )
 
-  viewport.scene.remove( context.data.model )
+  let model_source = gltf.scene.children.shift()
+  viewport.scene.add( model_source )
+  context.data.model = viewport.scene.getObjectByProperty( "uuid", model_source.uuid )
+  
+  gltf.scene.children.forEach( prop => model.add( prop ) )
+
+  refreshPropsList()
+
+  context.data.anims.length = []
+  context.data.anims.push( ...gltf.animations )
+
+  sidebar.update( context.data.model, context.data.props, context.data.anims )
+  return
+
+
+  viewport.scene.remove(  )
   context.data.props.forEach( o => viewport.scene.remove( o ) )
 
-  context.data.model = gltf.scene.children.shift()
+  context.data.model = 
   context.data.props.push( ...gltf.scene.children )
   context.data.anims.push( ...gltf.animations )
 
   viewport.scene.add( context.data.model )
-  // context.data.props.forEach( o => viewport.scene.add( o ) )
-
-  console.log( context.viewport.scene.getObjectByName( "mixamorigHips" ) )
-
-  function findPropsIn( o ) {
-    if ( o.type === "Group" && o.children && o.children.length )
-      context.data.props.push( o )
-    else 
-    if ( o.type === "Object3D" && o.children && o.children.length )
-      context.data.props.push( o )
-    else 
-    if ( o.type === "Mesh" )
-      context.data.props.push( o )
-    else 
-    if ( o.children && o.children.length )
-      o.children.forEach( child => findPropsIn( child ) )
-  }
-  findPropsIn( context.viewport.scene.getObjectByName( "mixamorigHips" ) )
 
   sidebar.update( context.data.model, context.data.props, context.data.anims )
 
