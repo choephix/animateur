@@ -34,6 +34,13 @@ function initialize()
   $( "button.save" ).click( e => exporter.save( model, animations, 
                                                 e.currentTarget.getAttribute("binary") == "true",
                                                 e.currentTarget.getAttribute("local") == "true" ) )
+  $( "button.transform.position" ).click( e => viewport.transformer.setMode( "translate" ) )
+  $( "button.transform.rotation" ).click( e => viewport.transformer.setMode( "rotate" ) )
+  $( "button.transform.scale" ).click( e => viewport.transformer.setMode( "scale" ) )
+  $( "button.transform.snapping" ).click( e => {
+    viewport.transformer.setTranslationSnap( 1 )
+    viewport.transformer.setRotationSnap( THREE.Math.degToRad( 15 ) )
+  } )
 
   new DropField( document.getElementById('viewport') ).onAssetLoaded = onAssetLoaded
   new DropField( document.getElementById('subpanel-nodes') )

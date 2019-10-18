@@ -48,6 +48,7 @@ export default
 
     this.transformer = new TransformControls( camera, renderer.domElement )
     this.transformer.addEventListener( 'dragging-changed', event => orbit.enabled = ! event.value )
+    this.transformer.setSize( 0.5 );
     this.scene.add( this.transformer )
 
     /// /// /// /// ///

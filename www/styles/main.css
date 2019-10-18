@@ -141,7 +141,7 @@ button:focus {outline:0;}
   font-weight: bold;
   margin: 2px;
   padding: 4px;
-  
+
   -webkit-user-select: all;
   -moz-user-select: all;
   -ms-user-select: all;
@@ -169,6 +169,12 @@ button:focus {outline:0;}
 
 #panel-toolbar {
   width: 64px;
+}
+#panel-toolbar separator {
+  position: relative;
+  display: block;
+  height: 2px;
+  width: 2x;
 }
 #panel-toolbar button {
   width: 100%;
