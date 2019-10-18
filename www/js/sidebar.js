@@ -1,5 +1,4 @@
 import { context } from "./main.js"
-import viewport from './viewport.js'
 
 function map_node( node, depth=0 ) {
   return {
@@ -82,7 +81,7 @@ export default
     if ( data.node.data.object !== undefined )
     {
       context.selection.transformable = 
-        viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
+        context.viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
     }
 
     if ( context.selection.transformable )
