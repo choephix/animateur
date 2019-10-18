@@ -75,6 +75,8 @@ export default
   },
   onSelect( event, data, key ) 
   {
+    console.log( data.node.data )
+
     context.selection[key] = data.node.data
 
     if ( data.node.data.object !== undefined )

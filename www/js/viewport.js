@@ -39,6 +39,7 @@ export default
     
     let light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
     light_directional.position.set( 1, 1, 1 ).normalize()
+    light_directional.lookAt( new THREE.Vector3( 0,0,0 ) )
     light_directional.name = "Light (directional}"
     scene.add( light_directional )
     
