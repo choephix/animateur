@@ -7,9 +7,11 @@ let canvasElem = document.getElementById( "webgl-canvas" )
 
 export default 
 {
-  transformer: null,
   scene : new THREE.Scene(),
-  add : function ( subject )
+  clock : new THREE.Clock(),
+  mixer : new THREE.AnimationMixer( null ),
+  transformer: null,
+  setModel( subject )
   {
     // var material = new THREE.MeshNormalMaterial( { color: 0xCCff00 } );
     // var material = new THREE.MeshStandardMaterial( { color: 0xCCff00 } );
@@ -19,55 +21,66 @@ export default
     // scene.add( sphere );
 
     this.scene.add( subject )
+    this.mixer = new THREE.AnimationMixer( subject )
   },
-  setup : function()
+  playAnim( anim ) {
+    this.mixer.stopAllAction()
+    let action = this.mixer.clipAction( anim )
+    action.setLoop( THREE.LoopRepeat )
+    action.enabled = true
+    action.play()
+  },
+  setup()
   {
-    let scene = this.scene
-    let camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    camera.position.z = 80;
-    camera.position.y = 40;
+    this.clock.start()
 
-    scene.background = new THREE.Color( 0x112233 )
+    this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 )
+    this.camera.position.z = 80
+    this.camera.position.y = 40
+    this.camera.lookAt( new THREE.Vector3() )
+
+    this.scene.background = new THREE.Color( 0x112233 )
     
-    let renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } );
+    this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 
-    let orbit = new OrbitControls( camera, renderer.domElement );
-    orbit.update()
-    orbit.mouseButtons.LEFT = 0
-    orbit.mouseButtons.RIGHT = 2
-    orbit.mouseButtons.MIDDLE = -1
+    this.orbit = new OrbitControls( this.camera, this.renderer.domElement )
+    this.orbit.target = new THREE.Vector3( 0, 5, 0 )
+    this.orbit.update()
+    this.orbit.mouseButtons.LEFT = 0
+    this.orbit.mouseButtons.RIGHT = 2
+    this.orbit.mouseButtons.MIDDLE = -1
     
     let light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
     light_directional.position.set( 1, 1, 1 ).normalize()
     light_directional.lookAt( new THREE.Vector3( 0,0,0 ) )
     light_directional.name = "Light (directional}"
-    scene.add( light_directional )
+    this.scene.add( light_directional )
     
     let light_ambient = new THREE.AmbientLight( 0xffffff, 1.20 )
     light_ambient.name = "Light (ambient)"
-    scene.add( light_ambient )
+    this.scene.add( light_ambient )
 
-    this.transformer = new TransformControls( camera, renderer.domElement )
-    this.transformer.addEventListener( 'dragging-changed', event => orbit.enabled = ! event.value )
+    this.transformer = new TransformControls( this.camera, this.renderer.domElement )
+    this.transformer.addEventListener( 'dragging-changed', event => this.orbit.enabled = ! event.value )
     this.transformer.setSize( 0.5 );
     this.scene.add( this.transformer )
 
     /// /// /// /// ///
 
-    function resize( W, H ) {
-      renderer.setSize( W, H )
-      camera.aspect = W / H;
-      camera.updateProjectionMatrix();
-    }
-
-    function animate() {
-      resize( viewportElem.clientWidth, viewportElem.clientHeight )
-    
-      orbit.update();
-      requestAnimationFrame( animate );
-      renderer.render( scene, camera );
-    }
-
-    animate()
+    this.animate()
+  },
+  resize( W, H ) 
+  {
+    this.renderer.setSize( W, H )
+    this.camera.aspect = W / H;
+    this.camera.updateProjectionMatrix();
+  },
+  animate()
+  {
+    this.resize( viewportElem.clientWidth, viewportElem.clientHeight )
+    this.mixer.update( this.clock.getDelta() )
+    this.orbit.update()
+    this.renderer.render( this.scene, this.camera )
+    requestAnimationFrame( () => this.animate() )
   },
 }

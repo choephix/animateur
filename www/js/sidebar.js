@@ -59,9 +59,9 @@ export default
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
     
-    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'node' ) )
-    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'prop' ) )
-    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelect( e, d, 'anim' ) )
+    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelectNode( e, d ) )
+    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelectProp( e, d ) )
+    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( e, d ) )
     
     console.log( inspector )
 
@@ -72,20 +72,43 @@ export default
 
     onFrame()
   },
-  onSelect( event, data, key ) 
+  onSelectNode( event, data ) 
   {
     console.log( data.node.data )
 
-    context.selection[key] = data.node.data
-
+    context.selection.node = data.node.data
     if ( data.node.data.object !== undefined )
     {
       context.selection.transformable = 
         context.viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
+      if ( context.selection.transformable )
+        context.viewport.transformer.attach( context.selection.transformable )
+    } else {
+      context.selection.transformable = null
     }
+  },
+  onSelectProp( event, data ) 
+  {
+    console.log( data.node.data )
 
-    if ( context.selection.transformable )
-      context.viewport.transformer.attach( context.selection.transformable )
+    context.selection.prop = data.node.data
+    if ( data.node.data.object !== undefined )
+    {
+      context.selection.transformable = 
+        context.viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
+      if ( context.selection.transformable )
+        context.viewport.transformer.attach( context.selection.transformable )
+    } else {
+      context.selection.transformable = null
+    }
+  },
+  onSelectAnim( event, data ) 
+  {
+    console.log( data.node.data )
+
+    context.selection.anim = data.node.data
+    let clip = context.data.anims.find( anim => anim.uuid === data.node.data.uuid )
+    context.viewport.playAnim( clip )
   },
   update( model, props, animations )
   {

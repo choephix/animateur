@@ -89,15 +89,20 @@ function onSceneLoaded( gltf )
   console.log( gltf )
 
   let model_source = gltf.scene.children.shift()
-  viewport.scene.add( model_source )
+  viewport.setModel( model_source )
   context.data.model = viewport.scene.getObjectByProperty( "uuid", model_source.uuid )
   
-  gltf.scene.children.forEach( prop => model.add( prop ) )
+  gltf.scene.children.forEach( prop => context.data.model.add( prop ) )
 
   refreshPropsList()
 
   context.data.anims.length = []
   context.data.anims.push( ...gltf.animations )
+
+  let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
+                  context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )
+  if ( idle_anim )
+    context.viewport.playAnim( idle_anim )
 
   sidebar.update( context.data.model, context.data.props, context.data.anims )
   return
@@ -119,6 +124,9 @@ function onSceneLoaded( gltf )
 
 initialize()
 
-// loadFromUrl( "/gltf/captain.gltf" ).then( gltf => onAssetLoaded( gltf ) )
+loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
+  onSceneLoaded( gltf )
+  context.data.model.scale.setScalar( .05 )
+ } )
 
 window.context = context
