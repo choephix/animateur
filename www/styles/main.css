@@ -141,6 +141,11 @@ button:focus {outline:0;}
   font-weight: bold;
   margin: 2px;
   padding: 4px;
+  
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
 }
 
 #subpanel-properties .i-vector-row input:focus,
@@ -148,7 +153,6 @@ button:focus {outline:0;}
   border: 1px solid orange;
   outline:none;
 }
-
 
 
 

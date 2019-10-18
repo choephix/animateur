@@ -76,13 +76,15 @@ export default
   onSelect( event, data, key ) 
   {
     context.selection[key] = data.node.data
-    // console.log( context.selection )
 
-    // if ( key != "anim" )
-      // context.selection.transformable = data.node.data 
     if ( data.node.data.object !== undefined )
+    {
       context.selection.transformable = 
         viewport.scene.getObjectByProperty( "uuid", data.node.data.object.uuid )
+    }
+
+    if ( context.selection.transformable )
+      context.viewport.transformer.attach( context.selection.transformable )
   },
   update: function ( model, props, animations )
   {
@@ -119,7 +121,7 @@ class Row {
   // setConvert( func ) { this.convertValue = func }
   // unconvertValue( n ) { return n }
   // setUnconvert( func ) { this.unconvertValue = func }
-  
+
   updateMaybe( vector ) {
     if ( ! $( this.dom ).is(":focus-within") ) {
       $(this.fields[0]).val( vector.x )

@@ -1,11 +1,13 @@
 // import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js"
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+import { TransformControls } from 'https://threejs.org/examples/jsm/controls/TransformControls.js';
 
 let viewportElem = document.getElementById( "viewport" )
 let canvasElem = document.getElementById( "webgl-canvas" )
 
 export default 
 {
+  transformer: null,
   scene : new THREE.Scene(),
   add : function ( subject )
   {
@@ -20,23 +22,22 @@ export default
   },
   setup : function()
   {
-    var scene = this.scene
-    var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    let scene = this.scene
+    let camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.position.z = 80;
     camera.position.y = 40;
 
     scene.background = new THREE.Color( 0x112233 )
     
-    var renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } );
+    let renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } );
 
-    // var controls = new THREE.OrbitControls( camera, renderer.domElement );
-    var controls = new OrbitControls( camera, renderer.domElement );
-    controls.update()
-    controls.mouseButtons.LEFT = 0
-    controls.mouseButtons.RIGHT = 2
-    controls.mouseButtons.MIDDLE = -1
+    let orbit = new OrbitControls( camera, renderer.domElement );
+    orbit.update()
+    orbit.mouseButtons.LEFT = 0
+    orbit.mouseButtons.RIGHT = 2
+    orbit.mouseButtons.MIDDLE = -1
     
-    var light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
+    let light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
     light_directional.position.set( 1, 1, 1 ).normalize()
     light_directional.name = "Light (directional}"
     scene.add( light_directional )
@@ -44,6 +45,12 @@ export default
     let light_ambient = new THREE.AmbientLight( 0xffffff, 1.20 )
     light_ambient.name = "Light (ambient)"
     scene.add( light_ambient )
+
+    this.transformer = new TransformControls( camera, renderer.domElement )
+    this.transformer.addEventListener( 'dragging-changed', event => orbit.enabled = ! event.value )
+    this.scene.add( this.transformer )
+
+    /// /// /// /// ///
 
     function resize( W, H ) {
       renderer.setSize( W, H )
@@ -54,7 +61,7 @@ export default
     function animate() {
       resize( viewportElem.clientWidth, viewportElem.clientHeight )
     
-      controls.update();
+      orbit.update();
       requestAnimationFrame( animate );
       renderer.render( scene, camera );
     }
