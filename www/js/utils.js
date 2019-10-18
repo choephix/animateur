@@ -38,7 +38,7 @@ export class DropField
   constructor( element, callback ) 
   {
     element.ondragover = function(e) {
-      if ( e.ctrlKey || e.altKey ) 
+      if ( e.ctrlKey || e.altKey || $(element).is(":focus-within") ) 
         return true
       e.preventDefault()
       element.classList.add("dragover")
@@ -63,23 +63,17 @@ export class DropField
 
       let file = e.dataTransfer.files[0]
       let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
+      // console.log( file )
 
       let reader = new FileReader()
-      console.log( file )
-
       reader.onload = (event) => 
       {
-        console.log( event.target )
-        let data = event.target.result
-        loaders.load( data, ext ).then( o => {
+        loaders.load( event.target.result, ext ).then( o => {
           this.onAssetLoaded( o )
         } )
       }
 
-      // if ( ext === "obj ")
-        reader.readAsDataURL( file )
-      // else
-      //   reader.readAsArrayBuffer( file )
+      reader.readAsDataURL( file )
       return false
     }
   }

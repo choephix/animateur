@@ -34,6 +34,8 @@ export default
   {
     let settings = { core: { data: [], multiple: true } }
     settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
+    settings.core.check_callback = true
+    settings.plugins = [ "dnd" ]
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
