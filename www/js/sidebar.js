@@ -38,22 +38,7 @@ export default
     // plugins : [ "state" , "dnd" ],
     // state : { key : model.name || "default" },
     let themes = { icons : false, responsive: true, ellipsis: true, }
-    let types = {
-      default: {
-        // type_attr : "object_type",
-        select_node : console.warn
-      },
-      Bone: {
-      },
-      Object3D: {
-      },
-      Mesh: {
-      },
-      SkinnedMesh: {
-      },
-      TYPE: {}
-    }
-    let settings = { core: { data: [], multiple: false, themes: themes }, types: types, plugins: [ "types" ] }
+    let settings = { core: { data: [], multiple: false, themes: themes } }
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )

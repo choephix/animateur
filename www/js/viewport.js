@@ -1,4 +1,3 @@
-// import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.js"
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
 import { TransformControls } from 'https://threejs.org/examples/jsm/controls/TransformControls.js';
 
