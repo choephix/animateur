@@ -37,6 +37,9 @@ function initialize()
   $( "button.transform.position" ).click( e => viewport.transformer.setMode( "translate" ) )
   $( "button.transform.rotation" ).click( e => viewport.transformer.setMode( "rotate" ) )
   $( "button.transform.scale" ).click( e => viewport.transformer.setMode( "scale" ) )
+  $( "button.transform.space" ).click( e => viewport.transformer.setSpace( 
+                                            viewport.transformer.space === "world" ? "local" : "world" ) )
+
   $( "button.attach-to-bone" ).click( e => {
     if ( ! context.selection.prop ) return
     let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )

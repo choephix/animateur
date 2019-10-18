@@ -114,7 +114,7 @@ export default
     let clip = context.data.anims.find( anim => anim.uuid === data.node.data.uuid )
     context.viewport.animPlay( clip )
     
-    context.viewport.transformer.attach( null )
+    context.viewport.transformer.detach()
   },
   update( model, props, animations )
   {
