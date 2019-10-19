@@ -49,15 +49,29 @@ export default
     }
     
     $('#subpanel-props tree').bind( "keydown", "del", e => {
-      this.trees.props.get_selected(false).forEach( uuid => {
-        let prop = context.viewport.scene.getObjectByProperty( "uuid", uuid )
-        context.viewport.transformer.detach()
-        console.log( "will delete ", prop )
+      let uuids = this.trees.props.get_selected(false)
+      if ( ! confirm( `You are about to delete the following props:\n${ uuids.join("\n") }` ) )
+        return
+      for ( let i = context.data.props.length - 1 ; i >= 0 ; i-- )
+      {
+        let prop = context.data.props[ i ]
+        if ( uuids.indexOf( prop.uuid ) < 0 )
+          continue
         prop.parent.remove( prop )
-        // context.viewport.scene.remove( prop )
-        context.data.props.splice( context.data.props.indexOf( prop ), 1 )
-        this.update()
-      } )
+        context.data.props.splice( i, 1 )
+      }
+      context.viewport.transformer.detach()
+      this.update()
+    } )
+    
+    $('#subpanel-anims tree').bind( "keydown", "del", e => {
+      let uuids = this.trees.anims.get_selected(false)
+      if ( ! confirm( `You are about to delete the following animations:\n${ uuids.join("\n") }` ) )
+        return
+      for ( let i = context.data.anims.length - 1 ; i >= 0 ; i-- )
+        if ( uuids.indexOf( context.data.anims[ i ].uuid ) > -1 )
+          context.data.anims.splice( i, 1 )
+      this.update()
     } )
 
     onFrame()
