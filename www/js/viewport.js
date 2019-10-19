@@ -91,6 +91,7 @@ export default
     requestAnimationFrame( () => this.animate() )
   },
   clear() {
+    this.transformer.detach()
     if ( this.characterModel !== undefined ) {
       this.scene.remove( this.characterModel )
       this.characterModel = null
