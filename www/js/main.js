@@ -45,7 +45,7 @@ function initialize()
     if ( ! context.selection.prop ) return
     let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
     let bone = context.viewport.scene.getChildByName( bone_name )
-    bone.add( context.selection.prop )
+    if ( bone ) bone.add( context.selection.prop )
   } )
   $( "button.set-color-1" ).click( e => {
     let material = context.data.model.children[ 1 ].material.clone() 
