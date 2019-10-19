@@ -6,6 +6,7 @@ import { ColladaLoader } from 'https://threejs.org/examples/jsm/loaders/ColladaL
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = () => $( "loading" ).show()
 loadingManager.onLoad  = () => $( "loading" ).hide()
+loadingManager.onError = () => $( "loading" ).hide()
 
 const loaders = {
   gltf : new GLTFLoader( loadingManager ),
@@ -90,6 +91,8 @@ export class DropField
       e.preventDefault()
       element.classList.remove("dragover")
 
+      $( "loading" ).show()
+
       let promises = []
       for ( let file of e.dataTransfer.files )
       {
@@ -99,9 +102,10 @@ export class DropField
 
         promises.push( new Promise( resolve => {
           let reader = new FileReader()
-          reader.onload = (event) => this.funcResolver( event.target.result, ext, filename ).then( resolve )
+          reader.onload = (event) => this.funcResolver( event.target.result, ext, filename )
+                                          .then( resolve ).catch( this.onError )
           reader.readAsDataURL( file )
-        } ) )
+        } ).catch( this.onError ) )
 
         // if ( ! allowMultiple )
         //   break
@@ -109,11 +113,12 @@ export class DropField
       console.log( e.dataTransfer.files, promises )
       Promise.all( promises )
         .then( a => this.funcLoaded( ...[].concat( ...a ) ) )
-        .catch( console.error )
         
       return false
     }
   }
+
+  onError( e ) { console.error( e ); $( "loading" ).hide(); }
 
   funcResolver() { throw new ReferenceError( "You didn't assign your 'resolver' function...") }
   resolver( func ) { this.funcResolver = func; return this; }

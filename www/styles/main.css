@@ -24,7 +24,6 @@ main {
   user-select: none;
   display: flex;
   flex-direction: row;
-  color: gold;
 }
 canvas { width: 100%; height: 100% }
 header { 
@@ -69,8 +68,14 @@ button:focus {outline:0;}
   display: flex;
   position: absolute;
   user-select: none;
+  touch-action: none;
+  pointer-events: none;
   z-index: 999;
 }
+
+
+
+
 
 #viewport {
   flex-grow: 1;
@@ -87,6 +92,30 @@ button:focus {outline:0;}
   pointer-events: none;
   align-items: center;
 }
+#viewport .contents {
+  position: relative;
+  height: 100%;
+}
+loading {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: gold;
+  font-size: 72px;
+  user-select: none;
+  touch-action: none;
+  pointer-events: none;
+}
+
+
+
+
+
 
 [id^="panel"] {
   background: #222;
