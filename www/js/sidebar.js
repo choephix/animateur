@@ -38,9 +38,10 @@ export default
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
     
-    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelectNode( e, d ) )
-    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelectProp( e, d ) )
-    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( e, d ) )
+    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelectNode( d ) )
+    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelectProp( d ) )
+    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
+    $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
     
     function onFrame() {
       inspector.update()
@@ -61,38 +62,32 @@ export default
 
     onFrame()
   },
-  onSelectNode( event, data ) 
+  onSelectNode( data ) 
   {
-    console.log( data.node )
-
-    context.viewport.mixer.stopAllAction()
-
     let node = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
-
+    context.selection.transformable = 
+    context.selection.last =
     context.selection.node = node
-    context.selection.transformable = node
     context.viewport.transformer.attach( node )
+    context.viewport.mixer.stopAllAction()
   },
-  onSelectProp( event, data ) 
+  onSelectProp( data ) 
   {
-    console.log( data.node.data )
-
-    context.viewport.animTPose()
-
     let prop = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
-
-    context.selection.prop = 
-    context.selection.transformable = prop
+    context.selection.transformable = 
+    context.selection.last = 
+    context.selection.prop = prop
     context.viewport.transformer.attach( prop )
+    context.viewport.animTPose()
   },
-  onSelectAnim( event, data ) 
+  onSelectAnim( data ) 
   {
-    console.log( data.node.data )
-
-    let clip = context.data.anims.find( anim => anim.uuid === data.node.data.uuid )
+    let clip = context.data.anims.find( anim => anim.uuid === data.node.id )
+    context.selection.transformable = null
+    context.selection.last = 
     context.selection.anim = clip
-    context.viewport.animPlay( clip )
     context.viewport.transformer.detach()
+    context.viewport.animPlay( clip )
   },
   update()
   {
@@ -107,9 +102,7 @@ export default
   }
 }
 
-function getSele() {
-  return context.selection.transformable
-}
+/// //// //// //// ////// //// /// //// /// //
 
 class Row {
   constructor( property, isInvalid ) {
@@ -118,7 +111,7 @@ class Row {
     this.fields = $( `.i-vector-row.${property} input` ).toArray()
     this.fields.forEach( ( dom, i ) => {
       $( dom ).on( "input keyup paste", e => {
-        let sele = getSele(), val = $(dom).val()
+        let sele = context.selection.transformable, val = $(dom).val()
         if ( ! sele || isInvalid( val ) ) return
         sele[ property ][ subs[i] ] = val
       } )
@@ -141,6 +134,25 @@ class Row {
   }
 }
 
+class Field {
+  constructor( dom_selector, setter, getter ) {
+    this.dom_selector = dom_selector
+    this.setter = setter
+    this.getter = getter
+
+    let dom = $( this.dom_selector )
+    let setval = () => setter( dom.val() )
+    dom.bind( "keydown", "return", setval )
+    dom.blur( setval  )
+    // dom.on( "input keyup paste",  )
+    let animate = () => {
+      try { dom.is( ":focus" ) ? null : dom.val( this.getter() ) } catch( e ) { }
+      requestAnimationFrame( () => animate() )
+    }
+    animate()
+  }
+}
+
 const inspector = 
 {
   rows : {
@@ -148,11 +160,15 @@ const inspector =
     rotation : new Row( "rotation", n => isNaN(n) ),
     scale :    new Row( "scale", n => isNaN(n) || n == 0.0 ),
   },
+  fields : {
+    name : new Field( "#field-name", 
+                      value => { context.selection.last.name = value; context.sidebar.update(); },
+                      () => context.selection.last ? context.selection.last.name : "--" )
+  },
   update() 
   {
-    let sele = getSele()
-    if ( ! sele ) return
-    for ( let property in this.rows )
-      this.rows[ property ].updateMaybe( sele[ property ] )
+    if ( context.selection.transformable )
+      for ( let property in this.rows )
+        this.rows[ property ].updateMaybe( context.selection.transformable[ property ] )
   }
 }

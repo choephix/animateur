@@ -124,17 +124,9 @@ button:focus {outline:0;}
 
 
 
-
-
-#subpanel-properties .i-vector-row {
+#subpanel-properties input {
   width: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
-#subpanel-properties .i-vector-row input {
-  width: 50px;
-  flex: 1 1 0;
+  flex: 1 1 0px;
   color: gold;
   background: #FFF2;
   border: 1px solid #FFF3;
@@ -148,10 +140,17 @@ button:focus {outline:0;}
   user-select: all;
 }
 
-#subpanel-properties .i-vector-row input:focus,
-#subpanel-properties .i-vector-row.linked:focus-within input {
+#subpanel-properties input:focus,
+#subpanel-properties .linked:focus-within input {
   border: 1px solid orange;
   outline:none;
+}
+
+#subpanel-properties .i-vector-row input { width: 50px; }
+#subpanel-properties .i-vector-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 

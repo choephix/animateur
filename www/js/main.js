@@ -7,6 +7,7 @@ export const context =
 {
   selection : {
     transformable : null,
+    last : null,
     node : null,
     prop : null,
     anim : null,
