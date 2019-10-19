@@ -7,10 +7,11 @@ function addSwatch( color )
 {
   let hex = typeof color === "string" ? 
             color : color.toHEXA().toString()
-  if ( swatches.indexOf( hex ) < -1 )
+  if ( swatches.indexOf( hex ) > -1 )
     return
   swatches.push( hex )
   pickr.addSwatch( hex )
+  console.log( swatches )
 }
 
 function createPickr( element ) {
