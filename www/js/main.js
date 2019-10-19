@@ -47,6 +47,14 @@ function initialize()
     let bone = context.viewport.scene.getChildByName( bone_name )
     bone.add( context.selection.prop )
   } )
+  $( "button.set-color-1" ).click( e => {
+    let material = context.data.model.children[ 1 ].material.clone() 
+    context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
+  } )
+  $( "button.set-color-2" ).click( e => {
+    let material = context.data.model.children[ 2 ].material.clone() 
+    context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
+  } )
 
   new DropField( document.getElementById('viewport') ).onAssetLoaded = onSceneLoaded
   new DropField( document.getElementById('subpanel-nodes') )
@@ -75,11 +83,6 @@ function refreshPropsList()
 function onPropLoaded( prop ) 
 {
   console.log( prop )
-
-  prop.traverse( o => { 
-    if ( o.material ) 
-      o.material = context.data.model.children[1].material.clone() 
-  } )
 
   // let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
   // let bone = context.viewport.scene.getChildByName( bone_name )
@@ -113,9 +116,6 @@ function onSceneLoaded( gltf )
 
   context.data.anims.push( ...gltf.animations )
   
-  for ( let prop of context.data.props )
-    prop.children[0].material = context.data.model.children[1].material.clone()
-
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
                   context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )
   if ( idle_anim )

@@ -69,7 +69,7 @@ export default
     this.scene.add( this.transformer )
 
     
-    this.grid = new THREE.GridHelper( 100, 100, 0xffff00, 0x335599 )
+    this.grid = new THREE.GridHelper( 20, 20, 0xffff00, 0x4466CC )
     this.scene.add( this.grid )
 
     /// /// /// /// ///
