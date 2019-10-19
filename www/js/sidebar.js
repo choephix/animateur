@@ -43,11 +43,6 @@ export default
     $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
     $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
     
-    function onFrame() {
-      inspector.update()
-      requestAnimationFrame( () => onFrame() )
-    }
-    
     $('#subpanel-props tree').bind( "keydown", "del", e => {
       let uuids = this.trees.props.get_selected(false)
       if ( ! confirm( `You are about to delete the following props:\n${ uuids.join("\n") }` ) )
@@ -61,7 +56,7 @@ export default
         context.data.props.splice( i, 1 )
       }
       context.viewport.transformer.detach()
-      this.update()
+      context.data.dirty = true
     } )
     
     $('#subpanel-anims tree').bind( "keydown", "del", e => {
@@ -71,8 +66,15 @@ export default
       for ( let i = context.data.anims.length - 1 ; i >= 0 ; i-- )
         if ( uuids.indexOf( context.data.anims[ i ].uuid ) > -1 )
           context.data.anims.splice( i, 1 )
-      this.update()
+      context.data.dirty = true
     } )
+
+    context.events.subscribe( "change.data", () => this.update() )
+    
+    function onFrame() {
+      inspector.update()
+      requestAnimationFrame( () => onFrame() )
+    }
 
     onFrame()
   },
@@ -84,6 +86,7 @@ export default
     context.selection.transformable = 
     context.selection.last =
     context.selection.node = node
+    context.selection.dirty = true
     context.viewport.transformer.attach( node )
     context.viewport.mixer.stopAllAction()
   },
@@ -95,6 +98,7 @@ export default
     context.selection.transformable = 
     context.selection.last = 
     context.selection.prop = prop
+    context.selection.dirty = true
     context.viewport.transformer.attach( prop )
     context.viewport.animTPose()
   },
@@ -106,6 +110,7 @@ export default
     context.selection.transformable = null
     context.selection.last = 
     context.selection.anim = clip
+    context.selection.dirty = true
     context.viewport.transformer.detach()
     context.viewport.animPlay( clip )
   },
@@ -182,7 +187,7 @@ const inspector =
   },
   fields : {
     name : new Field( "#field-name", 
-                      value => { context.selection.last.name = value; context.sidebar.update(); },
+                      value => { context.selection.last.name = value; context.selection.dirty=true; },
                       () => context.selection.last ? context.selection.last.name : "--" )
   },
   update() 

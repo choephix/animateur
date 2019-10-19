@@ -46,4 +46,13 @@ function setColorTo( object, hex )
   } )
 }
 
+// context.events.subscribe( "change.selection", () => {
+//   if ( context.selection.last )
+//     if ( context.selection.last.matrixWorld !== undefined )
+//       context.selection.last.traverse( child => {
+//         if ( child.material ) 
+//           pickr.setColor( child.material.color.getHexString() )
+//       } )
+// } )
+
 export default { pickr , addSwatch }

@@ -12,19 +12,30 @@ export const context =
     node : null,
     prop : null,
     anim : null,
+    dirty : false,
   },
   data : {
     model : null,
     props : [],
-    anims : []
+    anims : [],
+    dirty : false,
   },
   viewport : viewport,
   sidebar : sidebar,
   materials : materials,
-}
-
-export const events = {
-
+  events : {
+    functions : { },
+    subscribe( key, callback ) {
+      if ( !this.functions[key] )
+        this.functions[key] = []
+      this.functions[key].push( callback )
+    },
+    dispatch( key, data = null ) {
+      if ( this.functions[key] )
+        for ( let callback of this.functions[key] )
+          callback( data )
+    }
+  }
 }
 
 function initialize() 
@@ -54,6 +65,25 @@ function initialize()
   new DropField( document.getElementById('subpanel-nodes') )
   new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
   new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
+
+  /// /// /// /// ///
+
+  context.events.subscribe( "change.data", () => console.log( "change.data" , context.data ) )
+  context.events.subscribe( "change.selection", () => console.log( "change.selection" , context.selection ) )
+
+  onFrame()
+}
+
+function onFrame() {
+  if ( context.data.dirty ) {
+    context.events.dispatch( "change.data" )
+    context.data.dirty = false
+  }
+  if ( context.selection.dirty ) {
+    context.events.dispatch( "change.selection" )
+    context.selection.dirty = false
+  }
+  requestAnimationFrame( () => onFrame() )
 }
 
 function refreshPropsList()
@@ -83,7 +113,7 @@ function onAnimationsLoaded( ...animations )
 
   context.data.anims.push( ...animations )
   context.viewport.animPlay( animations[ 0 ] )
-  sidebar.update()
+  context.data.dirty = true
 }
 
 function onPropLoaded( ...props ) 
@@ -98,7 +128,7 @@ function onPropLoaded( ...props )
     context.data.model.add( prop )
   } )
 
-  sidebar.update()
+  context.data.dirty = true
 }
 
 function onSceneLoaded( model, animations ) 
@@ -131,7 +161,7 @@ function onSceneLoaded( model, animations )
   } )
   colors.forEach( c => materials.pickr.setColor( c ) )
 
-  sidebar.update()
+  context.data.dirty = true
 }
 
 initialize()
