@@ -8,6 +8,29 @@ function add_generic_shit( scene )
   scene.add( sphere )
 }
 
+const loaders = {
+  gltf : new GLTFLoader( loadingManager ),
+  fbx : new FBXLoader( loadingManager ),
+  obj : new OBJLoader( loadingManager ),
+  dae : new ColladaLoader( loadingManager ),
+  load : function( data, file_extension, file_name ) {
+    return new Promise( ( resolve_really ) => {
+      let resolve = o => {
+        o.name = o.name || file_name
+        resolve_really( o )
+      }
+      switch ( file_extension ) {
+        case "gltf":
+        case "glb": this.gltf.load( data, resolve ); break;
+        case "obj": this.obj.load( data, resolve ); break;
+        case "dae": this.dae.load( data, o => resolve( o.scene ) ); break;
+        case "fbx": this.fbx.load( data, resolve ); break;
+        default: reject( `Sorry, no loaders for files with extension "${file_extension}"` )
+      }
+    } )
+  }
+}
+
 function tree() {
 
     let plugins = [ "state" , "dnd" ]

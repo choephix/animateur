@@ -1,7 +1,7 @@
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import exporter from './export.js'
-import { DropField, loadFromUrl } from './utils.js'
+import { DropField, fileResolvers, loadFromUrl } from './utils.js'
 
 export const context = 
 {
@@ -56,10 +56,10 @@ function initialize()
     context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
   } )
 
-  new DropField( document.getElementById('viewport'), false ).onAssetLoaded = onSceneLoaded
+  new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') )
-  new DropField( document.getElementById('subpanel-props') ).onAssetLoaded = onPropLoaded
-  new DropField( document.getElementById('subpanel-anims') ).onAssetLoaded = onAnimationsLoaded
+  new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
+  new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
 }
 
 function refreshPropsList()
@@ -80,36 +80,36 @@ function refreshPropsList()
   findPropsIn( context.data.model )
 }
 
-function onAnimationsLoaded( group )
+function onAnimationsLoaded( ...animations )
 {
-  console.log( group )
+  console.log( animations )
 
-  let animations = group.animations.filter( a => a.duration > 0.0 )
   if ( animations.length < 1 )
     return
-  if ( animations.length === 1 )
-    animations[ 0 ].name = group.name
+
   context.data.anims.push( ...animations )
   context.viewport.animPlay( animations[ 0 ] )
   sidebar.update()
 }
 
-function onPropLoaded( prop ) 
+function onPropLoaded( ...props ) 
 {
-  console.log( prop )
+  console.log( props )
 
   // let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
   // let bone = context.viewport.scene.getChildByName( bone_name )
   // bone.add( prop )
-  context.data.props.push( prop )
-  context.data.model.add( prop )
+  props.forEach( prop => {
+    context.data.props.push( prop )
+    context.data.model.add( prop )
+  } )
 
   sidebar.update()
 }
 
-function onSceneLoaded( gltf ) 
+function onSceneLoaded( model, animations ) 
 {
-  console.log( gltf )
+  console.log( model, animations )
 
   if ( context.data.model )
   {
@@ -118,17 +118,10 @@ function onSceneLoaded( gltf )
     context.data.props.length = 0
   }
 
-  let model_source = gltf.scene.children.shift()
-  viewport.setModel( model_source )
-  context.data.model = viewport.scene.getObjectByProperty( "uuid", model_source.uuid )
-  
-  while ( gltf.scene.children.length )
-    context.data.model.add( gltf.scene.children.shift() )
-  // gltf.scene.children.forEach( prop => context.data.model.add( prop ) )
-
+  viewport.setModel( model )
+  context.data.model = model
+  context.data.anims.push( ...animations )
   refreshPropsList()
-
-  context.data.anims.push( ...gltf.animations )
   
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
                   context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )

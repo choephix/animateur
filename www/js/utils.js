@@ -12,30 +12,55 @@ const loaders = {
   fbx : new FBXLoader( loadingManager ),
   obj : new OBJLoader( loadingManager ),
   dae : new ColladaLoader( loadingManager ),
-  load : function( data, file_extension, file_name ) {
-    return new Promise( ( resolve_really ) => {
-      let resolve = o => {
-        o.name = o.name || file_name
-        resolve_really( o )
-      }
-      switch ( file_extension ) {
-        case "gltf":
-        case "glb": this.gltf.load( data, resolve ); break;
-        case "obj": this.obj.load( data, resolve ); break;
-        case "dae": this.dae.load( data, o => resolve( o.scene ) ); break;
-        case "fbx": this.fbx.load( data, resolve ); break;
-        default:
-          alert( `Sorry, no loaders for files with extension "${file_extension}"` )
-          reject()
-      }
-    } )
-  }
 }
 
-window.loaders = loaders
+export const fileResolvers = {
+  scene : async function( data, file_extension, file_name ) {
+    let gltf = await new Promise( ( resolve, reject ) => {
+      switch ( file_extension ) {
+        case "gltf":
+        case "glb": loaders.gltf.load( data, resolve ); break;
+        default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
+      }
+    } )
+    console.log( gltf )
+    let model = gltf.scene.children.shift()
+    while ( gltf.scene.children.length )
+      context.data.model.add( gltf.scene.children.shift() )
+    
+    let animations = gltf.animations
 
-export const loadFromUrl = ( url ) => 
-       new Promise( ( resolve ) => loaders.gltf.load( url, resolve ) )
+    return [ model , animations ]
+  },
+  props : async function( data, file_extension, file_name ) {
+    let props = await new Promise( ( resolve, reject ) => {
+      switch ( file_extension ) {
+        case "gltf":
+        case "glb": loaders.gltf.load( data, o => resolve( o.scene.children ) ); break;
+        case "obj": loaders.obj.load( data, o => resolve( [o] ) ); break;
+        case "dae": loaders.dae.load( data, o => resolve( [o.scene] ) ); break;
+        case "fbx": loaders.fbx.load( data, o => resolve( [o] ) ); break;
+        default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
+      }
+    } )
+    props = [].concat( ...props )
+    if ( props.length === 1 ) props[ 0 ].name = file_name
+    else props.forEach( prop.name = prop.name || file_name )
+    return props
+  },
+  anims : async function( data, file_extension, file_name ) {
+    let animations = await new Promise( ( resolve, reject ) => {
+      switch ( file_extension ) {
+        case "fbx": loaders.fbx.load( data, group => resolve( group.animations ) ); break;
+        default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
+      }
+    } )
+    animations = animations.filter( a => a.duration > 0.0 )
+    if ( animations.length === 1 )
+      animations[ 0 ].name = file_name
+    return animations
+  },
+}
 
 export class DropField 
 {
@@ -47,7 +72,7 @@ export class DropField
       e.preventDefault()
       element.classList.add("dragover")
       return false;
-    };
+    }
 
     element.ondragleave = function(e) {
       if ( e.ctrlKey || e.altKey ) 
@@ -55,7 +80,7 @@ export class DropField
       e.preventDefault()
       element.classList.remove("dragover")
       return false;
-    };
+    }
 
     element.ondrop = (e) => 
     {
@@ -65,26 +90,37 @@ export class DropField
       e.preventDefault()
       element.classList.remove("dragover")
 
+      let promises = []
       for ( let file of e.dataTransfer.files )
       {
         let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
-        let filename = file.name.split('.')[0]
+        let filename = file.name.split( '.' )[ 0 ]
         // console.log( file )
 
-        let reader = new FileReader()
-        reader.onload = (event) => 
-          loaders.load( event.target.result, ext, filename )
-                .then( o => this.onAssetLoaded( o ) )
-        reader.readAsDataURL( file )
+        promises.push( new Promise( resolve => {
+          let reader = new FileReader()
+          reader.onload = (event) => this.funcResolver( event.target.result, ext, filename ).then( resolve )
+          reader.readAsDataURL( file )
+        } ) )
 
-        if ( ! allowMultiple )
-          break
+        // if ( ! allowMultiple )
+        //   break
       }
+      console.log( e.dataTransfer.files, promises )
+      Promise.all( promises )
+        .then( a => this.funcLoaded( ...[].concat( ...a ) ) )
+        .catch( console.error )
         
       return false
     }
   }
 
-  /// replace this function with your own callback...
-  onAssetLoaded( result ) { console.log( result ) }
+  funcResolver() { throw new ReferenceError( "You didn't assign your 'resolver' function...") }
+  resolver( func ) { this.funcResolver = func; return this; }
+
+  funcLoaded() { throw new ReferenceError( "You didn't assign your 'loaded' function...") }
+  loaded( func ) { this.funcLoaded = func; return this; }
 }
+
+export const loadFromUrl = ( url ) => 
+       new Promise( ( resolve ) => loaders.gltf.load( url, resolve ) )

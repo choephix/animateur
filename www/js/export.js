@@ -9,9 +9,11 @@ export default
 {
   save: ( model, animations, binary, local ) => 
   {
-    model.userData = { message : "This worked, damnit!" }
+    let scene = new THREE.Scene()
+    scene.add( model )
+    scene.userData = { message : "This worked, damnit!" }
 
-    exporter.parse( model, function ( data ) {
+    exporter.parse( scene, function ( data ) {
       const name = model.name || "LeScene"
       let binary = data instanceof ArrayBuffer
       let output = binary ? data : JSON.stringify( data, null, 2 )
