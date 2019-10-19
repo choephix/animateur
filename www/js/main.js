@@ -49,14 +49,6 @@ function initialize()
     let bone = context.viewport.scene.getChildByName( bone_name )
     if ( bone ) bone.add( context.selection.prop )
   } )
-  $( "button.set-color-1" ).click( e => {
-    let material = context.data.model.children[ 1 ].material.clone() 
-    context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
-  } )
-  $( "button.set-color-2" ).click( e => {
-    let material = context.data.model.children[ 2 ].material.clone() 
-    context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
-  } )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') )
