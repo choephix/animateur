@@ -78,8 +78,8 @@ export default
   },
   onSelectNode( data ) 
   {
-    this.trees.props.select.deselect_all()
-    this.trees.anims.select.deselect_all()
+    this.trees.props.deselect_all()
+    this.trees.anims.deselect_all()
     let node = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
     context.selection.transformable = 
     context.selection.last =
@@ -89,8 +89,8 @@ export default
   },
   onSelectProp( data ) 
   {
-    this.trees.nodes.select.deselect_all()
-    this.trees.anims.select.deselect_all()
+    this.trees.nodes.deselect_all()
+    this.trees.anims.deselect_all()
     let prop = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
     context.selection.transformable = 
     context.selection.last = 
@@ -100,8 +100,8 @@ export default
   },
   onSelectAnim( data ) 
   {
-    this.trees.nodes.select.deselect_all()
-    this.trees.props.select.deselect_all()
+    this.trees.nodes.deselect_all()
+    this.trees.props.deselect_all()
     let clip = context.data.anims.find( anim => anim.uuid === data.node.id )
     context.selection.transformable = null
     context.selection.last = 
