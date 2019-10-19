@@ -2,6 +2,7 @@ import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.
 import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js'
 import { OBJLoader } from 'https://threejs.org/examples/jsm/loaders/OBJLoader.js'
 import { ColladaLoader } from 'https://threejs.org/examples/jsm/loaders/ColladaLoader.js'
+import { SVGLoader } from 'https://threejs.org/examples/jsm/loaders/SVGLoader.js'
 
 const loadingManager = new THREE.LoadingManager()
 loadingManager.onStart = () => $( "loading" ).show()
@@ -9,10 +10,11 @@ loadingManager.onLoad  = () => $( "loading" ).hide()
 loadingManager.onError = () => $( "loading" ).hide()
 
 const loaders = {
-  gltf : new GLTFLoader( loadingManager ),
+  gltf: new GLTFLoader( loadingManager ),
   fbx : new FBXLoader( loadingManager ),
   obj : new OBJLoader( loadingManager ),
   dae : new ColladaLoader( loadingManager ),
+  svg : new SVGLoader( loadingManager ),
 }
 
 export const fileResolvers = {
@@ -41,6 +43,30 @@ export const fileResolvers = {
         case "obj": loaders.obj.load( data, o => resolve( [o] ) ); break;
         case "dae": loaders.dae.load( data, o => resolve( [o.scene] ) ); break;
         case "fbx": loaders.fbx.load( data, o => resolve( [o] ) ); break;
+        case "svg": loaders.svg.load( data, o => {
+          
+          console.log(o)
+
+          var paths = o.paths;
+          var group = new THREE.Group();
+          for ( var i = 0; i < paths.length; i ++ ) {
+            var path = paths[ i ];
+            var material = new THREE.MeshBasicMaterial( {
+              color: path.color,
+              side: THREE.DoubleSide,
+              depthWrite: false
+            } );
+            var shapes = path.toShapes( true );
+            for ( var j = 0; j < shapes.length; j ++ ) {
+              var shape = shapes[ j ];
+              var geometry = new THREE.ShapeBufferGeometry( shape );
+              var mesh = new THREE.Mesh( geometry, material );
+              group.add( mesh );
+            }
+          }
+          resolve( [ group ] )
+
+        } ); break;
         default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
       }
     } )
