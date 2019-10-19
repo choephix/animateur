@@ -42,7 +42,7 @@ export default
     this.camera.position.y = 2
     this.camera.lookAt( new THREE.Vector3() )
 
-    this.scene.background = new THREE.Color( 0x112233 )
+    this.scene.background = new THREE.Color( 0x224477 )
     
     this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 
@@ -67,6 +67,10 @@ export default
     this.transformer.addEventListener( 'dragging-changed', event => this.orbit.enabled = ! event.value )
     this.transformer.setSize( 0.5 );
     this.scene.add( this.transformer )
+
+    
+    this.grid = new THREE.GridHelper( 100, 100, 0xffff00, 0x335599 )
+    this.scene.add( this.grid )
 
     /// /// /// /// ///
 
