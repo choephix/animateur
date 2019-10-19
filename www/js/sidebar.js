@@ -3,7 +3,7 @@ import { context } from "./main.js"
 function map_node( node, depth=0 ) {
   return {
     id : node.uuid,
-    text : node.name,
+    text : node.name || node.uuid,
     type : node.object ? node.object.type : "default",
     state : { opened : depth < 3, selected : false },
     children : node.children
@@ -14,13 +14,13 @@ function map_node( node, depth=0 ) {
 function map_prop( prop ) {
   return {
     id : prop.uuid,
-    text : prop.name,
+    text : prop.name || prop.uuid,
   }
 }
 function map_anim( anim ) {
   return {
     id : anim.uuid,
-    text : anim.name,
+    text : anim.name || anim.uuid,
   }
 }
 

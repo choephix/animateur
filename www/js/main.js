@@ -56,10 +56,10 @@ function initialize()
     context.selection.prop.traverse( o => { if ( o.material ) o.material = material } )
   } )
 
-  new DropField( document.getElementById('viewport') ).onAssetLoaded = onSceneLoaded
+  new DropField( document.getElementById('viewport'), false ).onAssetLoaded = onSceneLoaded
   new DropField( document.getElementById('subpanel-nodes') )
   new DropField( document.getElementById('subpanel-props') ).onAssetLoaded = onPropLoaded
-  new DropField( document.getElementById('subpanel-anims') )
+  new DropField( document.getElementById('subpanel-anims') ).onAssetLoaded = onAnimationsLoaded
 }
 
 function refreshPropsList()
@@ -78,6 +78,20 @@ function refreshPropsList()
 
   context.data.props.length = 0
   findPropsIn( context.data.model )
+}
+
+function onAnimationsLoaded( group )
+{
+  console.log( group )
+
+  let animations = group.animations.filter( a => a.duration > 0.0 )
+  if ( animations.length < 1 )
+    return
+  if ( animations.length === 1 )
+    animations[ 0 ].name = group.name
+  context.data.anims.push( ...animations )
+  context.viewport.animPlay( animations[ 0 ] )
+  sidebar.update()
 }
 
 function onPropLoaded( prop ) 

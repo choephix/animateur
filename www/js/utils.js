@@ -12,16 +12,20 @@ const loaders = {
   fbx : new FBXLoader( loadingManager ),
   obj : new OBJLoader( loadingManager ),
   dae : new ColladaLoader( loadingManager ),
-  load : function( data, ext ) {
-    return new Promise( ( resolve ) => {
-      switch ( ext ) {
+  load : function( data, file_extension, file_name ) {
+    return new Promise( ( resolve_really ) => {
+      let resolve = o => {
+        o.name = o.name || file_name
+        resolve_really( o )
+      }
+      switch ( file_extension ) {
         case "gltf":
         case "glb": this.gltf.load( data, resolve ); break;
         case "obj": this.obj.load( data, resolve ); break;
         case "dae": this.dae.load( data, o => resolve( o.scene ) ); break;
-        case "fbx": resolve( this.fbx.parse( data ) ); break;
+        case "fbx": this.fbx.load( data, resolve ); break;
         default:
-          alert( `Sorry, no loaders for files with extension "${ext}"` )
+          alert( `Sorry, no loaders for files with extension "${file_extension}"` )
           reject()
       }
     } )
@@ -35,7 +39,7 @@ export const loadFromUrl = ( url ) =>
 
 export class DropField 
 {
-  constructor( element, callback ) 
+  constructor( element, allowMultiple=true ) 
   {
     element.ondragover = function(e) {
       if ( e.ctrlKey || e.altKey || $(element).is(":focus-within") ) 
@@ -55,25 +59,28 @@ export class DropField
 
     element.ondrop = (e) => 
     {
-      if ( e.ctrlKey || e.altKey ) 
+      if ( e.ctrlKey || e.altKey || !e.dataTransfer.files.length ) 
         return true
 
       e.preventDefault()
       element.classList.remove("dragover")
 
-      let file = e.dataTransfer.files[0]
-      let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
-      // console.log( file )
-
-      let reader = new FileReader()
-      reader.onload = (event) => 
+      for ( let file of e.dataTransfer.files )
       {
-        loaders.load( event.target.result, ext ).then( o => {
-          this.onAssetLoaded( o )
-        } )
-      }
+        let ext = file.name.match( /\.([0-9a-z]+)(?:[\?#]|$)/i )[1].toLowerCase()
+        let filename = file.name.split('.')[0]
+        // console.log( file )
 
-      reader.readAsDataURL( file )
+        let reader = new FileReader()
+        reader.onload = (event) => 
+          loaders.load( event.target.result, ext, filename )
+                .then( o => this.onAssetLoaded( o ) )
+        reader.readAsDataURL( file )
+
+        if ( ! allowMultiple )
+          break
+      }
+        
       return false
     }
   }
