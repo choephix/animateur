@@ -52,20 +52,35 @@ export default
     this.orbit.mouseButtons.LEFT = 0
     this.orbit.mouseButtons.RIGHT = 2
     this.orbit.mouseButtons.MIDDLE = -1
+
+    let ligths = []
     
-    let light_directional = new THREE.DirectionalLight( 0xffffff, 0.85 )
-    light_directional.position.set( 1, 1, 1 ).normalize()
-    light_directional.lookAt( new THREE.Vector3( 0,0,0 ) )
-    light_directional.name = "Light (directional}"
-    this.scene.add( light_directional )
+    ligths[ 0 ] = new THREE.AmbientLight( 0xffffff, 1.20 )
+    ligths[ 0 ].name = "Light (ambient)"
+    this.scene.add( ligths[ 0 ] )
     
-    let light_ambient = new THREE.AmbientLight( 0xffffff, 1.20 )
-    light_ambient.name = "Light (ambient)"
-    this.scene.add( light_ambient )
+    ligths[ 1 ] = new THREE.DirectionalLight( 0xffffff, 0.75 )
+    ligths[ 1 ].position.set( -1, 1, 0 ).normalize()
+    ligths[ 1 ].lookAt( new THREE.Vector3( 0,0,0 ) )
+    ligths[ 1 ].name = "Light (directional}"
+    this.scene.add( ligths[ 1 ] )
+    
+    ligths[ 2 ] = new THREE.DirectionalLight( 0xffffff, 0.95 )
+    ligths[ 2 ].position.set( 1, 1, 1 ).normalize()
+    ligths[ 2 ].lookAt( new THREE.Vector3( 0,0,0 ) )
+    ligths[ 2 ].name = "Light (directional}"
+    this.scene.add( ligths[ 2 ] )
+    
+    ligths[ 3 ] = new THREE.DirectionalLight( 0x994411, 0.45 )
+    ligths[ 3 ].position.set( 0, 0, -1 ).normalize()
+    ligths[ 3 ].lookAt( new THREE.Vector3( 0,0,0 ) )
+    ligths[ 3 ].name = "Light (directional}"
+    this.scene.add( ligths[ 3 ] )
 
     this.transformer = new TransformControls( this.camera, this.renderer.domElement )
     this.transformer.addEventListener( 'dragging-changed', event => this.orbit.enabled = ! event.value )
-    this.transformer.setSize( 0.5 );
+    this.transformer.setSize( 0.5 )
+    this.transformer.setSpace( "local" )
     this.scene.add( this.transformer )
 
     

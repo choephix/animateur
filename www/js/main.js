@@ -1,5 +1,6 @@
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
+import materials from './materials.js'
 import exporter from './export.js'
 import { DropField, fileResolvers, loadFromUrl } from './utils.js'
 
@@ -128,6 +129,20 @@ function onSceneLoaded( model, animations )
   if ( idle_anim )
     context.viewport.animPlay( idle_anim )
 
+  let colors = []
+  model.traverse( o => {
+    if ( ! o.material ) return
+    let color = "#"+o.material.color.getHexString()
+    if ( colors.indexOf( color ) > -1 ) return
+    colors.push( color )
+  } )
+  colors.forEach( c => {
+    materials.pickr_a.addSwatch( c )
+    materials.pickr_b.addSwatch( c )
+  } )
+  materials.pickr_a.setColor( model.children[1].material.color.getHexString() )
+  materials.pickr_b.setColor( model.children[2].material.color.getHexString() )
+
   sidebar.update()
 }
 
@@ -139,3 +154,5 @@ initialize()
 //  } )
 
 window.context = context
+
+console.log( materials )
