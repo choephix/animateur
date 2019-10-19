@@ -45,8 +45,18 @@ export const fileResolvers = {
       }
     } )
     props = [].concat( ...props )
+    
+    let lights = []
+    props.forEach( prop => {
+      prop.traverse( o => { 
+        if ( o.type.indexOf("Light") > -1 )
+          lights.push( o )
+      } )
+    } )
+    lights.forEach( o => o.parent.remove( o ) )
+
     if ( props.length === 1 ) props[ 0 ].name = file_name
-    else props.forEach( prop.name = prop.name || file_name )
+    else props.forEach( prop => prop.name = prop.name || file_name )
     return props
   },
   anims : async function( data, file_extension, file_name ) {
