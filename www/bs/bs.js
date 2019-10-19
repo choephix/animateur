@@ -6,6 +6,11 @@ function add_generic_shit( scene )
   scene.add( cube );
   var sphere = new THREE.Mesh( new THREE.SphereGeometry( .5, 32, 32 ), material );
   scene.add( sphere )
+
+  // materials.pickr_a.setColor( model.children[1].material.color.getHexString() )
+  // materials.pickr_b.setColor( model.children[2].material.color.getHexString() )
+  // context.data.model.children[ i ].material.color = new THREE.Color( hex )
+  // context.data.model.children[ i ].material.needsUpdate = true
   
   const pickr = Pickr.create({
     el: 'button.pick-color-1',
@@ -43,7 +48,6 @@ function add_generic_shit( scene )
         }
     }
   });
-
 }
 
 const loaders = {

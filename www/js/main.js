@@ -20,6 +20,7 @@ export const context =
   },
   viewport : viewport,
   sidebar : sidebar,
+  materials : materials,
 }
 
 export const events = {
@@ -136,12 +137,7 @@ function onSceneLoaded( model, animations )
     if ( colors.indexOf( color ) > -1 ) return
     colors.push( color )
   } )
-  colors.forEach( c => {
-    materials.pickr_a.addSwatch( c )
-    materials.pickr_b.addSwatch( c )
-  } )
-  materials.pickr_a.setColor( model.children[1].material.color.getHexString() )
-  materials.pickr_b.setColor( model.children[2].material.color.getHexString() )
+  colors.forEach( c => materials.pickr.setColor( c ) )
 
   sidebar.update()
 }
@@ -154,5 +150,3 @@ initialize()
 //  } )
 
 window.context = context
-
-console.log( materials )

@@ -1,42 +1,48 @@
 import { context } from "./main.js"
 
 const swatches = []
+const pickr = createPickr( 'button.pick-color' )
 
-export default {
-  colors : [ 0xBBBBBB, 0x111111 ],
-  pickr_a : Pickr.create({
-    el: 'button.pick-color-1',
-    comparison: false,
+function addSwatch( color ) 
+{
+  let hex = typeof color === "string" ? 
+            color : color.toHEXA().toString()
+  if ( swatches.indexOf( hex ) < -1 )
+    return
+  swatches.push( hex )
+  pickr.addSwatch( hex )
+}
+
+function createPickr( element ) {
+  return Pickr.create( {
+    el: element,
     theme: 'nano',
     swatches: swatches,
+    comparison: false,
     components: {
         preview: true,
         opacity: false,
         hue: true,
         interaction: { input: true, save: true }
     }
-  })
-  .on( 'change', c => setColor( 1, c.toHEXA().toString() ) )
-  .on( 'save', (c,p) => p.addSwatch( c.toHEXA().toString() ) )
-  ,
-  pickr_b : Pickr.create({
-    el: 'button.pick-color-2',
-    comparison: false,
-    theme: 'nano',
-    swatches: swatches,
-    components: {
-        preview: true,
-        opacity: false,
-        hue: true,
-        interaction: { input: true, save: true }
-    }
-  })
-  .on( 'change', c => setColor( 2, c.toHEXA().toString() ) )
-  .on( 'save', (c,p) => p.addSwatch( c.toHEXA().toString() ) )
-  ,
+  } )
+  .on( 'change', c => setColor( c ) )
+  .on( 'save', c => addSwatch( c ) )
 }
 
-function setColor( i, hex ) {
-  context.data.model.children[ i ].material.color = new THREE.Color( hex )
-  context.data.model.children[ i ].material.needsUpdate = true
+function setColor( c ) {
+  let hex = c.toHEXA().toString()
+  if ( context.selection.last )
+    if ( context.selection.last.matrixWorld !== undefined )
+      setColorTo( context.selection.last, hex )
 }
+
+function setColorTo( object, hex )
+{
+  object.traverse( child => {
+    if ( child.material ) 
+      child.material.color = new THREE.Color( hex )
+  } )
+}
+
+export default { pickr , addSwatch }

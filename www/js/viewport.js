@@ -71,7 +71,7 @@ export default
     ligths[ 2 ].name = "Light (directional}"
     this.scene.add( ligths[ 2 ] )
     
-    ligths[ 3 ] = new THREE.DirectionalLight( 0x994411, 0.45 )
+    ligths[ 3 ] = new THREE.DirectionalLight( 0xFFFFFF, 0.45 )
     ligths[ 3 ].position.set( 0, 0, -1 ).normalize()
     ligths[ 3 ].lookAt( new THREE.Vector3( 0,0,0 ) )
     ligths[ 3 ].name = "Light (directional}"
@@ -82,9 +82,8 @@ export default
     this.transformer.setSize( 0.5 )
     this.transformer.setSpace( "local" )
     this.scene.add( this.transformer )
-
     
-    this.grid = new THREE.GridHelper( 20, 20, 0xffff00, 0x4466CC )
+    this.grid = new THREE.GridHelper( 20, 20, 0x99CCFF, 0x4466CC )
     this.scene.add( this.grid )
 
     /// /// /// /// ///
