@@ -85,22 +85,6 @@ export class DropField
     }
   }
 
-  dataToTexture( data ) 
-  {
-    var image = document.createElement('img');
-    image.src = event.target.result;
-    var texture = new THREE.Texture(image);
-    texture.needsUpdate = true;
-
-    viewport.scene.getObjectByName('Alpha_Surface').material.color = new THREE.Color(0xFFFFFF);
-    viewport.scene.getObjectByName('Alpha_Surface').material.map = texture;
-    viewport.scene.getObjectByName('Alpha_Surface').material.needsUpdate = true;
-
-    console.log( viewport.scene.getObjectByName('Alpha_Surface').material )
-
-    return texture
-  }
-
   /// replace this function with your own callback...
   onAssetLoaded( result ) { console.log( result ) }
 }
