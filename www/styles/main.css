@@ -72,6 +72,10 @@ button:focus {outline:0;}
   pointer-events: none;
   z-index: 999;
 }
+.dragover .contents tree ul {
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
 
 
 

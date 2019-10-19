@@ -29,7 +29,7 @@ export const fileResolvers = {
     console.log( gltf )
     let model = gltf.scene.children.shift()
     while ( gltf.scene.children.length )
-      context.data.model.add( gltf.scene.children.shift() )
+      model.add( gltf.scene.children.shift() )
     
     let animations = gltf.animations
 
@@ -72,14 +72,23 @@ export const fileResolvers = {
     } )
     props = [].concat( ...props )
     
-    let lights = []
+    let todel = []
     props.forEach( prop => {
       prop.traverse( o => { 
         if ( o.type.indexOf("Light") > -1 )
-          lights.push( o )
+          todel.push( o )
+        if ( o.type === "SkinnedMesh" )
+          todel.push( o )
+        if ( o.type === "Bone" )
+          todel.push( o )
       } )
     } )
-    lights.forEach( o => o.parent.remove( o ) )
+    props.forEach( prop => {
+      if ( prop.type === "Group" || prop.type === "Object3D" )
+        if ( prop.children.length < 1 )
+          todel.push( o )
+    } )
+    todel.forEach( o => o.parent.remove( o ) )
 
     if ( props.length === 1 ) props[ 0 ].name = file_name
     else props.forEach( prop => prop.name = prop.name || file_name )
@@ -88,6 +97,8 @@ export const fileResolvers = {
   anims : async function( data, file_extension, file_name ) {
     let animations = await new Promise( ( resolve, reject ) => {
       switch ( file_extension ) {
+        case "gltf":
+        case "glb": loaders.gltf.load( data, gl => resolve( gl.animations ) ); break;
         case "fbx": loaders.fbx.load( data, group => resolve( group.animations ) ); break;
         default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
       }
