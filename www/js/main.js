@@ -79,14 +79,14 @@ function initialize()
   $( "button.attach-to-bone" ).click( () => $( "#bones-list" ).toggle() )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
-  new DropField( document.getElementById('subpanel-nodes') )
+  new DropField( document.getElementById('subpanel-nodes') ).resolver( fileResolvers.model ).loaded( onCharacterLoaded )
   new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
   new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
 
   /// /// /// /// ///
 
-  context.events.subscribe( "change.data", () => console.log( "change.data" , context.data ) )
-  context.events.subscribe( "change.selection", () => console.log( "change.selection" , context.selection ) )
+  // context.events.subscribe( "change.data", () => console.log( "change.data" , context.data ) )
+  // context.events.subscribe( "change.selection", () => console.log( "change.selection" , context.selection ) )
   
   onFrame()
 }
@@ -145,6 +145,34 @@ function onPropLoaded( ...props )
   context.data.dirty = true
 }
 
+function onCharacterLoaded( model )
+{
+  let props = context.data.props.concat()
+  let propToBone = {}
+  for ( let prop of props )
+    propToBone[prop.uuid] = prop.parent.name
+  context.data.props.length = 0
+
+  if ( context.data.model )
+    viewport.clear()
+
+  viewport.setModel( model )
+  context.data.model = model
+  
+  extractColors( model )
+  playDefaultAnimation()
+
+  props.forEach( prop => {
+    let bone_name = propToBone[prop.uuid]
+    let bone = context.viewport.scene.getObjectByName( bone_name )
+    if ( bone ) bone.add( prop )
+    else console.warn( `Failed to reattach ${prop.name}` )
+  } )
+  refreshPropsList()
+
+  context.data.dirty = true
+}
+
 function onSceneLoaded( model, animations ) 
 {
   console.log( model, animations )
@@ -160,12 +188,20 @@ function onSceneLoaded( model, animations )
   context.data.model = model
   context.data.anims.push( ...animations )
   refreshPropsList()
-  
+  extractColors( model )
+  playDefaultAnimation()
+
+  context.data.dirty = true
+}
+
+function playDefaultAnimation() {
   let idle_anim = context.data.anims.find( a => a.name === "idle" ) ||
                   context.data.anims.find( a => a.name.toLowerCase().indexOf( "idle" ) > -1 )
   if ( idle_anim )
     context.viewport.animPlay( idle_anim )
+}
 
+function extractColors( model ) {
   let colors = []
   model.traverse( o => {
     if ( ! o.material ) return
@@ -174,8 +210,6 @@ function onSceneLoaded( model, animations )
     colors.push( color )
   } )
   colors.forEach( c => materials.pickr.setColor( c ) )
-
-  context.data.dirty = true
 }
 
 initialize()

@@ -35,6 +35,21 @@ export const fileResolvers = {
 
     return [ model , animations ]
   },
+  model : async function( data, file_extension, file_name ) {
+    let model = await new Promise( ( resolve, reject ) => {
+      switch ( file_extension ) {
+        case "gltf":
+        case "glb": loaders.gltf.load( data, o => resolve( o.scene.children[0] ) ); break;
+        case "dae": loaders.dae.load( data, o => resolve( o.scene.children[0] ) ); break;
+        case "obj": loaders.obj.load( data, o => resolve( o ) ); break;
+        case "fbx": loaders.fbx.load( data, o => resolve( o ) ); break;
+        default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
+      }
+    } )
+    console.log( model )
+    model.name = model.name || file_name
+    return model
+  },
   props : async function( data, file_extension, file_name ) {
     let props = await new Promise( ( resolve, reject ) => {
       switch ( file_extension ) {
