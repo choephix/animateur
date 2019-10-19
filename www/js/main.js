@@ -2,7 +2,7 @@ import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import materials from './materials.js'
 import exporter from './export.js'
-import { DropField, fileResolvers, loadFromUrl } from './utils.js'
+import { DropField, fileResolvers, loadFromUrl } from './load.js'
 
 export const context = 
 {
@@ -35,7 +35,29 @@ export const context =
         for ( let callback of this.functions[key] )
           callback( data )
     }
-  }
+  },
+  bonesList : $( "#bones-list" ).ready( () => {
+    $( "#bones-list" ).hide()
+    context.events.subscribe( "change.data", () => {
+      let root_bone = context.data.model.getObjectByName( "mixamorigHips" )
+      let dom = $( "#bones-list .contents" )
+      let incl = []
+      dom.empty()
+      root_bone.traverse( bone => {
+        if ( bone.type !== "Bone" ) return
+        if ( incl.indexOf( bone.name ) > -1 ) return
+        incl.push( bone.name )
+        let button = $('<button/>', {
+          text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
+          click: () => {
+            if ( ! context.selection.prop ) return
+            bone.add( context.selection.prop )
+          }
+        } )
+        dom.append( button )
+      } )
+    } )
+  } )
 }
 
 function initialize() 
@@ -53,13 +75,8 @@ function initialize()
   $( "button.transform.scale" ).click( e => viewport.transformer.setMode( "scale" ) )
   $( "button.transform.space" ).click( e => viewport.transformer.setSpace( 
                                             viewport.transformer.space === "world" ? "local" : "world" ) )
-
-  $( "button.attach-to-bone" ).click( e => {
-    if ( ! context.selection.prop ) return
-    let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
-    let bone = context.viewport.scene.getChildByName( bone_name )
-    if ( bone ) bone.add( context.selection.prop )
-  } )
+  ///
+  $( "button.attach-to-bone" ).click( () => $( "#bones-list" ).toggle() )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') )
@@ -70,7 +87,7 @@ function initialize()
 
   context.events.subscribe( "change.data", () => console.log( "change.data" , context.data ) )
   context.events.subscribe( "change.selection", () => console.log( "change.selection" , context.selection ) )
-
+  
   onFrame()
 }
 
@@ -120,9 +137,6 @@ function onPropLoaded( ...props )
 {
   console.log( props )
 
-  // let bone_name = prompt( "Type bone name (sorry..)", "mixamorigRightHand" )
-  // let bone = context.viewport.scene.getChildByName( bone_name )
-  // bone.add( prop )
   props.forEach( prop => {
     context.data.props.push( prop )
     context.data.model.add( prop )

@@ -44,9 +44,6 @@ export const fileResolvers = {
         case "dae": loaders.dae.load( data, o => resolve( [o.scene] ) ); break;
         case "fbx": loaders.fbx.load( data, o => resolve( [o] ) ); break;
         case "svg": loaders.svg.load( data, o => {
-          
-          console.log(o)
-
           var paths = o.paths;
           var group = new THREE.Group();
           for ( var i = 0; i < paths.length; i ++ ) {
@@ -157,7 +154,6 @@ export class DropField
         // if ( ! allowMultiple )
         //   break
       }
-      console.log( e.dataTransfer.files, promises )
       Promise.all( promises )
         .then( a => this.funcLoaded( ...[].concat( ...a ) ) )
         

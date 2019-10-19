@@ -73,8 +73,8 @@ button:focus {outline:0;}
   z-index: 999;
 }
 .dragover .contents tree ul {
-  pointer-events: none !important;
-  visibility: hidden !important;
+  /* pointer-events: none !important;
+  visibility: hidden !important; */
 }
 
 
@@ -213,7 +213,29 @@ button:focus {outline:0;}
 
 
 
-
+#bones-list {
+  width: 202px;
+  height: 100vh;
+  background: #111;
+  position: fixed;
+  top: 0;
+  right: 48px;
+  overflow-y: auto;
+}
+#bones-list button {
+  width: 100%;
+  border: none;
+  background: none;
+  color: #FFFB;
+  font-weight: bold;
+  text-align: left;
+  padding: 4px;
+  cursor: pointer;
+}
+#bones-list button:hover {
+  color: white;
+  background: #FFF1;
+}
 
 
 
