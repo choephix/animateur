@@ -1,5 +1,6 @@
 import { context } from "./main.js"
 import util from "./util.js"
+import dev from "./dev.js"
 
 function map_node( node, depth=0 ) {
   return {
@@ -139,6 +140,8 @@ export default
     context.selection.dirty = true
     context.viewport.transformer.detach()
     context.viewport.animPlay( clip )
+
+    dev.fixAnimationHips( clip )
   },
   update()
   {

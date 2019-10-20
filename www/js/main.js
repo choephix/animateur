@@ -5,6 +5,7 @@ import exporter from './export.js'
 import { DropField, fileResolvers, loadFromUrl } from './load.js'
 
 import util from './util.js'
+import dev from './dev.js'
 
 export const context = 
 {
@@ -247,3 +248,4 @@ initialize()
 
 window.context = context
 window.util = util
+window.dev = dev

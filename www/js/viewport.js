@@ -19,6 +19,7 @@ export default
   },
   animPlay( anim ) {
     this.mixer.stopAllAction()
+    this.mixer.uncacheClip( anim )
     this.mixer.currentAction = this.mixer.clipAction( anim )
     this.mixer.currentAction.setLoop( THREE.LoopRepeat )
     this.mixer.currentAction.enabled = true
