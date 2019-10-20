@@ -183,6 +183,7 @@ function onCharacterLoaded( model )
   } )
   refreshPropsList()
 
+  context.selection.all.length = []
   context.data.dirty = true
 }
 
