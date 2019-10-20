@@ -93,6 +93,7 @@ export default
     this.trees.props.deselect_all()
     this.trees.anims.deselect_all()
     let node = util.getByUuid( data.node.id )
+    context.selection.all = data.selected
     context.selection.transformable = 
     context.selection.last =
     context.selection.node = node
@@ -105,6 +106,7 @@ export default
     this.trees.nodes.deselect_all()
     this.trees.anims.deselect_all()
     let prop = util.getByUuid( data.node.id )
+    context.selection.all = data.selected
     context.selection.transformable = 
     context.selection.last = 
     context.selection.prop = prop
@@ -117,6 +119,7 @@ export default
     this.trees.nodes.deselect_all()
     this.trees.props.deselect_all()
     let clip = context.data.anims.find( anim => anim.uuid === data.node.id )
+    context.selection.all = data.selected
     context.selection.transformable = null
     context.selection.last = 
     context.selection.anim = clip

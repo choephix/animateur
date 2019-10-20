@@ -9,6 +9,7 @@ import util from './util.js'
 export const context = 
 {
   selection : {
+    all : [],
     transformable : null,
     last : null,
     node : null,

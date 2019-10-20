@@ -1,4 +1,5 @@
 import { context } from "./main.js"
+import util from "./util.js"
 
 const swatches = []
 const pickr = createPickr( 'button.pick-color' )
@@ -33,9 +34,13 @@ function createPickr( element ) {
 
 function setColor( c ) {
   let hex = c.toHEXA().toString()
-  if ( context.selection.last )
-    if ( context.selection.last.matrixWorld !== undefined )
-      setColorTo( context.selection.last, hex )
+  context.selection.all
+    .map( uuid => util.getByUuid(uuid) )
+    .forEach( o => {
+      console.log( o )
+      if ( o.matrixWorld === undefined ) return
+      setColorTo( o, hex )
+    } )
 }
 
 function setColorTo( object, hex )
