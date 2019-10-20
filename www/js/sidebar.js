@@ -2,38 +2,41 @@ import { context } from "./main.js"
 import util from "./util.js"
 import dev from "./dev.js"
 
-function map_node( node, depth=0 ) {
-  return {
-    id : node.uuid,
-    text : `<input type="text" value="${ node.name || node.uuid }" disabled/>`,
-    li_attr : { "hidden": node.visible ? undefined : "hidden" },
-    type : node.object ? node.object.type : "default",
-    state : { opened : depth < 3, selected : false },
-    children : node.children
-              .filter( child => child.uuid !== node.uuid )
-              .filter( child => child.type != "Bone" || child.name !== node.name )
-              .map( child => map_node( child, ++depth ) )
+const mapping = {
+  node( node, depth=0 ) {
+    return {
+      id : node.uuid,
+      text : `<input type="text" value="${ node.name || node.uuid }" disabled/>`,
+      li_attr : { "hidden": node.visible ? undefined : "hidden" },
+      type : node.object ? node.object.type : "default",
+      state : { opened : depth < 3, selected : false },
+      children : node.children
+                .filter( child => child.uuid !== node.uuid )
+                .filter( child => child.type != "Bone" || child.name !== node.name )
+                .map( child => mapping.node( child, ++depth ) )
+    }
+  },
+  prop( prop, depth=0 ) {
+    return {
+      id : prop.uuid,
+      text : `<input type="text" value="${ prop.name || prop.uuid }" disabled/>`,
+      li_attr : { 
+        "hidden": prop.visible ? undefined : "hidden",
+        "missing" : util.getByUuid( prop.uuid ) ? undefined : "true",
+      },
+      children : prop.children
+                .filter( child => child.uuid !== prop.uuid )
+                .map( child => mapping.node( child, ++depth ) )
+    }
+  },
+  anim( anim ) {
+    return {
+      id : anim.uuid,
+      text : `<input type="text" value="${ anim.name || anim.uuid }" disabled/>`,
+    }
   }
 }
-function map_prop( prop, depth=0 ) {
-  return {
-    id : prop.uuid,
-    text : `<input type="text" value="${ prop.name || prop.uuid }" disabled/>`,
-    li_attr : { 
-      "hidden": prop.visible ? undefined : "hidden",
-      "missing" : util.getByUuid( prop.uuid ) ? undefined : "true",
-    },
-    children : prop.children
-              .filter( child => child.uuid !== prop.uuid )
-              .map( child => map_node( child, ++depth ) )
-  }
-}
-function map_anim( anim ) {
-  return {
-    id : anim.uuid,
-    text : `<input type="text" value="${ anim.name || anim.uuid }" disabled/>`,
-  }
-}
+
 
 export default
 {
@@ -231,9 +234,9 @@ export default
   },
   update()
   {
-    this.trees.nodes.settings.core.data = map_node( context.data.model )
-    this.trees.props.settings.core.data = [ ...context.data.props.map( map_prop ) ]
-    this.trees.anims.settings.core.data = [ ...context.data.anims.map( map_anim ) ]
+    this.trees.nodes.settings.core.data = mapping.node( context.data.model )
+    this.trees.props.settings.core.data = [ ...context.data.props.map( mapping.prop ) ]
+    this.trees.anims.settings.core.data = [ ...context.data.anims.map( mapping.anim ) ]
     this.refresh()
   },
   refresh() {
