@@ -19,5 +19,28 @@ function clipBoneName( originalName )
   return originalName.match( /([A-Z])\w+/g )[0].toString()
 }
 
+function makeSingleFrameAnimationFromFirstFrame( anim ) {
+  let a = anim.clone()
+  a.tracks.forEach( t => { 
+    t.times = [ 0 ]
+    t.values = t.values.slice( 0, t.name.endsWith(".quaternion") ? 4 : 3 ) 
+  } )
+  a.name += "-pose"
+  return a
+}
 
-export default { getByUuid, getBone, clipBoneName }
+function makeSingleFrameAnimationFromLastFrame( anim ) {
+  let a = anim.clone()
+  a.tracks.forEach( t => { 
+    t.times = [ 0 ]
+    t.values = t.values.slice( t.values.length - ( t.name.endsWith(".quaternion") ? 4 : 3 ) )
+  } )
+  a.name += "-pose"
+  return a
+}
+
+export default { 
+  getByUuid, getBone, clipBoneName, 
+  makeSingleFrameAnimationFromFirstFrame,
+  makeSingleFrameAnimationFromLastFrame,
+}

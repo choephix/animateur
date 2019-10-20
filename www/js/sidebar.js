@@ -92,7 +92,7 @@ export default
   {
     this.trees.props.deselect_all()
     this.trees.anims.deselect_all()
-    let node = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
+    let node = util.getByUuid( data.node.id )
     context.selection.transformable = 
     context.selection.last =
     context.selection.node = node
@@ -104,7 +104,7 @@ export default
   {
     this.trees.nodes.deselect_all()
     this.trees.anims.deselect_all()
-    let prop = context.viewport.scene.getObjectByProperty( "uuid", data.node.id )
+    let prop = util.getByUuid( data.node.id )
     context.selection.transformable = 
     context.selection.last = 
     context.selection.prop = prop

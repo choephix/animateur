@@ -79,6 +79,12 @@ function initialize()
                                             viewport.transformer.space === "world" ? "local" : "world" ) )
   ///
   $( "button.attach-to-bone" ).click( () => $( "#bones-list" ).toggle() )
+  $( "button.animation.make-pose-first" ).click( () => {
+    onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) )
+  } )
+  $( "button.animation.make-pose-last" ).click( () => {
+    onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) )
+  } )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') ).resolver( fileResolvers.model ).loaded( onCharacterLoaded )
