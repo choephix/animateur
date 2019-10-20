@@ -212,7 +212,7 @@ function onSceneLoaded( model, animations )
   viewport.setModel( model )
   context.data.model = model
   context.data.anims.push( ...animations )
-  // refreshPropsList()
+  refreshPropsList()
   extractColors( model )
   playDefaultAnimation()
 

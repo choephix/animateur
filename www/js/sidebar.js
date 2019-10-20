@@ -186,11 +186,6 @@ class Row {
       if ( ! $(this.fields[i]).is(":focus") )
         $(this.fields[i]).val( vector[sub] ) 
     } )
-    // if ( ! $( this.dom ).is(":focus-within") ) {
-    //   $(this.fields[0]).val( vector.x )
-    //   $(this.fields[1]).val( vector.y )
-    //   $(this.fields[2]).val( vector.z )
-    // }
   }
 }
 
