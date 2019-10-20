@@ -117,9 +117,10 @@ function refreshPropsList()
   function findPropsIn( o ) {
     let push = false 
     let hasChildren = o.children && o.children.filter(c=>c.type!=="Bone").length
-    push |= ( ( o.type === "Object3D" || o.type === "Group" ) && hasChildren )
-    push |= o.type === "Mesh"
-    push &= o !== context.data.model
+    push = push || ( ( o.type === "Object3D" || o.type === "Group" ) && hasChildren )
+    push = push || o.type === "Mesh"
+    push = push && o !== context.data.model
+
     if ( push )
       context.data.props.push( o )
     else 

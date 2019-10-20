@@ -149,9 +149,11 @@ class Row {
     this.fields = $( `.i-vector-row.${property} input` ).toArray()
     this.fields.forEach( ( dom, i ) => {
       $( dom ).on( "input keyup paste", e => {
-        let sele = context.selection.transformable, val = $(dom).val()
+        let sele = context.selection.transformable, val = $( dom ).val()
         if ( ! sele || isInvalid( val ) ) return
         sele[ property ][ subs[i] ] = val
+        if ( $( this.dom ).is( ".linked") )
+          subs.forEach( ( sub, i ) => sele[ property ][ sub ] = val )
       } )
     } )
   }
@@ -164,11 +166,13 @@ class Row {
   // setUnconvert( func ) { this.unconvertValue = func }
 
   updateMaybe( vector ) {
-    if ( ! $( this.dom ).is(":focus-within") ) {
-      $(this.fields[0]).val( vector.x )
-      $(this.fields[1]).val( vector.y )
-      $(this.fields[2]).val( vector.z )
-    }
+    const subs = [ ..."xyz" ]
+    subs.forEach( ( sub, i ) => $(this.fields[i]).val( vector[sub] ) )
+    // if ( ! $( this.dom ).is(":focus-within") ) {
+    //   $(this.fields[0]).val( vector.x )
+    //   $(this.fields[1]).val( vector.y )
+    //   $(this.fields[2]).val( vector.z )
+    // }
   }
 }
 
