@@ -80,12 +80,10 @@ function initialize()
   $( "button.transform.space" ).click( e => viewport.transformer.setSpace( 
                                             viewport.transformer.space === "world" ? "local" : "world" ) )
   ///
-  $( "button.animation.make-pose-first" ).click( () => {
-    onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) )
-  } )
-  $( "button.animation.make-pose-last" ).click( () => {
-    onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) )
-  } )
+  $( "button.animation.make-pose-first" ).click( () =>
+    onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) ) )
+  $( "button.animation.make-pose-last" ).click( () =>
+    onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) ) )
   $( "button.bones-menu" ).click( () => $( "#bones-list" ).toggle() )
   $( "button.clone-selected" ).click( () => {
     if ( context.selection.prop && context.selection.prop === context.selection.last ) {
