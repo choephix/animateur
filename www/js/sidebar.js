@@ -10,16 +10,19 @@ function map_node( node, depth=0 ) {
     type : node.object ? node.object.type : "default",
     state : { opened : depth < 3, selected : false },
     children : node.children
-              .filter( child => child.name !== node.name )
+              .filter( child => child.uuid !== node.uuid )
               .map( child => map_node( child, ++depth ) )
   }
 }
-function map_prop( prop ) {
+function map_prop( prop, depth=0 ) {
   return {
     id : prop.uuid,
     // attr : { "hidden": prop.visible ? undefined : true },
     li_attr : { "hidden": prop.visible ? undefined : "hidden" },
     text : prop.name || prop.uuid,
+    children : prop.children
+              .filter( child => child.uuid !== prop.uuid )
+              .map( child => map_node( child, ++depth ) )
   }
 }
 function map_anim( anim ) {
