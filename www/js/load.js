@@ -19,19 +19,37 @@ const loaders = {
 
 export const fileResolvers = {
   scene : async function( data, file_extension, file_name ) {
-    let gltf = await new Promise( ( resolve, reject ) => {
+    let [ group, animations ] = await new Promise( ( resolve, reject ) => {
       switch ( file_extension ) {
         case "gltf":
-        case "glb": loaders.gltf.load( data, resolve ); break;
+        case "glb": loaders.gltf.load( data, gltf => resolve( [ gltf.scene, gltf.animations ] ) ); break;
+        case "fbx": loaders.fbx.load( data, o => resolve( [ o, o.animations || [] ] ) ); break;
         default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
       }
     } )
-    console.log( gltf )
-    let model = gltf.scene.children.shift()
-    while ( gltf.scene.children.length )
-      model.add( gltf.scene.children.shift() )
+
+    console.log( group )
     
-    let animations = gltf.animations
+    let model = null
+
+    if ( group.children.length === 0 )
+    {
+      console.warn( "No 3D objects found..." )
+    }
+    else
+    if ( group.children.length === 1)
+    {
+      // model = gltf.scene.children.shift()
+      model = group.children[ 0 ]
+    }
+    else
+    {
+      model = new THREE.Object3D()
+      model.scale.setScalar( .01 )
+      // gltf.scene.children.forEach( o => model.add( o ) )
+      while ( group.children.length )
+        model.add( group.children.shift() )
+    }
 
     return [ model , animations ]
   },
@@ -111,7 +129,9 @@ export const fileResolvers = {
       switch ( file_extension ) {
         case "gltf":
         case "glb": loaders.gltf.load( data, gl => resolve( gl.animations ) ); break;
-        case "fbx": loaders.fbx.load( data, group => resolve( group.animations ) ); break;
+        // case "fbx": loaders.fbx.load( data, group => console.warn( group ), null, e => console.error( e ) );
+        // case "fbx": loaders.fbx.load( data, group => resolve( group.animations ) ); break;
+        case "fbx": loaders.fbx.load( data, group => { console.warn( group) ; resolve( group.animations ) } ); break;
         default: reject( `Sorry, can't load files with extension "${file_extension}" here` )
       }
     } )
