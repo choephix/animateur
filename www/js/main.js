@@ -4,6 +4,8 @@ import materials from './materials.js'
 import exporter from './export.js'
 import { DropField, fileResolvers, loadFromUrl } from './load.js'
 
+import util from './util.js'
+
 export const context = 
 {
   selection : {
@@ -39,7 +41,7 @@ export const context =
   bonesList : $( "#bones-list" ).ready( () => {
     $( "#bones-list" ).hide()
     context.events.subscribe( "change.data", () => {
-      let root_bone = context.data.model.getObjectByName( "mixamorigHips" )
+      let root_bone = util.getBone( "Hips" )
       let dom = $( "#bones-list .contents" )
       let incl = []
       dom.empty()
@@ -147,10 +149,11 @@ function onPropLoaded( ...props )
 
 function onCharacterLoaded( model )
 {
+  let scale = context.data.model.scale.clone()
   let props = context.data.props.concat()
   let propToBone = {}
   for ( let prop of props )
-    propToBone[prop.uuid] = prop.parent.name
+    propToBone[prop.uuid] = util.clipBoneName( prop.parent.name )
   context.data.props.length = 0
 
   if ( context.data.model )
@@ -158,15 +161,15 @@ function onCharacterLoaded( model )
 
   viewport.setModel( model )
   context.data.model = model
+  context.data.model.scale.copy( scale )
   
   extractColors( model )
   playDefaultAnimation()
 
   props.forEach( prop => {
-    let bone_name = propToBone[prop.uuid]
-    let bone = context.viewport.scene.getObjectByName( bone_name )
+    let bone = util.getBone( propToBone[ prop.uuid ] )
     if ( bone ) bone.add( prop )
-    else console.warn( `Failed to reattach ${prop.name}` )
+    else console.warn( `Failed to reattach ${prop.name} to ${propToBone[prop.uuid]}` )
   } )
   refreshPropsList()
 
@@ -205,6 +208,7 @@ function extractColors( model ) {
   let colors = []
   model.traverse( o => {
     if ( ! o.material ) return
+    if ( ! o.material.color ) return
     let color = "#"+o.material.color.getHexString()
     if ( colors.indexOf( color ) > -1 ) return
     colors.push( color )
@@ -220,3 +224,4 @@ initialize()
 //  } )
 
 window.context = context
+window.util = util
