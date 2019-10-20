@@ -47,6 +47,7 @@ export const context =
       let dom = $( "#bones-list .contents" )
       let incl = []
       dom.empty()
+      if ( ! root_bone ) return
       root_bone.traverse( bone => {
         if ( bone.type !== "Bone" ) return
         if ( incl.indexOf( bone.name ) > -1 ) return
@@ -211,7 +212,7 @@ function onSceneLoaded( model, animations )
   viewport.setModel( model )
   context.data.model = model
   context.data.anims.push( ...animations )
-  refreshPropsList()
+  // refreshPropsList()
   extractColors( model )
   playDefaultAnimation()
 
