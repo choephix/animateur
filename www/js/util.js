@@ -1,5 +1,8 @@
 import { context } from "./main.js"
 
+function getByUuid( uuid )
+{ return context.viewport.scene.getObjectByProperty( "uuid", uuid ) }
+
 function getBone( name, node = undefined )
 {
   node = node || context.data.model
@@ -17,4 +20,4 @@ function clipBoneName( originalName )
 }
 
 
-export default { getBone, clipBoneName }
+export default { getByUuid, getBone, clipBoneName }

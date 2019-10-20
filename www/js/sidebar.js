@@ -1,4 +1,5 @@
 import { context } from "./main.js"
+import util from "./util.js"
 
 function map_node( node, depth=0 ) {
   return {
@@ -43,6 +44,15 @@ export default
     $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
     $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
     
+    $('#subpanel-nodes tree').bind( "keydown", "del", e => {
+      let uuids = this.trees.nodes.get_selected(false)
+      if ( ! confirm( `You are about to delete the following nodes:\n${ uuids.join("\n") }` ) )
+        return
+      uuids.map( uuid => util.getByUuid( uuid ) ).forEach( o => o.parent.remove( o ) )
+      context.viewport.transformer.detach()
+      context.data.dirty = true
+    } )
+
     $('#subpanel-props tree').bind( "keydown", "del", e => {
       let uuids = this.trees.props.get_selected(false)
       if ( ! confirm( `You are about to delete the following props:\n${ uuids.join("\n") }` ) )
