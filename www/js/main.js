@@ -69,6 +69,7 @@ function initialize()
 
   viewport.setup()
   sidebar.setup()
+  materials.initialize()
 
   $( "button.save" ).click( e => exporter.save( context.data.model, context.data.anims, 
                                                 e.currentTarget.getAttribute("binary") == "true",
@@ -151,7 +152,6 @@ function onPropLoaded( ...props )
   props.forEach( prop => {
     context.data.props.push( prop )
     context.data.model.add( prop )
-    prop.visible = ! prop.userData.hidden
   } )
 
   context.data.dirty = true
@@ -204,6 +204,8 @@ function onSceneLoaded( model, animations )
   refreshPropsList()
   extractColors( model )
   playDefaultAnimation()
+
+  context.data.props.forEach( prop => prop.visible = ! prop.userData.hidden )
 
   context.data.dirty = true
 }

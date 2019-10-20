@@ -37,7 +37,7 @@ function setColor( c ) {
   context.selection.all
     .map( uuid => util.getByUuid(uuid) )
     .forEach( o => {
-      // console.log( o )
+      if ( ! o ) return
       if ( o.matrixWorld === undefined ) return
       setColorTo( o, hex )
     } )
@@ -51,13 +51,15 @@ function setColorTo( object, hex )
   } )
 }
 
-// context.events.subscribe( "change.selection", () => {
-//   if ( context.selection.last )
-//     if ( context.selection.last.matrixWorld !== undefined )
-//       context.selection.last.traverse( child => {
-//         if ( child.material ) 
-//           pickr.setColor( child.material.color.getHexString() )
-//       } )
-// } )
+function initialize(){
+  // context.events.subscribe( "change.selection", () => {
+  //   if ( context.selection.last )
+  //     if ( context.selection.last.matrixWorld !== undefined )
+  //       context.selection.last.traverse( child => {
+  //         if ( child.material ) 
+  //           pickr.setColor( child.material.color.getHexString(), true )
+  //       } )
+  // } )
+}
 
-export default { pickr , addSwatch }
+export default { initialize, pickr , addSwatch }

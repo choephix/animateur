@@ -243,6 +243,13 @@ button:focus {outline:0;}
 
 
 
+#panel-navigation .jstree [hidden] a {
+  /* opacity: .3; */
+  text-decoration: line-through;
+  color: #FFF6 !important;
+}
+
+
 
 
 

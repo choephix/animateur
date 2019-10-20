@@ -5,6 +5,7 @@ function map_node( node, depth=0 ) {
   return {
     id : node.uuid,
     text : node.name || node.uuid,
+    li_attr : { "hidden": node.visible ? undefined : "hidden" },
     type : node.object ? node.object.type : "default",
     state : { opened : depth < 3, selected : false },
     children : node.children
@@ -15,6 +16,8 @@ function map_node( node, depth=0 ) {
 function map_prop( prop ) {
   return {
     id : prop.uuid,
+    // attr : { "hidden": prop.visible ? undefined : true },
+    li_attr : { "hidden": prop.visible ? undefined : "hidden" },
     text : prop.name || prop.uuid,
   }
 }
@@ -45,11 +48,13 @@ export default
     $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
 
     this.trees.props.element.on("dblclick.jstree", (e) => {
-      const uuid = $(e.target).closest("li")[0].id
+      const dom = $(e.target).closest("li")[0]
+      const uuid = dom.id
       const prop = util.getByUuid( uuid )
       if ( ! prop ) return
       prop.visible = ! prop.visible
       prop.userData.hidden = prop.visible ? undefined : true
+      $(dom).attr( "hidden", ! prop.visible )
     } )
     
     $('#subpanel-nodes tree').bind( "keydown", "del", e => {
