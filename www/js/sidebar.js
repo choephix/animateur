@@ -140,8 +140,6 @@ export default
     context.selection.dirty = true
     context.viewport.transformer.detach()
     context.viewport.animPlay( clip )
-
-    dev.fixAnimationHips( clip )
   },
   update()
   {
@@ -204,7 +202,7 @@ class Field {
 
     let dom = $( this.dom_selector )
     let setval = () => setter( dom.val() )
-    dom.bind( "keydown", "return", setval )
+    dom.bind( "keydown", "return", () => { setval(); dom.blur(); } )
     dom.blur( setval  )
     // dom.on( "input keyup paste",  )
     let animate = () => {
