@@ -3,7 +3,8 @@ import { context } from "./main.js"
 const utils = {
   getByUuid: function ( uuid )
   { 
-    return context.viewport.scene.getObjectByProperty( "uuid", uuid ) 
+    return context.viewport.scene.getObjectByProperty( "uuid", uuid ) ||
+           context.data.anims.find( clip => clip.uuid === uuid )
   },
   getBone: function( name, node = undefined )
   {

@@ -124,6 +124,9 @@ function initialize()
         }
       }
     },
+    items: {
+      finish : { name : "Finito" }
+    }
   } )
 
   /// /// /// /// ///

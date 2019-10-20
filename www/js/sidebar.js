@@ -5,7 +5,7 @@ import dev from "./dev.js"
 function map_node( node, depth=0 ) {
   return {
     id : node.uuid,
-    text : node.name || node.uuid,
+    text : `<input type="text" value="${ node.name || node.uuid }" disabled/>`,
     li_attr : { "hidden": node.visible ? undefined : "hidden" },
     type : node.object ? node.object.type : "default",
     state : { opened : depth < 3, selected : false },
@@ -17,9 +17,8 @@ function map_node( node, depth=0 ) {
 function map_prop( prop, depth=0 ) {
   return {
     id : prop.uuid,
-    // attr : { "hidden": prop.visible ? undefined : true },
+    text : `<input type="text" value="${ prop.name || prop.uuid }" disabled/>`,
     li_attr : { "hidden": prop.visible ? undefined : "hidden" },
-    text : prop.name || prop.uuid,
     children : prop.children
               .filter( child => child.uuid !== prop.uuid )
               .map( child => map_node( child, ++depth ) )
@@ -28,7 +27,7 @@ function map_prop( prop, depth=0 ) {
 function map_anim( anim ) {
   return {
     id : anim.uuid,
-    text : anim.name || anim.uuid,
+    text : `<input type="text" value="${ anim.name || anim.uuid }" disabled/>`,
   }
 }
 
@@ -40,7 +39,10 @@ export default
     let settings = { core: { data: [], multiple: true } }
     settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
     settings.core.check_callback = true
-    settings.plugins = [ "dnd" ]
+    settings.core.dblclick_toggle = false
+    // settings.plugins = [ "dnd" ]
+    
+    /// JSTREE EVENTS
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
@@ -51,16 +53,29 @@ export default
     this.trees.anims.element.on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
     $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
 
-    this.trees.props.element.on("dblclick.jstree", (e) => {
-      const dom = $(e.target).closest("li")[0]
-      const uuid = dom.id
-      const prop = util.getByUuid( uuid )
-      if ( ! prop ) return
-      prop.visible = ! prop.visible
-      prop.userData.hidden = prop.visible ? undefined : true
-      $(dom).attr( "hidden", ! prop.visible )
-    } )
+    const ondblclick = (e) => {
+      const dom = $(e.target).find("input")
+      $(dom).attr( "disabled", false )
+      $(dom).focus()
+      $(dom).select()
+
+      const apply = () => {
+        console.log( "New name: ", $(dom).val() )
+        const uuid = $(dom).closest("li")[0].id
+        util.getByUuid( uuid ).name = $(dom).val()
+        context.data.dirty = true
+        $(dom).off( "blur" )
+        $(dom).unbind( "keydown" )
+      }
+      $(dom).on( "blur", apply )
+      $(dom).bind( "keydown", "return", apply )
+    }
+    this.trees.nodes.element.on("dblclick.jstree", ondblclick )
+    this.trees.props.element.on("dblclick.jstree", ondblclick )
+    this.trees.anims.element.on("dblclick.jstree", ondblclick )
     
+    /// KEYBOARD EVENTS
+
     $('#subpanel-nodes tree').bind( "keydown", "del", e => {
       let uuids = this.trees.nodes.get_selected(false)
       if ( ! confirm( `You are about to delete the following nodes:\n${ uuids.join("\n") }` ) )
@@ -86,6 +101,8 @@ export default
           context.data.anims.splice( i, 1 )
       context.data.dirty = true
     } )
+
+    ///
 
     context.events.subscribe( "change.data", () => this.update() )
     

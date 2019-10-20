@@ -251,6 +251,22 @@ button:focus {outline:0;}
 #panel-navigation .jstree-default .jstree-node {
   margin-left: 8px;
 }
+#panel-navigation .jstree input {
+  border: none;
+  background: none;
+  color: white;
+  font-weight: bolder;
+  width: 100%;
+  touch-action: none;
+  pointer-events: none;
+  user-select: all;
+  -moz-user-select: all;
+  -webkit-user-select: all;
+}
+#panel-navigation .jstree input[disabled] {
+  color: #FFFA;
+  font-weight: 100;
+}
 
 
 

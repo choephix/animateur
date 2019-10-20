@@ -53,6 +53,7 @@ export default
     this.orbit.mouseButtons.LEFT = 0
     this.orbit.mouseButtons.RIGHT = 2
     this.orbit.mouseButtons.MIDDLE = -1
+    this.orbit.enableKeys = false
 
     let ligths = []
     
@@ -101,7 +102,7 @@ export default
   {
     this.resize( viewportElem.clientWidth, viewportElem.clientHeight )
     this.mixer.update( this.clock.getDelta() )
-    this.orbit.update()
+    // this.orbit.update()
     this.renderer.render( this.scene, this.camera )
     requestAnimationFrame( () => this.animate() )
   },
