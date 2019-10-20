@@ -104,6 +104,28 @@ function initialize()
   new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
   new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
 
+  $.contextMenu( {
+    selector: '#subpanel-props .jstree-node',
+    build: function( el, event )
+    {
+      const uuid = el.context.id
+      const item = util.getByUuid( uuid )
+      return {
+        callback: action => console.log( action, uuid ),
+        items: {
+            toggleHidden: { 
+              name: item.visible ? "Hide" : "Show", icon: "cut",
+              callback: () => util.setHidden( item, item.visible )
+            },
+            delete: {
+              name: "Delete", icon: "delete",
+              callback: () => util.deleteProp( item )
+            },
+        }
+      }
+    },
+  } )
+
   /// /// /// /// ///
 
   // context.events.subscribe( "change.data", () => console.log( "change.data" , context.data ) )

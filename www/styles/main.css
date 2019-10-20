@@ -254,6 +254,21 @@ button:focus {outline:0;}
 
 
 
+.context-menu-list { 
+  background: #222;
+  border-color:#0008;
+  border-radius: unset;
+  padding: 0;
+}
+.context-menu-item::before,
+.context-menu-item { 
+  background: unset;
+  color: #FFFC;
+} 
+.context-menu-separator {
+  border-color: #666
+}
+
 
 
 

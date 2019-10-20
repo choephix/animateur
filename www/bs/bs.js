@@ -1,3 +1,88 @@
+function spatula()
+{
+  $.contextMenu({
+    selector: '#subpanel-props .jstree-node',
+    callback: function( action, options ) {
+      console.log( action, uuid )
+    },
+    items: {
+      "cut": { name: (...rest)=>{ console.log(rest.length); return options.$trigger.context.id }, icon: "cut" },
+      "delete": {name: "Delete", icon: "delete"},
+      sep4: "---------",
+      name: {
+          name: "Text", 
+          type: 'text', 
+          value: "Hello World", 
+          events: {
+              keyup: function(e) {
+                  // add some fancy key handling here?
+                  window.console && console.log('key: '+ e.keyCode); 
+              }
+          }
+      },
+      sep1: "---------",
+      // <input type="checkbox">
+      yesno: {
+          name: "Boolean", 
+          type: 'checkbox', 
+          selected: true
+      },
+      sep2: "---------",
+      // <input type="radio">
+      radio1: {
+          name: "Radio1", 
+          type: 'radio', 
+          radio: 'radio', 
+          value: '1'
+      },
+      radio2: {
+          name: "Radio2", 
+          type: 'radio', 
+          radio: 'radio', 
+          value: '2', 
+          selected: true
+      },
+      sep3: "---------",
+      // <select>
+      select: {
+          name: "Select", 
+          type: 'select', 
+          options: {1: 'one', 2: 'two', 3: 'three'}, 
+          selected: 2
+      },
+      // <textarea>
+      area1: {
+          name: "Textarea with height", 
+          type: 'textarea', 
+          value: "Hello World", 
+          height: 40
+      },
+      area2: {
+          name: "Textarea", 
+          type: 'textarea', 
+          value: "Hello World"
+      },
+      sep4: "---------",
+      key: {
+          name: "Something Clickable", 
+          callback: $.noop
+      },
+      "delete": {name: "Delete", icon: "delete"},
+      sep4: "---------",
+      "edit": {name: "Edit", icon: "edit"},
+      copy: {name: "Copy", icon: "copy"},
+      "paste": {name: "Paste", icon: "paste"},
+      "sep1": "---------",
+      "quit": {name: "Quit", icon: function(){
+          return 'context-menu-icon context-menu-icon-quit';
+        }
+      }
+    }
+  });
+}
+
+
+
 function add_generic_shit( scene ) 
 {
   var material = new THREE.MeshNormalMaterial( { color: 0xCCff00 } );
