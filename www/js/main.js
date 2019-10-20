@@ -45,23 +45,29 @@ export const context =
     context.events.subscribe( "change.data", () => {
       let root_bone = util.getBone( "Hips" )
       let dom = $( "#bones-list .contents" )
-      let incl = []
       dom.empty()
       dom.append( $('<button/>', { text: "❌", click: () => $( "#bones-list" ).hide() } ) )
-      if ( ! root_bone ) return
-      root_bone.traverse( bone => {
-        if ( bone.type !== "Bone" ) return
-        if ( incl.indexOf( bone.name ) > -1 ) return
-        incl.push( bone.name )
-        let button = $('<button/>', {
+
+      // dom.appent( $("<ui")
+      
+      const addButton = bone => {
+        dom.append( $('<button/>', {
           text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
           click: () => {
             if ( ! context.selection.prop ) return
             bone.add( context.selection.prop )
             $( "#bones-list" ).hide()
           }
-        } )
-        dom.append( button )
+        } ) )
+      }
+
+      if ( ! root_bone ) return
+      let alreadyAdded = []
+      root_bone.traverse( bone => {
+        if ( bone.type !== "Bone" ) return
+        if ( alreadyAdded.indexOf( bone.name ) > -1 ) return
+        alreadyAdded.push( bone.name )
+        addButton( bone )
       } )
     } )
   } )

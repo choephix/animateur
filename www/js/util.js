@@ -34,7 +34,20 @@ const utils = {
     context.data.props.splice( context.data.props.indexOf( prop ), 1 )
     context.data.dirty = true
   },
-  
+  cloneProp( prop ) {
+    let clone = prop.clone()
+    prop.parent.add( clone )
+    context.data.props.push( clone )
+    context.data.dirty = true
+  },
+  cloneAnimation( clip ) {
+    let clone = clip.clone()
+    context.data.anims.push( clone )
+    context.viewport.animPlay( clone )
+    context.data.dirty = true
+  },
+
+  //// ANIMANI
   
   makeSingleFrameAnimationFromFirstFrame: function( anim ) {
     let a = anim.clone()

@@ -37,7 +37,6 @@ const mapping = {
   }
 }
 
-
 export default
 {
   trees: { nodes : null, props : null, anims : null },
@@ -77,14 +76,10 @@ export default
         return {
           callback: action => console.log( action, uuid ),
           items: {
-              toggleHidden: { 
-                name: item.visible ? "Hide" : "Show", icon: "cut",
-                callback: () => util.setHidden( item, item.visible )
-              },
-              delete: {
-                name: "Delete", icon: "delete",
-                callback: () => util.deleteProp( item )
-              },
+            delete: {
+              name: "Delete", icon: "delete",
+              callback: () => util.deleteProp( item )
+            },
           }
         }
       },
@@ -99,22 +94,26 @@ export default
         const item = util.getByUuid( uuid )
         return {
           items: {
-              toggleHidden: { 
-                name: item.visible ? "Hide" : "Show", icon: "cut",
-                callback: () => util.setHidden( item, item.visible )
-              },
-              delete: {
-                name: "Delete", icon: "delete",
-                callback: () => util.deleteProp( item )
-              },
-              attach: {
-                name: "Attach to...", icon: "link",
-                visible: () => context.selection.prop &&
-                               context.selection.prop.uuid === uuid,
-                callback: () => {
-                  $( "#bones-list" ).show()                
-                }
-              },
+            attach: {
+              name: "Attach to...", icon: "bone",
+              visible: () => context.selection.prop &&
+                              context.selection.prop.uuid === uuid,
+              callback: () => {
+                $( "#bones-list" ).show()                
+              }
+            },
+            toggleHidden: { 
+              name: item.visible ? "Hide" : "Show", icon: "cut",
+              callback: () => util.setHidden( item, item.visible )
+            },
+            clone: {
+              name: "Clone", icon: "plus",
+              callback: () => util.cloneProp( item )
+            },
+            delete: {
+              name: "Delete", icon: "delete",
+              callback: () => util.deleteProp( item )
+            },
           }
         }
       },
@@ -128,10 +127,14 @@ export default
         const item = util.getByUuid( uuid )
         return {
           items: {
-              delete: {
-                name: "Delete", icon: "delete",
-                callback: () => util.deleteProp( item )
-              },
+            clone: {
+              name: "Clone", icon: "copy",
+              callback: () => util.cloneAnimation( item )
+            },
+            delete: {
+              name: "Delete", icon: "delete",
+              callback: () => util.deleteProp( item )
+            },
           }
         }
       },
