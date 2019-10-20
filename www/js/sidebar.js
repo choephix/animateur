@@ -61,9 +61,10 @@ export default
   setup_contextMenus()
   {
     $.contextMenu( {
-      selector: '#subpanel-props .jstree-node',
+      selector: '#subpanel-nodes .jstree-node',
       build: function( el, event )
       {
+        console.log( event )
         const uuid = el.context.id
         const item = util.getByUuid( uuid )
         return {
@@ -80,11 +81,54 @@ export default
           }
         }
       },
-      items: {
-        finish : { name : "Finito" }
-      }
+      items: { finish : { name : "Finito" } }
     } )
 
+    $.contextMenu( {
+      selector: '#subpanel-props .jstree-node',
+      build: ( el, event )=>
+      {
+        const uuid = el.context.id
+        const item = util.getByUuid( uuid )
+        return {
+          items: {
+              toggleHidden: { 
+                name: item.visible ? "Hide" : "Show", icon: "cut",
+                callback: () => util.setHidden( item, item.visible )
+              },
+              delete: {
+                name: "Delete", icon: "delete",
+                callback: () => util.deleteProp( item )
+              },
+              attach: {
+                name: "Attach to...", icon: "link",
+                visible: () => context.selection.prop &&
+                               context.selection.prop.uuid === uuid,
+                callback: () => {
+                  $( "#bones-list" ).show()                
+                }
+              },
+          }
+        }
+      },
+    } )
+    
+    $.contextMenu( {
+      selector: '#subpanel-props .jstree-node',
+      build: function( el, event )
+      {
+        const uuid = el.context.id
+        const item = util.getByUuid( uuid )
+        return {
+          items: {
+              delete: {
+                name: "Delete", icon: "delete",
+                callback: () => util.deleteProp( item )
+              },
+          }
+        }
+      },
+    } )
   },
   setup_keyboardEvents()
   {

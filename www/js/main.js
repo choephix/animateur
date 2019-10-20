@@ -47,6 +47,7 @@ export const context =
       let dom = $( "#bones-list .contents" )
       let incl = []
       dom.empty()
+      dom.append( $('<button/>', { text: "❌", click: () => $( "#bones-list" ).hide() } ) )
       if ( ! root_bone ) return
       root_bone.traverse( bone => {
         if ( bone.type !== "Bone" ) return
@@ -57,6 +58,7 @@ export const context =
           click: () => {
             if ( ! context.selection.prop ) return
             bone.add( context.selection.prop )
+            $( "#bones-list" ).hide()
           }
         } )
         dom.append( button )
