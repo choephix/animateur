@@ -118,6 +118,7 @@ export const fileResolvers = {
     animations = animations.filter( a => a.duration > 0.0 )
     if ( animations.length === 1 )
       animations[ 0 ].name = file_name
+    animations.forEach( a => a.name = a.name.match(/[\w-]+/g).join('-').toLowerCase() )
     return animations
   },
 }
