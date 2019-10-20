@@ -80,12 +80,23 @@ function initialize()
   $( "button.transform.space" ).click( e => viewport.transformer.setSpace( 
                                             viewport.transformer.space === "world" ? "local" : "world" ) )
   ///
-  $( "button.attach-to-bone" ).click( () => $( "#bones-list" ).toggle() )
   $( "button.animation.make-pose-first" ).click( () => {
     onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) )
   } )
   $( "button.animation.make-pose-last" ).click( () => {
     onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) )
+  } )
+  $( "button.bones-menu" ).click( () => $( "#bones-list" ).toggle() )
+  $( "button.clone-selected" ).click( () => {
+    if ( context.selection.prop && context.selection.prop === context.selection.last ) {
+      let clone = context.selection.prop.clone()
+      context.selection.prop.parent.add( clone )
+      context.data.props.push( clone )
+      context.data.dirty = true
+    }
+    if ( context.selection.anim && context.selection.anim === context.selection.last ) {
+      onAnimationsLoaded( context.selection.anim.clone() )
+    }
   } )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
