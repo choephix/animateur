@@ -34,48 +34,60 @@ function map_anim( anim ) {
 export default
 {
   trees: { nodes : null, props : null, anims : null },
-  setup: function ()
+  setup()
   {
     let settings = { core: { data: [], multiple: true } }
     settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
     settings.core.check_callback = true
     settings.core.dblclick_toggle = false
     // settings.plugins = [ "dnd" ]
-    
-    /// JSTREE EVENTS
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
     
-    this.trees.nodes.element.on( "select_node.jstree", (e,d) => this.onSelectNode( d ) )
-    this.trees.props.element.on( "select_node.jstree", (e,d) => this.onSelectProp( d ) )
-    this.trees.anims.element.on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
-    $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
+    this.setup_jstreeEvents()
+    this.setup_keyboardEvents()
+    this.setup_contextMenus()
 
-    const ondblclick = (e) => {
-      const dom = $(e.target).find("input")
-      $(dom).attr( "disabled", false )
-      $(dom).focus()
-      $(dom).select()
-
-      const apply = () => {
-        console.log( "New name: ", $(dom).val() )
-        const uuid = $(dom).closest("li")[0].id
-        util.getByUuid( uuid ).name = $(dom).val()
-        context.data.dirty = true
-        $(dom).off( "blur" )
-        $(dom).unbind( "keydown" )
-      }
-      $(dom).on( "blur", apply )
-      $(dom).bind( "keydown", "return", apply )
-    }
-    this.trees.nodes.element.on("dblclick.jstree", ondblclick )
-    this.trees.props.element.on("dblclick.jstree", ondblclick )
-    this.trees.anims.element.on("dblclick.jstree", ondblclick )
+    context.events.subscribe( "change.data", () => this.update() )
     
-    /// KEYBOARD EVENTS
+    function onFrame() {
+      inspector.update()
+      requestAnimationFrame( () => onFrame() )
+    }
+    onFrame()
+  },
+  setup_contextMenus()
+  {
+    $.contextMenu( {
+      selector: '#subpanel-props .jstree-node',
+      build: function( el, event )
+      {
+        const uuid = el.context.id
+        const item = util.getByUuid( uuid )
+        return {
+          callback: action => console.log( action, uuid ),
+          items: {
+              toggleHidden: { 
+                name: item.visible ? "Hide" : "Show", icon: "cut",
+                callback: () => util.setHidden( item, item.visible )
+              },
+              delete: {
+                name: "Delete", icon: "delete",
+                callback: () => util.deleteProp( item )
+              },
+          }
+        }
+      },
+      items: {
+        finish : { name : "Finito" }
+      }
+    } )
 
+  },
+  setup_keyboardEvents()
+  {
     $('#subpanel-nodes tree').bind( "keydown", "del", e => {
       let uuids = this.trees.nodes.get_selected(false)
       if ( ! confirm( `You are about to delete the following nodes:\n${ uuids.join("\n") }` ) )
@@ -101,17 +113,34 @@ export default
           context.data.anims.splice( i, 1 )
       context.data.dirty = true
     } )
+  },
+  setup_jstreeEvents()
+  {
+    this.trees.nodes.element.on( "select_node.jstree", (e,d) => this.onSelectNode( d ) )
+    this.trees.props.element.on( "select_node.jstree", (e,d) => this.onSelectProp( d ) )
+    this.trees.anims.element.on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
+    $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
 
-    ///
+    const ondblclick = (e) => {
+      const dom = $(e.target).find("input")
+      $(dom).attr( "disabled", false )
+      $(dom).focus()
+      $(dom).select()
 
-    context.events.subscribe( "change.data", () => this.update() )
-    
-    function onFrame() {
-      inspector.update()
-      requestAnimationFrame( () => onFrame() )
+      const apply = () => {
+        console.log( "New name: ", $(dom).val() )
+        const uuid = $(dom).closest("li")[0].id
+        util.getByUuid( uuid ).name = $(dom).val()
+        context.data.dirty = true
+        $(dom).off( "blur" )
+        $(dom).unbind( "keydown" )
+      }
+      $(dom).on( "blur", apply )
+      $(dom).bind( "keydown", "return", apply )
     }
-
-    onFrame()
+    this.trees.nodes.element.on("dblclick.jstree", ondblclick )
+    this.trees.props.element.on("dblclick.jstree", ondblclick )
+    this.trees.anims.element.on("dblclick.jstree", ondblclick )
   },
   onSelectNode( data ) 
   {
