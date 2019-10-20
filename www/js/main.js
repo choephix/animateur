@@ -151,6 +151,7 @@ function onPropLoaded( ...props )
   props.forEach( prop => {
     context.data.props.push( prop )
     context.data.model.add( prop )
+    prop.visible = ! prop.userData.hidden
   } )
 
   context.data.dirty = true

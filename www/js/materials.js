@@ -12,7 +12,7 @@ function addSwatch( color )
     return
   swatches.push( hex )
   pickr.addSwatch( hex )
-  console.log( swatches )
+  // console.log( swatches )
 }
 
 function createPickr( element ) {
@@ -37,7 +37,7 @@ function setColor( c ) {
   context.selection.all
     .map( uuid => util.getByUuid(uuid) )
     .forEach( o => {
-      console.log( o )
+      // console.log( o )
       if ( o.matrixWorld === undefined ) return
       setColorTo( o, hex )
     } )

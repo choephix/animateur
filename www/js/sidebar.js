@@ -39,10 +39,18 @@ export default
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
     this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
     
-    $('#subpanel-nodes tree').on( "select_node.jstree", (e,d) => this.onSelectNode( d ) )
-    $('#subpanel-props tree').on( "select_node.jstree", (e,d) => this.onSelectProp( d ) )
-    $('#subpanel-anims tree').on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
+    this.trees.nodes.element.on( "select_node.jstree", (e,d) => this.onSelectNode( d ) )
+    this.trees.props.element.on( "select_node.jstree", (e,d) => this.onSelectProp( d ) )
+    this.trees.anims.element.on( "select_node.jstree", (e,d) => this.onSelectAnim( d ) )
     $('tree').on( "select_node.jstree", (e,d) => console.log( context.selection.last ) )
+
+    this.trees.props.element.on("dblclick.jstree", (e) => {
+      const uuid = $(e.target).closest("li")[0].id
+      const prop = util.getByUuid( uuid )
+      if ( ! prop ) return
+      prop.visible = ! prop.visible
+      prop.userData.hidden = prop.visible ? undefined : true
+    } )
     
     $('#subpanel-nodes tree').bind( "keydown", "del", e => {
       let uuids = this.trees.nodes.get_selected(false)
