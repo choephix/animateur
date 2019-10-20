@@ -243,10 +243,15 @@ button:focus {outline:0;}
 
 
 
-#panel-navigation .jstree [hidden] a {
+#panel-navigation .jstree [hidden] a input {
   /* opacity: .3; */
   text-decoration: line-through;
   color: #FFF6 !important;
+}
+#panel-navigation .jstree [missing] a input {
+  /* opacity: .3; */
+  text-decoration: line-through;
+  color: #F006 !important;
 }
 #panel-navigation .jstree-default .jstree-node {
   margin-left: 8px;

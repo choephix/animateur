@@ -11,6 +11,7 @@ function map_node( node, depth=0 ) {
     state : { opened : depth < 3, selected : false },
     children : node.children
               .filter( child => child.uuid !== node.uuid )
+              .filter( child => child.type != "Bone" || child.name !== node.name )
               .map( child => map_node( child, ++depth ) )
   }
 }
@@ -18,7 +19,10 @@ function map_prop( prop, depth=0 ) {
   return {
     id : prop.uuid,
     text : `<input type="text" value="${ prop.name || prop.uuid }" disabled/>`,
-    li_attr : { "hidden": prop.visible ? undefined : "hidden" },
+    li_attr : { 
+      "hidden": prop.visible ? undefined : "hidden",
+      "missing" : util.getByUuid( prop.uuid ) ? undefined : "true",
+    },
     children : prop.children
               .filter( child => child.uuid !== prop.uuid )
               .map( child => map_node( child, ++depth ) )
