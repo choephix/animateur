@@ -148,7 +148,8 @@ class Row {
     this.dom = $( `.i-vector-row.${property}` )[ 0 ]
     this.fields = $( `.i-vector-row.${property} input` ).toArray()
     this.fields.forEach( ( dom, i ) => {
-      $( dom ).on( "input keyup paste", e => {
+      // $( dom ).on( "input keyup paste", e => {
+      $( dom ).on( "keyup paste", e => {
         let sele = context.selection.transformable, val = $( dom ).val()
         if ( ! sele || isInvalid( val ) ) return
         sele[ property ][ subs[i] ] = val
@@ -167,7 +168,10 @@ class Row {
 
   updateMaybe( vector ) {
     const subs = [ ..."xyz" ]
-    subs.forEach( ( sub, i ) => $(this.fields[i]).val( vector[sub] ) )
+    subs.forEach( ( sub, i ) => {
+      if ( ! $(this.fields[i]).is(":focus") )
+        $(this.fields[i]).val( vector[sub] ) 
+    } )
     // if ( ! $( this.dom ).is(":focus-within") ) {
     //   $(this.fields[0]).val( vector.x )
     //   $(this.fields[1]).val( vector.y )
@@ -204,7 +208,7 @@ const inspector =
   },
   fields : {
     name : new Field( "#field-name", 
-                      value => { context.selection.last.name = value; context.selection.dirty=true; },
+                      value => { context.selection.last.name = value; context.data.dirty=true; },
                       () => context.selection.last ? context.selection.last.name : "--" )
   },
   update() 

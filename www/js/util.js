@@ -16,7 +16,8 @@ function getBone( name, node = undefined )
 }
 function clipBoneName( originalName )
 {
-  return originalName.match( /([A-Z])\w+/g )[0].toString()
+  try { return originalName.match( /([A-Z])\w+/g )[0].toString() }
+  catch( e ) { console.error( e ) ; return originalName ; }
 }
 
 function makeSingleFrameAnimationFromFirstFrame( anim ) {
