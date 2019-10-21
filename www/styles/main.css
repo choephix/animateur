@@ -34,13 +34,7 @@ button:focus {outline:0;}
 ::-webkit-scrollbar-thumb { background: #8883; }
 ::-webkit-scrollbar-thumb:hover { background: #9994; }
 
-
-*.dragover { z-index: 99; }
-#subpanel-nodes.dragover .contents::after { content: "Replace character with model from .FBX file" }
-#subpanel-props.dragover .contents::after { content: "Add new prop model from .FBX file" }
-#subpanel-anims.dragover .contents::after { content: "Add character animation(s) from .FBX file" }
-
-/* * * * * * * * * * * * */
+/* * * * * * * * * * * * MAIN SHIT */
 
 main {
   width: 100%;
@@ -50,10 +44,23 @@ main {
   display: flex;
   flex-direction: row;
 }
+.left-pane {
 
-.dragover header { 
-  color: #008cff !important; 
 }
+.middle-pane {
+  flex-grow: 1;
+  width: 100%; 
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+/* * * * * * * * * * * * DRAG-OVERs */
+
+*.dragover { z-index: 99; }
+.dragover header { color: #008cff !important; }
 .dragover .contents::after { 
   color: #008cff !important; 
   background: #008cff0F !important; 
@@ -74,31 +81,28 @@ main {
   touch-action: none;
   pointer-events: none;
   z-index: 999;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;   
+  box-sizing: border-box;      
+}
+#subpanel-nodes.dragover .contents::after { content: "Replace character with model from .FBX file" }
+#subpanel-props.dragover .contents::after { content: "Add new prop model from .FBX file" }
+#subpanel-anims.dragover .contents::after { content: "Add character animation(s) from .FBX file" }
+#viewport.dragover .contents::after { 
+  content: "Open new .GLTF or .GLB character scene";  
+  pointer-events: none;
+  align-items: center;
 }
 .dragover .contents tree ul {
   /* pointer-events: none !important;
   visibility: hidden !important; */
 }
 
+/* * * * * * * * * * * * OTHER SHIT */
 
 
 
 
-#viewport {
-  flex-grow: 1;
-  width: 100%; 
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-#viewport.dragover .contents::after { 
-  content: "Open new .GLTF or .GLB character scene";
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-  box-sizing: border-box;         /* Opera/IE 8+ */
-  pointer-events: none;
-  align-items: center;
-}
 #viewport .contents {
   position: relative;
   height: 100%;
