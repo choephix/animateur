@@ -26,6 +26,9 @@ export default
     this.mixer.currentAction.weight = 1.0
     this.mixer.currentAction.play()
   },
+  animTogglePause() {
+    this.mixer.currentAction[ this.mixer.currentAction.isRunning ? "stop" : "play" ]()
+  },
   animTPose() {
     this.mixer.stopAllAction()
     if ( this.mixer.currentAction ) {

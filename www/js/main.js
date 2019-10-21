@@ -45,15 +45,15 @@ export const context =
     dom : $( "#bones-list" ).ready( () => {
       $( "#bones-list" ).hide()
       context.events.subscribe( "change.data", () => {
-        let root_bone = util.getBone( "Hips" )
-        let dom = $( "#bones-list .contents" )
+        const _this = context.bonesList
+        const root_bone = util.getBone( "Hips" )
+        const dom = $( "#bones-list .contents" )
         dom.empty()
-        dom.append( $('<button/>', { text: "❌", click: () => this.close() } ) )
+        dom.append( $('<button/>', { text: "❌", click: () => _this.close() } ) )
   
         // dom.appent( $("<ui")
         
         const addButton = bone => {
-          const _this = context.bonesList
           dom.append( $('<button/>', {
             text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
             click: () => _this.addCurrentSubjectsTo( bone ),
@@ -84,7 +84,36 @@ export const context =
       this.subjects.length = 0
       $( this.dom ).hide()
     }
-  } 
+  },
+  animationBar : {
+    slider : $( "#slider" ).slider({
+      orientation: "horizontal",
+      range: "min",
+      step: .001,
+      slide: function( event, ui ) {
+        // context.viewport.currentAction.pause()
+        // context.viewport.currentAction.time = ui.value
+      },
+      change: function( event, ui ) {
+        $( "#slider-handle" ).text( ui.value )
+      },
+      // slide: refreshSwatch,
+      // change: refreshSwatch
+    } ),
+    dom : $( "#slider" ).ready( () => {
+      context.animationBar.onFrame()
+    } ),
+    onFrame() {
+      const action = context.viewport.mixer.currentAction
+      $( ".selector" ).slider( "option", "disabled", !!action )
+      if ( action && action.isRunning )
+      {
+        $( "#slider" ).slider( "value", action.time )
+        $( "#slider" ).slider( "option", "max", action.getClip().duration )
+      }
+      requestAnimationFrame( () => this.onFrame() )
+    }
+  }
 }
 
 function initialize() 
