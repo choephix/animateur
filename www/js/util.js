@@ -51,9 +51,11 @@ const utils = {
     context.data.dirty = true
   },
   cloneAnimation( clip ) {
-    let clone = clip.clone()
-    context.data.anims.push( clone )
-    context.viewport.animPlay( clone )
+    this.addAnimation( clip.clone() )
+  },
+  addAnimation( clip ) {
+    context.data.anims.push( clip )
+    context.viewport.animPlay( clip )
     context.data.dirty = true
   },
 

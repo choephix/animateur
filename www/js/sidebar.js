@@ -129,6 +129,14 @@ export default
               name: "Clone", icon: "copy",
               callback: () => util.cloneAnimation( item )
             },
+            cloneFirstFrame: {
+              name: "Clone from first frame", icon: "end-left",
+              callback: () => util.addAnimation( util.makeSingleFrameAnimationFromLastFrame( item ) )
+            },
+            cloneLastFrame: {
+              name: "Clone from last frame", icon: "end-right",
+              callback: () => util.addAnimation( util.makeSingleFrameAnimationFromFirstFrame( item ) )
+            },
             delete: {
               name: "Delete", icon: "delete",
               callback: () => util.deleteAnimations( item )

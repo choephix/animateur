@@ -103,10 +103,6 @@ function initialize()
   $( "button.transform.space" ).click( e => viewport.transformer.setSpace( 
                                             viewport.transformer.space === "world" ? "local" : "world" ) )
   ///
-  $( "button.animation.make-pose-first" ).click( () =>
-    onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) ) )
-  $( "button.animation.make-pose-last" ).click( () =>
-    onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) ) )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') ).resolver( fileResolvers.model ).loaded( onCharacterLoaded )
