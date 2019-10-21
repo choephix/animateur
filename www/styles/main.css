@@ -77,7 +77,6 @@ main {
 #animation-bar {
   display: flex;
   flex-direction: column;
-
 }
 #animation-bar #slider {
   margin: 20px;
@@ -88,6 +87,7 @@ main {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  background: #0003;
 }
 #animation-bar .buttons-bar button {
   border: 1px solid #FFF2;

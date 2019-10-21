@@ -100,7 +100,7 @@ export const context =
       // slide: refreshSwatch,
       // change: refreshSwatch
     } ),
-    dom : $( "#slider" ).ready( () => {
+    dom : $( "#animation-bar" ).ready( () => {
       context.events.subscribe( "animation.play", action => {
         console.log( "Clip detected: " + action )
         console.log( action.getClip().tracks )
@@ -131,7 +131,8 @@ export const context =
     },
     onFrame() {
       const action = context.viewport.mixer.currentAction
-      $( ".selector" ).slider( "option", "disabled", !action )
+      $( this.dom ).toggle( !!action )
+      // $( ".selector" ).slider( "option", "disabled", !action )
       if ( action && action.isRunning )
       {
         $( "#slider" ).slider( "value", action.time )
