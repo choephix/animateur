@@ -41,7 +41,7 @@ export const context =
     }
   },
   bonesList : {
-    subjects : null, 
+    subjects : [], 
     dom : $( "#bones-list" ).ready( () => {
       $( "#bones-list" ).hide()
       context.events.subscribe( "change.data", () => {
@@ -53,9 +53,10 @@ export const context =
         // dom.appent( $("<ui")
         
         const addButton = bone => {
+          const _this = context.bonesList
           dom.append( $('<button/>', {
             text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
-            click: () => this.addCurrentSubjectsTo( bone ),
+            click: () => _this.addCurrentSubjectsTo( bone ),
           } ) )
         }
   
