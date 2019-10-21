@@ -46,7 +46,6 @@ export default
     settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
     settings.core.check_callback = true
     settings.core.dblclick_toggle = false
-    // settings.plugins = [ "dnd" ]
 
     this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
     this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
@@ -78,12 +77,15 @@ export default
           items: {
             delete: {
               name: "Delete", icon: "delete",
-              callback: () => util.deleteProp( item )
+              callback: () => {
+                item.parent.remove( item )
+                context.data.dirty = true
+                context.viewport.transformer.detach()
+              }
             },
           }
         }
-      },
-      items: { finish : { name : "Finito" } }
+      }
     } )
 
     $.contextMenu( {
@@ -95,24 +97,20 @@ export default
         return {
           items: {
             attach: {
-              name: "Attach to...", icon: "bone",
-              visible: () => context.selection.prop &&
-                              context.selection.prop.uuid === uuid,
-              callback: () => {
-                $( "#bones-list" ).show()                
-              }
+              name: "Attach to...", icon: "link",
+              callback: () => context.bonesList.openFor( item )
             },
             toggleHidden: { 
-              name: item.visible ? "Hide" : "Show", icon: "cut",
+              name: item.visible ? "Hide" : "Show", icon: "eye",
               callback: () => util.setHidden( item, item.visible )
             },
             clone: {
-              name: "Clone", icon: "plus",
+              name: "Clone", icon: "copy",
               callback: () => util.cloneProp( item )
             },
             delete: {
               name: "Delete", icon: "delete",
-              callback: () => util.deleteProp( item )
+              callback: () => util.deleteProps( item )
             },
           }
         }
@@ -120,7 +118,7 @@ export default
     } )
     
     $.contextMenu( {
-      selector: '#subpanel-props .jstree-node',
+      selector: '#subpanel-anims .jstree-node',
       build: function( el, event )
       {
         const uuid = el.context.id
@@ -133,7 +131,7 @@ export default
             },
             delete: {
               name: "Delete", icon: "delete",
-              callback: () => util.deleteProp( item )
+              callback: () => util.deleteAnimations( item )
             },
           }
         }
@@ -143,7 +141,7 @@ export default
   setup_keyboardEvents()
   {
     $('#subpanel-nodes tree').bind( "keydown", "del", e => {
-      let uuids = this.trees.nodes.get_selected(false)
+      const uuids = this.trees.nodes.get_selected(false)
       if ( ! confirm( `You are about to delete the following nodes:\n${ uuids.join("\n") }` ) )
         return
       uuids.map( uuid => util.getByUuid( uuid ) ).forEach( o => o.parent.remove( o ) )
@@ -152,20 +150,13 @@ export default
     } )
 
     $('#subpanel-props tree').bind( "keydown", "del", e => {
-      this.trees.props.get_selected(false)
-          .forEach( uuid => util.deleteProp( util.getByUuid( uuid ) ) )
-      context.viewport.transformer.detach()
-      context.data.dirty = true
+      const uuids = this.trees.props.get_selected(false)
+      util.deleteProps( ...uuids.map( uuid => util.getByUuid( uuid ) ) )
     } )
     
     $('#subpanel-anims tree').bind( "keydown", "del", e => {
-      let uuids = this.trees.anims.get_selected(false)
-      if ( ! confirm( `You are about to delete the following animations:\n${ uuids.join("\n") }` ) )
-        return
-      for ( let i = context.data.anims.length - 1 ; i >= 0 ; i-- )
-        if ( uuids.indexOf( context.data.anims[ i ].uuid ) > -1 )
-          context.data.anims.splice( i, 1 )
-      context.data.dirty = true
+      const uuids = this.trees.anims.get_selected(false)
+      util.deleteAnimations( ...uuids.map( uuid => util.getByUuid( uuid ) ) )
     } )
   },
   setup_jstreeEvents()

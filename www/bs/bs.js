@@ -10,6 +10,8 @@ function spatula()
       "delete": {name: "Delete", icon: "delete"},
       sep4: "---------",
       name: {
+        // visible: () => context.selection.prop &&
+        //                context.selection.prop.uuid === uuid,
           name: "Text", 
           type: 'text', 
           value: "Hello World", 

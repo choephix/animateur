@@ -40,37 +40,50 @@ export const context =
           callback( data )
     }
   },
-  bonesList : $( "#bones-list" ).ready( () => {
-    $( "#bones-list" ).hide()
-    context.events.subscribe( "change.data", () => {
-      let root_bone = util.getBone( "Hips" )
-      let dom = $( "#bones-list .contents" )
-      dom.empty()
-      dom.append( $('<button/>', { text: "❌", click: () => $( "#bones-list" ).hide() } ) )
-
-      // dom.appent( $("<ui")
-      
-      const addButton = bone => {
-        dom.append( $('<button/>', {
-          text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
-          click: () => {
-            if ( ! context.selection.prop ) return
-            bone.add( context.selection.prop )
-            $( "#bones-list" ).hide()
-          }
-        } ) )
-      }
-
-      if ( ! root_bone ) return
-      let alreadyAdded = []
-      root_bone.traverse( bone => {
-        if ( bone.type !== "Bone" ) return
-        if ( alreadyAdded.indexOf( bone.name ) > -1 ) return
-        alreadyAdded.push( bone.name )
-        addButton( bone )
+  bonesList : {
+    subjects : null, 
+    dom : $( "#bones-list" ).ready( () => {
+      $( "#bones-list" ).hide()
+      context.events.subscribe( "change.data", () => {
+        let root_bone = util.getBone( "Hips" )
+        let dom = $( "#bones-list .contents" )
+        dom.empty()
+        dom.append( $('<button/>', { text: "❌", click: () => this.close() } ) )
+  
+        // dom.appent( $("<ui")
+        
+        const addButton = bone => {
+          dom.append( $('<button/>', {
+            text: bone.name.replace("mixamorig",'').replace( /([A-Z])/g, ' $1' ),
+            click: () => this.addCurrentSubjectsTo( bone ),
+          } ) )
+        }
+  
+        if ( ! root_bone ) return
+        let alreadyAdded = []
+        root_bone.traverse( bone => {
+          if ( bone.type !== "Bone" ) return
+          if ( alreadyAdded.indexOf( bone.name ) > -1 ) return
+          alreadyAdded.push( bone.name )
+          addButton( bone )
+        } )
       } )
-    } )
-  } )
+    } ),
+    addCurrentSubjectsTo( parentToBe ) {
+      this.subjects.forEach( subject => parentToBe.add( subject ) )
+      this.close()
+      context.data.dirty = true
+    },
+    openFor( ...subjects ) {
+      this.subjects.length = 0
+      this.subjects.push( ...subjects )
+      $( this.dom ).show()
+    },
+    close() {
+      this.subjects.length = 0
+      $( this.dom ).hide()
+    }
+  } 
 }
 
 function initialize() 
@@ -94,18 +107,6 @@ function initialize()
     onAnimationsLoaded( util.makeSingleFrameAnimationFromFirstFrame( context.selection.anim ) ) )
   $( "button.animation.make-pose-last" ).click( () =>
     onAnimationsLoaded( util.makeSingleFrameAnimationFromLastFrame( context.selection.anim ) ) )
-  $( "button.bones-menu" ).click( () => $( "#bones-list" ).toggle() )
-  $( "button.clone-selected" ).click( () => {
-    if ( context.selection.prop && context.selection.prop === context.selection.last ) {
-      let clone = context.selection.prop.clone()
-      context.selection.prop.parent.add( clone )
-      context.data.props.push( clone )
-      context.data.dirty = true
-    }
-    if ( context.selection.anim && context.selection.anim === context.selection.last ) {
-      onAnimationsLoaded( context.selection.anim.clone() )
-    }
-  } )
 
   new DropField( document.getElementById('viewport'), false ).resolver( fileResolvers.scene ).loaded( onSceneLoaded )
   new DropField( document.getElementById('subpanel-nodes') ).resolver( fileResolvers.model ).loaded( onCharacterLoaded )

@@ -1,12 +1,12 @@
 import { context } from "./main.js"
 
 const utils = {
-  getByUuid: function ( uuid )
+  getByUuid( uuid )
   { 
     return context.viewport.scene.getObjectByProperty( "uuid", uuid ) ||
            context.data.anims.find( clip => clip.uuid === uuid )
   },
-  getBone: function( name, node = undefined )
+  getBone( name, node = undefined )
   {
     node = node || context.data.model
     if ( node.name.endsWith( name ) )
@@ -17,22 +17,32 @@ const utils = {
         return bone
     }
   },
-  clipBoneName: function( originalName )
+  clipBoneName( originalName )
   {
     try { return originalName.match( /([A-Z])\w+/g )[0].toString() }
     catch( e ) { console.error( e ) ; return originalName ; }
   },
-  setHidden: function( item, hidden )
+  setHidden( item, hidden )
   {
     hidden = hidden !== undefined ? hidden : ! item.visible
     item.userData.hidden = hidden
     item.visible = ! hidden
     context.data.dirty = true
   },
-  deleteProp: function ( prop ) {
-    prop.parent.remove( prop )
-    context.data.props.splice( context.data.props.indexOf( prop ), 1 )
+  deleteProps( ...props ) {
+    for ( let prop of props ) {
+      prop.parent.remove( prop )
+      context.data.props.splice( context.data.props.indexOf( prop ), 1 )
+    }
     context.data.dirty = true
+    context.viewport.transformer.detach()
+  },
+  deleteAnimations( ...clips ) {
+    for ( let clip of clips ) {
+      context.data.anims.splice( context.data.anims.indexOf( clip ), 1 )
+    }
+    context.data.dirty = true
+    context.viewport.animTPose()
   },
   cloneProp( prop ) {
     let clone = prop.clone()
@@ -49,7 +59,7 @@ const utils = {
 
   //// ANIMANI
   
-  makeSingleFrameAnimationFromFirstFrame: function( anim ) {
+  makeSingleFrameAnimationFromFirstFrame( anim ) {
     let a = anim.clone()
     a.tracks.forEach( t => { 
       t.times = [ 0 ]
@@ -58,7 +68,7 @@ const utils = {
     a.name += "-pose"
     return a
   },
-  makeSingleFrameAnimationFromLastFrame: function( anim ) {
+  makeSingleFrameAnimationFromLastFrame( anim ) {
     let a = anim.clone()
     a.tracks.forEach( t => { 
       t.times = [ 0 ]

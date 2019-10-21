@@ -289,6 +289,8 @@ button:focus {outline:0;}
 .context-menu-separator {
   border-color: #666
 }
+.context-menu-icon-link:before{ content:"\1F517\FE0E" }
+.context-menu-icon-eye:before{ content:"👁\FE0E" }
 
 
 
