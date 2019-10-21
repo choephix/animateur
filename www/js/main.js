@@ -41,7 +41,8 @@ export const context =
     }
   },
   bonesList : {
-    subjects : [], 
+    subjects : [],
+    keepWorldMatrix : false, 
     dom : $( "#bones-list" ).ready( () => {
       $( "#bones-list" ).hide()
       context.events.subscribe( "change.data", () => {
@@ -77,18 +78,25 @@ export const context =
       } )
     } ),
     addCurrentSubjectsTo( parentToBe ) {
-      this.subjects.forEach( subject => parentToBe.add( subject ) )
+      const add = subject =>
+        this.keepWorldMatrix ? parentToBe.attach( subject ) : parentToBe.add( subject )
+      this.subjects.forEach( subject => add( subject ) )
       this.close()
       context.data.dirty = true
+    },
+    setKeepWorldMatrix( value ) {
+      this.keepWorldMatrix = value
     },
     openFor( ...subjects ) {
       this.subjects.length = 0
       this.subjects.push( ...subjects )
       $( this.dom ).show()
+      return this
     },
     close() {
       this.subjects.length = 0
       $( this.dom ).hide()
+      return this
     }
   },
   animationBar : {

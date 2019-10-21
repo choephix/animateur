@@ -114,7 +114,11 @@ export default
             },
             attach: {
               name: "Attach to...", icon: "link",
-              callback: () => context.bonesList.openFor( item )
+              callback: () => context.bonesList.openFor( item ).setKeepWorldMatrix( false )
+            },
+            attachGlobal: {
+              name: "Attach to... (keep global matrix)", icon: "link",
+              callback: () => context.bonesList.openFor( item ).setKeepWorldMatrix( true )
             },
             addChild: {
               name: "Add empty child", icon: "add",
