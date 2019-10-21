@@ -79,9 +79,13 @@ export default
               name: "Add empty child", icon: "add",
               callback: () => util.addChild( item, "o" )
             },
-            addChild: {
+            addHolster: {
               name: "Add empty holster", icon: "add",
               callback: () => util.addChild( item, "holster-"+item.name, { isHolster : true } )
+            },
+            toggleHolster: { 
+              name: item.userData.isHolster ? "Untag as holster" : "Tag as holster", icon: "paste",
+              callback: () => item.userData.isHolster = item.userData.isHolster ? undefined : true
             },
             delete: {
               name: "Delete", icon: "delete",
