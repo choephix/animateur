@@ -74,8 +74,37 @@ main {
 /*#endregion */
 /*#region * * * * * * * * ANIMANI-BAR */
 
+#animation-bar {
+  display: flex;
+  flex-direction: column;
+
+}
 #animation-bar #slider {
   margin: 20px;
+}
+#animation-bar .buttons-bar {
+  width: 100%;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+#animation-bar .buttons-bar button {
+  border: 1px solid #FFF2;
+  background: #FFF1;
+  color: #FFF9;
+  /* height: 100%; */
+  cursor: pointer;
+  padding: 12px;
+  font-size: 20px;
+  font-weight: bolder;
+  margin: 1px;
+  display: list-item;
+}
+#animation-bar .buttons-bar button:hover {
+  background: #FFF2;
+  color: #FFFE;
+  /* color: #29F; */
 }
 
 /*#endregion */

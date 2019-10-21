@@ -1,5 +1,6 @@
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
 import { TransformControls } from 'https://threejs.org/examples/jsm/controls/TransformControls.js';
+import { context } from './main.js';
 
 let viewportElem = document.getElementById( "viewport" )
 let canvasElem = document.getElementById( "webgl-canvas" )
@@ -25,9 +26,10 @@ export default
     this.mixer.currentAction.enabled = true
     this.mixer.currentAction.weight = 1.0
     this.mixer.currentAction.play()
+    context.events.dispatch( "animation.play", this.mixer.currentAction )
   },
   animTogglePause() {
-    this.mixer.currentAction[ this.mixer.currentAction.isRunning ? "stop" : "play" ]()
+    this.mixer.currentAction.paused = ! this.mixer.currentAction.paused
   },
   animTPose() {
     this.mixer.stopAllAction()

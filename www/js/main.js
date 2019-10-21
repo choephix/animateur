@@ -91,21 +91,47 @@ export const context =
       range: "min",
       step: .001,
       slide: function( event, ui ) {
-        // context.viewport.currentAction.pause()
-        // context.viewport.currentAction.time = ui.value
+        context.viewport.mixer.currentAction.paused = true
+        context.viewport.mixer.currentAction.time = ui.value
       },
       change: function( event, ui ) {
-        $( "#slider-handle" ).text( ui.value )
+        // $( "#slider-handle" ).text( ui.value )
       },
       // slide: refreshSwatch,
       // change: refreshSwatch
     } ),
     dom : $( "#slider" ).ready( () => {
+      context.events.subscribe( "animation.play", action => {
+        console.log( "Clip detected: " + action )
+        console.log( action.getClip().tracks )
+      } )
       context.animationBar.onFrame()
     } ),
+    addEvent() {
+      const TRACK_NAME = "animateur.events.position"
+      const t = context.viewport.mixer.currentAction.time
+      const v = new THREE.Vector3(1,2,3)
+      const tracks = context.viewport.mixer.currentAction.getClip().tracks
+      let newFrame = new THREE.VectorKeyframeTrack( TRACK_NAME, [t], [ v.x, v.y, v.z ], THREE.InterpolateLinear )
+      let track = tracks.find( track => track.name === TRACK_NAME )
+      if ( ! track ) {
+        track = newFrame
+      } else {
+        let times = new Float32Array( track.times.length + 1 )
+        times.set( track.times )
+        times.set( newFrame.times, track.times.length )
+        let values = new Float32Array( track.values.length + 3 )
+        values.set( track.values )
+        values.set( newFrame.values, track.values.length )
+        track.times = times
+        track.values = values
+      }
+      tracks.push( track )
+      console.log( track )
+    },
     onFrame() {
       const action = context.viewport.mixer.currentAction
-      $( ".selector" ).slider( "option", "disabled", !!action )
+      $( ".selector" ).slider( "option", "disabled", !action )
       if ( action && action.isRunning )
       {
         $( "#slider" ).slider( "value", action.time )
