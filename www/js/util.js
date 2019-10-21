@@ -29,6 +29,14 @@ const utils = {
     item.visible = ! hidden
     context.data.dirty = true
   },
+  addChild( parent, name, userData={} )
+  {
+    let child = new THREE.Object3D()
+    child.name = name
+    child.userData = userData
+    parent.add( child )
+    context.data.dirty = true
+  },
   deleteProps( ...props ) {
     for ( let prop of props ) {
       prop.parent.remove( prop )

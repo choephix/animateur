@@ -75,6 +75,14 @@ export default
         return {
           callback: action => console.log( action, uuid ),
           items: {
+            addChild: {
+              name: "Add empty child", icon: "add",
+              callback: () => util.addChild( item, "o" )
+            },
+            addChild: {
+              name: "Add empty holster", icon: "add",
+              callback: () => util.addChild( item, "holster-"+item.name, { isHolster : true } )
+            },
             delete: {
               name: "Delete", icon: "delete",
               callback: () => {
@@ -96,13 +104,17 @@ export default
         const item = util.getByUuid( uuid )
         return {
           items: {
+            toggleHidden: { 
+              name: item.visible ? "Hide" : "Show", icon: "eye",
+              callback: () => util.setHidden( item, item.visible )
+            },
             attach: {
               name: "Attach to...", icon: "link",
               callback: () => context.bonesList.openFor( item )
             },
-            toggleHidden: { 
-              name: item.visible ? "Hide" : "Show", icon: "eye",
-              callback: () => util.setHidden( item, item.visible )
+            addChild: {
+              name: "Add empty child", icon: "add",
+              callback: () => util.addChild( item, "hot-point" )
             },
             clone: {
               name: "Clone", icon: "copy",
