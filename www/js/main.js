@@ -50,6 +50,13 @@ export const context =
         const dom = $( "#bones-list .contents" )
         dom.empty()
         dom.append( $('<button/>', { text: "❌", click: () => _this.close() } ) )
+        
+        const btn_global = $('<button/>', { text: "GLOBAL", click: () => {
+          _this.keepWorldMatrix = ! _this.keepWorldMatrix
+          btn_global.toggleClass( "off", ! _this.keepWorldMatrix )
+        } } ) 
+        btn_global.toggleClass( "off", ! _this.keepWorldMatrix )
+        dom.append( btn_global )
   
         const root_bone = util.getBone( "Hips" )
         if ( ! root_bone ) return
@@ -62,9 +69,9 @@ export const context =
         }
 
         dom.append(`<h3>HOLSTERS</h3>`)
-        root_bone.traverse( child => {
+        root_bone.traverse( child => { 
           if ( child.userData.isHolster )
-          addButton( child )
+            addButton( child )
         } )
         
         dom.append(`<h3>BONES</h3>`)
@@ -83,9 +90,6 @@ export const context =
       this.subjects.forEach( subject => add( subject ) )
       this.close()
       context.data.dirty = true
-    },
-    setKeepWorldMatrix( value ) {
-      this.keepWorldMatrix = value
     },
     openFor( ...subjects ) {
       this.subjects.length = 0
@@ -207,6 +211,7 @@ function refreshPropsList()
     let hasChildren = o.children && o.children.filter(c=>c.type!=="Bone").length
     push = push || ( ( o.type === "Object3D" || o.type === "Group" ) && hasChildren )
     push = push || o.type === "Mesh"
+    push = push && ! o.userData.isHolster
     push = push && o !== context.data.model
 
     if ( push )

@@ -181,6 +181,10 @@ main {
   color: white;
   background: #FFF1;
 }
+#bones-list button.off {
+  text-decoration: line-through;
+  opacity: .7;
+}
 
 /*#endregion */
 /*#region * * * * * * * OTHER SHIT */

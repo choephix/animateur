@@ -1,5 +1,21 @@
 import { context } from "./main.js"
 
+THREE.Object3D.prototype.findAll = function( func ) {
+  const results = []
+  this.traverse( child => func( child ) ? results.push( child ) : null )
+  return results
+}
+
+Array.prototype.mapToObject = function( func ) {
+  const result = {}
+  this.forEach( o => {
+    let r = func( o )
+    let [ key, value ] = Array.isArray( r ) ? [ r[0], r[1] ] : [ r, o ]
+    result[ key ] = value
+  } )
+  return result
+}
+
 const utils = {
   getByUuid( uuid )
   { 

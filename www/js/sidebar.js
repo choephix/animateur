@@ -106,22 +106,57 @@ export default
       {
         const uuid = el.context.id
         const item = util.getByUuid( uuid )
+        
+        const addToHolster = ( item, holster, keepWorldMatrix ) => {
+          context.bonesList.keepWorldMatrix = keepWorldMatrix
+          context.bonesList.openFor( item ).addCurrentSubjectsTo( holster )
+        }
+
+        const menuItems_attach_local = { }
+        context.data.model.traverse( child => {
+          if ( child.userData.isHolster )
+          {
+            let i = Object.keys( menuItems_attach_local ).length
+            menuItems_attach_local[ "attachTo_"+i ] = {
+              name: `>> "${ child.name }"`, icon: "link",
+              callback: () => addToHolster( item, child, false )
+            }
+          }
+        } )
+        const menuItems_attach_global = { }
+        context.data.model.traverse( child => {
+          if ( child.userData.isHolster )
+          {
+            let i = Object.keys( menuItems_attach_global ).length
+            menuItems_attach_global[ "attachTo_"+i ] = {
+              name: `${ child.name }`, icon: "link",
+              callback: () => addToHolster( item, child, false )
+            }
+          }
+        } )
+
         return {
           items: {
             toggleHidden: { 
               name: item.visible ? "Hide" : "Show", icon: "eye",
               callback: () => util.setHidden( item, item.visible )
             },
-            attach: {
-              name: "Attach to...", icon: "link",
-              callback: () => context.bonesList.openFor( item ).setKeepWorldMatrix( false )
+            sep1: "---------",
+            attachLocal: {
+              name: "Attach to", icon: "link",
+              items: menuItems_attach_local,
             },
             attachGlobal: {
-              name: "Attach to... (keep global matrix)", icon: "link",
-              callback: () => context.bonesList.openFor( item ).setKeepWorldMatrix( true )
+              name: "Attach to (keep global matrix)", icon: "link",
+              items: menuItems_attach_global,
             },
+            attachAdvanced: {
+              name: "Attach to...", icon: "link",
+              callback: () => context.bonesList.openFor( item )
+            },
+            sep2: "---------",
             addChild: {
-              name: "Add empty child", icon: "add",
+              name: "Add hotpoint (empty child)", icon: "add",
               callback: () => util.addChild( item, "hot-point" )
             },
             clone: {
@@ -180,6 +215,12 @@ export default
     $('#subpanel-props tree').bind( "keydown", "del", e => {
       const uuids = this.trees.props.get_selected(false)
       util.deleteProps( ...uuids.map( uuid => util.getByUuid( uuid ) ) )
+    } )
+    
+    $('#subpanel-props tree').bind( "keydown", "ctrl+alt+a", e => {
+      const uuids = this.trees.props.get_selected(false)
+      const items = uuids.map( uuid => util.getByUuid( uuid ) )
+      context.bonesList.openFor( ...items ).setKeepWorldMatrix( false )
     } )
     
     $('#subpanel-anims tree').bind( "keydown", "del", e => {
