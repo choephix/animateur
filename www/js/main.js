@@ -115,14 +115,12 @@ export const context =
       change: function( event, ui ) {
         // $( "#slider-handle" ).text( ui.value )
       },
-      // slide: refreshSwatch,
-      // change: refreshSwatch
     } ),
     dom : $( "#animation-bar" ).ready( () => {
-      context.events.subscribe( "animation.play", action => {
-        console.log( "Clip detected: " + action )
-        console.log( action.getClip().tracks )
-      } )
+      // context.events.subscribe( "animation.play", action => {
+      //   console.log( "Clip detected: " + action )
+      //   console.log( action.getClip().tracks )
+      // } )
       context.animationBar.onFrame()
     } ),
     addEvent() {
