@@ -3,6 +3,7 @@ import util from "./util.js"
 
 const swatches = []
 const pickr = createPickr( 'button.pick-color' )
+pickr.disable()
 
 function addSwatch( color ) 
 {
@@ -29,6 +30,7 @@ function createPickr( element ) {
     }
   } )
   .on( 'change', ( c, inst ) => { if ( inst.isOpen() ) setColor( c ) } )
+  .on( 'hide', inst => addSwatch( inst.getColor() ) )
   .on( 'save', c => addSwatch( c ) )
 }
 
@@ -51,14 +53,17 @@ function setColorTo( object, hex )
 
 function initialize(){
   context.events.subscribe( "change.selection", () => {
-    if ( ! context.selection.last ) return
-    if ( ! context.selection.last.matrixWorld === undefined ) return
-    let color = null
-    context.selection.last.traverse( child => {
-      if ( ! color && child.material ) 
-        color = child.material.color.getHexString()
-    } )
-    pickr.setColor( color, true )
+    if ( ! context.selection.last || context.selection.last.matrixWorld === undefined ) 
+    {
+      pickr.disable()
+    }
+    else
+    {
+      let color = util.findAll( context.selection.last, o => o.material && o.material.color )
+                  [ 0 ].material.color.getHexString()
+      pickr.setColor( color, true )
+      pickr.enable()
+    }
   } )
 }
 

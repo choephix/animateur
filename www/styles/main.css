@@ -188,7 +188,7 @@ main {
 }
 
 /*#endregion */
-/*#region * * * * * * * OTHER SHIT */
+/*#region * * * * * * * * OTHER SHIT */
 
 #viewport {
   flex-grow: 1;
@@ -229,15 +229,6 @@ main {
 
 
 
-
-
-
-
-
-
-
-
-
 #subpanel-properties input {
   width: 296px;
   flex: 1 1 0px;
@@ -270,43 +261,8 @@ main {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-#panel-toolbar separator {
-  position: relative;
-  display: block;
-  height: 2px;
-  width: 2px;
-}
-#panel-toolbar button {
-  width: 100%;
-  font-size: 28px;
-  height: 48px;
-  background: #444;
-  color: #CCC;
-  border: 1px solid #555;
-  margin: 1px;
-  cursor: pointer;
-}
-#panel-toolbar button:hover {
-  background: #555;
-  border: 1px solid #666;
-}
-
-
-
-
-
+/*#endregion */
+/*#region * * * * * * * * JS TREES in general */
 
 #panel-navigation .jstree [hidden] a input {
   /* opacity: .3; */
@@ -338,7 +294,38 @@ main {
   font-weight: 100;
 }
 
+/*#endregion */
+/*#region * * * * * * * * TOOLBAR */
 
+#panel-toolbar separator {
+  position: relative;
+  display: block;
+  height: 2px;
+  width: 2px;
+}
+#panel-toolbar button {
+  width: 100%;
+  font-size: 28px;
+  height: 48px;
+  background: #444;
+  color: #CCC;
+  border: 1px solid #555;
+  margin: 1px;
+  cursor: pointer;
+}
+#panel-toolbar button:hover {
+  background: #555;
+  border: 1px solid #666;
+}
+
+#panel-toolbar button.disabled {
+  opacity: .2;
+  pointer-events: none;
+  display: none;
+}
+
+/*#endregion */
+/*#region * * * * * * * * CONTEXT-MENU */
 
 .context-menu-list { 
   background: #222;
@@ -359,8 +346,8 @@ main {
 .context-menu-icon-end-left:before{ content:"⇤\FE0E" }
 .context-menu-icon-end-right:before{ content:"⇥\FE0E" }
 
-
-
+/*#endregion */
+/*#region * * * * * * * * LOADING */
 
 loading {
   width: 100%;

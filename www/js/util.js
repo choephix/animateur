@@ -1,5 +1,8 @@
 import { context } from "./main.js"
 
+Array.prototype.toSet = function() {
+  return new Set( this )
+}
 Array.prototype.mapToObject = function( func ) {
   const result = {}
   this.forEach( ( o, i ) => {

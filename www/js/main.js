@@ -308,14 +308,10 @@ function playDefaultAnimation() {
 }
 
 function extractColors( model ) {
-  let colors = []
-  model.traverse( o => {
-    if ( ! o.material ) return
-    if ( ! o.material.color ) return
-    let color = "#"+o.material.color.getHexString()
-    if ( colors.indexOf( color ) > -1 ) return
-    colors.push( color )
-  } )
+  let colors = util.findAll( model, o => o.material && o.material.color )
+                .map( o => o.material.color.getHexString() )
+                .toSet()
+  console.log( colors )
   colors.forEach( c => materials.pickr.setColor( c ) )
 }
 
