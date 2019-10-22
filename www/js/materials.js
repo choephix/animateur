@@ -28,7 +28,7 @@ function createPickr( element ) {
         interaction: { input: true, save: true }
     }
   } )
-  .on( 'change', c => setColor( c ) )
+  .on( 'change', ( c, inst ) => { if ( inst.isOpen() ) setColor( c ) } )
   .on( 'save', c => addSwatch( c ) )
 }
 
@@ -45,21 +45,21 @@ function setColor( c ) {
 
 function setColorTo( object, hex )
 {
-  object.traverse( child => {
-    if ( child.material ) 
-      child.material.color = new THREE.Color( hex )
-  } )
+  util.findAll( object, child => !!child.material )
+      .forEach( child => child.material.color = new THREE.Color( hex ) )
 }
 
 function initialize(){
-  // context.events.subscribe( "change.selection", () => {
-  //   if ( context.selection.last )
-  //     if ( context.selection.last.matrixWorld !== undefined )
-  //       context.selection.last.traverse( child => {
-  //         if ( child.material ) 
-  //           pickr.setColor( child.material.color.getHexString(), true )
-  //       } )
-  // } )
+  context.events.subscribe( "change.selection", () => {
+    if ( ! context.selection.last ) return
+    if ( ! context.selection.last.matrixWorld === undefined ) return
+    let color = null
+    context.selection.last.traverse( child => {
+      if ( ! color && child.material ) 
+        color = child.material.color.getHexString()
+    } )
+    pickr.setColor( color, true )
+  } )
 }
 
 export default { initialize, pickr , addSwatch }
