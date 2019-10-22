@@ -124,11 +124,11 @@ export const context =
       context.animationBar.onFrame()
     } ),
     addEvent() {
-      const TRACK_NAME = "animateur.events.position"
+      const TRACK_NAME = "animateurEvents.position"
       const t = context.viewport.mixer.currentAction.time
       const v = new THREE.Vector3(1,2,3)
       const tracks = context.viewport.mixer.currentAction.getClip().tracks
-      let newFrame = new THREE.VectorKeyframeTrack( TRACK_NAME, [t], [ v.x, v.y, v.z ], THREE.InterpolateLinear )
+      let newFrame = new THREE.VectorKeyframeTrack( TRACK_NAME, [t], [ v.x, v.y, v.z ], THREE.InterpolateDiscrete )
       let track = tracks.find( track => track.name === TRACK_NAME )
       if ( ! track ) {
         track = newFrame
