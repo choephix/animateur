@@ -105,18 +105,13 @@ export const fileResolvers = {
     let todel = []
     props.forEach( prop => {
       prop.traverse( o => { 
-        if ( o.type.indexOf("Light") > -1 )
-          todel.push( o )
-        if ( o.type === "SkinnedMesh" )
-          todel.push( o )
-        if ( o.type === "Bone" )
-          todel.push( o )
+        let del = false
+        del = del || o.type.indexOf("Light") > -1
+        del = del || o.type.indexOf("Camera") > -1
+        del = del || o.type === "SkinnedMesh"
+        del = del || o.type === "Bone"
+        if ( del ) todel.push( o )
       } )
-    } )
-    props.forEach( prop => {
-      if ( prop.type === "Group" || prop.type === "Object3D" )
-        if ( prop.children.length < 1 )
-          todel.push( o )
     } )
     todel.forEach( o => o.parent.remove( o ) )
 
