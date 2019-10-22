@@ -59,10 +59,14 @@ function initialize(){
     }
     else
     {
-      let color = util.findAll( context.selection.last, o => o.material && o.material.color )
-                  [ 0 ].material.color.getHexString()
-      pickr.setColor( color, true )
-      pickr.enable()
+      let objects = util.findAll( context.selection.last, o => o.material && o.material.color )
+      if ( objects.length )
+      {
+        pickr.setColor( objects[ 0 ].material.color.getHexString(), true )
+        pickr.enable()
+      } else {
+        pickr.disable()
+      }
     }
   } )
 }
