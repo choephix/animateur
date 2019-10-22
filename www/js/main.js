@@ -1,6 +1,7 @@
 import viewport from './viewport.js'
 import sidebar from './sidebar.js'
 import materials from './materials.js'
+import animani from './animani.js'
 import exporter from './export.js'
 import { DropField, fileResolvers, loadFromUrl } from './load.js'
 
@@ -103,60 +104,7 @@ export const context =
       return this
     }
   },
-  animationBar : {
-    slider : $( "#slider" ).slider({
-      orientation: "horizontal",
-      range: "min",
-      step: .001,
-      slide: function( event, ui ) {
-        context.viewport.mixer.currentAction.paused = true
-        context.viewport.mixer.currentAction.time = ui.value
-      },
-      change: function( event, ui ) {
-        // $( "#slider-handle" ).text( ui.value )
-      },
-    } ),
-    dom : $( "#animation-bar" ).ready( () => {
-      // context.events.subscribe( "animation.play", action => {
-      //   console.log( "Clip detected: " + action )
-      //   console.log( action.getClip().tracks )
-      // } )
-      context.animationBar.onFrame()
-    } ),
-    addEvent() {
-      const TRACK_NAME = "animateurEvents.position"
-      const t = context.viewport.mixer.currentAction.time
-      const v = new THREE.Vector3(1,2,3)
-      const tracks = context.viewport.mixer.currentAction.getClip().tracks
-      let newFrame = new THREE.VectorKeyframeTrack( TRACK_NAME, [t], [ v.x, v.y, v.z ], THREE.InterpolateDiscrete )
-      let track = tracks.find( track => track.name === TRACK_NAME )
-      if ( ! track ) {
-        track = newFrame
-      } else {
-        let times = new Float32Array( track.times.length + 1 )
-        times.set( track.times )
-        times.set( newFrame.times, track.times.length )
-        let values = new Float32Array( track.values.length + 3 )
-        values.set( track.values )
-        values.set( newFrame.values, track.values.length )
-        track.times = times
-        track.values = values
-      }
-      tracks.push( track )
-      console.log( track )
-    },
-    onFrame() {
-      const action = context.viewport.mixer.currentAction
-      $( this.dom ).toggle( !!action )
-      // $( ".selector" ).slider( "option", "disabled", !action )
-      if ( action && action.isRunning )
-      {
-        $( "#slider" ).slider( "value", action.time )
-        $( "#slider" ).slider( "option", "max", action.getClip().duration )
-      }
-      requestAnimationFrame( () => this.onFrame() )
-    }
-  }
+  animationBar : animani.animationBar
 }
 
 function initialize() 

@@ -2,21 +2,26 @@ import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitCo
 import { TransformControls } from 'https://threejs.org/examples/jsm/controls/TransformControls.js';
 import { context } from './main.js';
 
-let viewportElem = document.getElementById( "viewport" )
-let canvasElem = document.getElementById( "webgl-canvas" )
+const viewportElem = document.getElementById( "viewport" )
+const canvasElem = document.getElementById( "webgl-canvas" )
 
 export default 
 {
-  scene : new THREE.Scene(),
   clock : new THREE.Clock(),
-  mixer : new THREE.AnimationMixer( null ),
-  characterModel : null,
+  scene : new THREE.Scene(),
+  camera : new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 ),
   transformer: null,
+  clipEventPoint : new THREE.Object3D(),
+  
+  characterModel : new THREE.Group(),
+  mixer : new THREE.AnimationMixer( null ),
+  
   setModel( subject )
   {
     this.characterModel = subject
     this.scene.add( subject )
-    this.mixer = new THREE.AnimationMixer( subject )
+    // this.mixer = new THREE.AnimationMixer( subject )
+    this.mixer = new THREE.AnimationMixer( this.scene )
   },
   animPlay( anim ) {
     this.mixer.stopAllAction()
@@ -43,12 +48,15 @@ export default
   {
     this.clock.start()
 
-    this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 )
     this.camera.position.z = 3
     this.camera.position.y = 2
     this.camera.lookAt( new THREE.Vector3() )
 
     this.scene.background = new THREE.Color( 0x224477 )
+    
+    this.clipEventPoint.name = "animateurEvents"
+    this.clipEventPoint.add( new THREE.Mesh( new THREE.SphereBufferGeometry( .05, 12, 8 ), new THREE.MeshStandardMaterial({color:0xEE8800}) ) )
+    this.scene.add( this.clipEventPoint )
     
     this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 
@@ -84,7 +92,7 @@ export default
     ligths[ 3 ].name = "Light (directional}"
     this.scene.add( ligths[ 3 ] )
 
-    this.transformer = new TransformControls( this.camera, this.renderer.domElement )
+    this.transformer = new TransformControls( this.camera, canvasElem )
     this.transformer.addEventListener( 'dragging-changed', event => this.orbit.enabled = ! event.value )
     this.transformer.setSize( 0.5 )
     this.transformer.setSpace( "local" )

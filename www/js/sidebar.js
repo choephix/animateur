@@ -1,6 +1,5 @@
 import { context } from "./main.js"
 import util from "./util.js"
-import dev from "./dev.js"
 
 const mapping = {
   node( node, depth=0 ) {
@@ -277,7 +276,8 @@ export default
     context.selection.node = node
     context.selection.dirty = true
     context.viewport.transformer.attach( node )
-    context.viewport.mixer.stopAllAction()
+    // context.viewport.mixer.stopAllAction()
+    // context.viewport.mixer.currentAction.paused = true
   },
   onSelectProp( data ) 
   {
