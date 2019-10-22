@@ -259,6 +259,16 @@ main {
   display: flex;
   flex-direction: row;
 }
+button.mini {
+  border: none;
+  background: none;
+  color: #FFF9;
+  position: absolute;
+  height: 100%;
+  right: 0;
+  top: 0;
+}
+button.mini:hover { color: white }
 
 
 /*#endregion */
