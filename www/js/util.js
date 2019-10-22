@@ -33,11 +33,22 @@ const utils = {
     try { return originalName.match( /([A-Z])\w+/g )[0].toString() }
     catch( e ) { console.error( e ) ; return originalName ; }
   },
+  /// find all in children
   findAll : ( root, func ) => {
     let results = []
     root.traverse( child => func( child ) ? results.push( child ) : null )
     return results
   },
+  /// find first in children
+  // findFirst : ( parent, func ) => {
+  //   if ( func( parent ) )
+  //     return parent
+  //   if ( ! parent.children.length )
+  //     return null
+  //   for ( let child of parent.children )
+  //     if ( func( child ) )
+  //       return child
+  // }
 
   setHidden( item, hidden )
   {
