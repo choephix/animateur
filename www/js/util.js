@@ -1,15 +1,9 @@
 import { context } from "./main.js"
 
-THREE.Object3D.prototype.findAll = function( func ) {
-  const results = []
-  this.traverse( child => func( child ) ? results.push( child ) : null )
-  return results
-}
-
 Array.prototype.mapToObject = function( func ) {
   const result = {}
-  this.forEach( o => {
-    let r = func( o )
+  this.forEach( ( o, i ) => {
+    let r = func( o, i )
     let [ key, value ] = Array.isArray( r ) ? [ r[0], r[1] ] : [ r, o ]
     result[ key ] = value
   } )
@@ -33,11 +27,18 @@ const utils = {
         return bone
     }
   },
+  
   clipBoneName( originalName )
   {
     try { return originalName.match( /([A-Z])\w+/g )[0].toString() }
     catch( e ) { console.error( e ) ; return originalName ; }
   },
+  findAll : ( root, func ) => {
+    let results = []
+    root.traverse( child => func( child ) ? results.push( child ) : null )
+    return results
+  },
+
   setHidden( item, hidden )
   {
     hidden = hidden !== undefined ? hidden : ! item.visible

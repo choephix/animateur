@@ -37,20 +37,20 @@ const mapping = {
   }
 }
 
+const treeSettings = { core: { data: [], multiple: true } }
+treeSettings.core.themes = { icons : false, responsive: true, ellipsis: true, }
+treeSettings.core.check_callback = true
+treeSettings.core.dblclick_toggle = false
+
 export default
 {
-  trees: { nodes : null, props : null, anims : null },
+  trees: { 
+    nodes : $('#subpanel-nodes tree').jstree( treeSettings ).jstree( true ), 
+    props : $('#subpanel-props tree').jstree( treeSettings ).jstree( true ), 
+    anims : $('#subpanel-anims tree').jstree( treeSettings ).jstree( true ), 
+  },
   setup()
   {
-    let settings = { core: { data: [], multiple: true } }
-    settings.core.themes = { icons : false, responsive: true, ellipsis: true, }
-    settings.core.check_callback = true
-    settings.core.dblclick_toggle = false
-
-    this.trees.nodes = $('#subpanel-nodes tree').jstree( settings ).jstree( true )
-    this.trees.props = $('#subpanel-props tree').jstree( settings ).jstree( true )
-    this.trees.anims = $('#subpanel-anims tree').jstree( settings ).jstree( true )
-    
     this.setup_jstreeEvents()
     this.setup_keyboardEvents()
     this.setup_contextMenus()
@@ -65,6 +65,17 @@ export default
   },
   setup_contextMenus()
   {
+    const doProperTreeSelectionAndGetItems = ( uuid, tree ) => {
+      const current_uuids = tree.get_selected()
+      if ( current_uuids.indexOf( uuid ) < 0 ) {
+        tree.deselect_all()
+        tree.select_node( uuid )
+        return [ util.getByUuid( uuid ) ]
+      } else {
+        return current_uuids.map( uuid => util.getByUuid( uuid ) )
+      }
+    }
+
     $.contextMenu( {
       selector: '#subpanel-nodes .jstree-node',
       build: function( el, event )
@@ -102,70 +113,69 @@ export default
 
     $.contextMenu( {
       selector: '#subpanel-props .jstree-node',
-      build: ( el, event )=>
+      build: ( el, event ) =>
       {
-        const uuid = el.context.id
-        const item = util.getByUuid( uuid )
-        
-        const addToHolster = ( item, holster, keepWorldMatrix ) => {
-          context.bonesList.keepWorldMatrix = keepWorldMatrix
-          context.bonesList.openFor( item ).addCurrentSubjectsTo( holster )
-        }
+        const _this = context.sidebar
 
-        const menuItems_attach_local = { }
-        context.data.model.traverse( child => {
-          if ( child.userData.isHolster )
-          {
-            let i = Object.keys( menuItems_attach_local ).length
-            menuItems_attach_local[ "attachTo_"+i ] = {
-              name: `>> "${ child.name }"`, icon: "link",
-              callback: () => addToHolster( item, child, false )
+        const uuid = el.context.id
+        const targets = doProperTreeSelectionAndGetItems( uuid, _this.trees.props )
+
+        const makeItem = ( holster, i, keepWorldMatrix ) => {
+          return [ "attachTo_" + i, {
+            name: holster.name + ( keepWorldMatrix ? " (keep global matrix)" : '' ), 
+            icon: "link",
+            callback: () => {
+              context.bonesList.keepWorldMatrix = keepWorldMatrix
+              context.bonesList.openFor( ...targets ).addCurrentSubjectsTo( holster )
             }
-          }
-        } )
-        const menuItems_attach_global = { }
-        context.data.model.traverse( child => {
-          if ( child.userData.isHolster )
-          {
-            let i = Object.keys( menuItems_attach_global ).length
-            menuItems_attach_global[ "attachTo_"+i ] = {
-              name: `${ child.name }`, icon: "link",
-              callback: () => addToHolster( item, child, false )
-            }
-          }
-        } )
+          } ]
+        }
 
         return {
           items: {
             toggleHidden: { 
-              name: item.visible ? "Hide" : "Show", icon: "eye",
-              callback: () => util.setHidden( item, item.visible )
+              name: targets.length && targets[0].visible ? "Hide" : "Show", icon: "eye",
+              visible: targets.length === 1,
+              callback: () => util.setHidden( targets[0], targets[0].visible )
+            },
+            setHiddenTrue: { 
+              name: "Hide", icon: "eye", 
+              visible: targets.length > 1,
+              callback: () => targets.forEach( o => util.setHidden( o, true ) )
+            },
+            setHiddenFalse: { 
+              name: "Show", icon: "eye", 
+              visible: targets.length > 1,
+              callback: () => targets.forEach( o => util.setHidden( o, false ) )
             },
             sep1: "---------",
             attachLocal: {
               name: "Attach to", icon: "link",
-              items: menuItems_attach_local,
+              items: util.findAll( context.data.model, child => child.userData.isHolster )
+                     .mapToObject( ( holster, i ) => makeItem( holster, i, false ) ),
             },
             attachGlobal: {
               name: "Attach to (keep global matrix)", icon: "link",
-              items: menuItems_attach_global,
+              items: util.findAll( context.data.model, child => child.userData.isHolster )
+                     .mapToObject( ( holster, i ) => makeItem( holster, i, true ) ),
             },
-            attachAdvanced: {
-              name: "Attach to...", icon: "link",
-              callback: () => context.bonesList.openFor( item )
-            },
+            // attachAdvanced: {
+            //   name: "Attach to...", icon: "link",
+            //   callback: () => context.bonesList.openFor( ...targets )
+            // },
             sep2: "---------",
             addChild: {
               name: "Add hotpoint (empty child)", icon: "add",
-              callback: () => util.addChild( item, "hot-point" )
+              visible: targets.length === 1,
+              callback: () => util.addChild( ____target____, "hot-point" )
             },
             clone: {
               name: "Clone", icon: "copy",
-              callback: () => util.cloneProp( item )
+              callback: () => targets.forEach( o => util.cloneProp( o ) )
             },
             delete: {
               name: "Delete", icon: "delete",
-              callback: () => util.deleteProps( item )
+              callback: () => util.deleteProps( ...targets )
             },
           }
         }
