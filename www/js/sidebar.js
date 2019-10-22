@@ -307,6 +307,7 @@ export default
   },
   update()
   {
+    if ( ! context.data.model ) return
     this.trees.nodes.settings.core.data = mapping.node( context.data.model )
     this.trees.props.settings.core.data = [ ...context.data.props.map( mapping.prop ) ]
     this.trees.anims.settings.core.data = [ ...context.data.anims.map( mapping.anim ) ]
