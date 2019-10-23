@@ -19,7 +19,7 @@
     "browser-sync": "^2.26.7",
     "eslint": "^6.5.1",
     "nodemon": "^1.19.3",
-    "typings": "^2.1.1"
+    "typings": "^2.0.1"
   },
   "nodemonConfig": {
     "ignore": [
