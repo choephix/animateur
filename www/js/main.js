@@ -116,8 +116,9 @@ function initialize()
   sidebar.setup()
   materials.initialize()
 
-  const loadFromServer = filename => {
-    const url = `https://github.com/choephix/herocom/releases/download/v0.0.0-test.2/${ filename }.glb`
+  const loadFromServer = ( filename, token ) => {
+    const url_base = "https://firebasestorage.googleapis.com/v0/b/herocom-dev.appspot.com/o/"
+    const url = `${ url_base }glb%2F${ filename }?alt=media&token=${ token }`
     loadFromUrl( url ).then( gltf => {
       onSceneLoaded( gltf.scene.children[ 0 ], gltf.animations )
       context.data.model.scale.setScalar( .01 )
@@ -130,12 +131,21 @@ function initialize()
   $.contextMenu( {
     selector: 'button.load-from-server', 
     trigger: 'left',
-    items: [ "hero-captain.2", "hero-captain-alternative", "hero-shield.10", "hero-witcha.2", "hero-ashi.1", "hero-torcher.1", "hero-gwendy.3", "hero-gunner",  ]
-            .mapToObject( o => [ o , { name : o, callback : () => loadFromServer( o ) } ] )
+    items: [
+            [ "fea0fd00-1962-4c49-b929-c6568819354c", "default.gltf" ],
+            [ "adbf484c-e612-4f44-843f-28ef8557b06d", "hero-captain-alternative.glb" ],
+            [ "8c32ce41-e058-4c8d-bb1f-d89c3e3e3cc3", "hero-captain.glb" ],
+            [ "29909ceb-5116-4248-8433-4a7a8983474d", "hero-shield.glb" ],
+            [ "9c7a2b30-a8a0-4cbe-9013-e9c61677edda", "hero-witcha.glb" ],
+            [ "5f120fc7-a39c-4923-9a41-bae15fb81b81", "hero-ashi.glb" ],
+            [ "e3c3be10-0f0c-42e4-8394-a4a4d9855d89", "hero-torcher.glb" ],
+            [ "b1d9504a-839a-4ca3-be19-e8d4abb1e95f", "hero-gwendy.glb" ],
+            [ "11972db4-98f0-4fd4-89c4-6d52d53021e6", "hero-gunner.glb" ],
+           ].mapToObject( a => [ a[1] , { name : a[1], callback : () => loadFromServer( a[1], a[0] ) } ] )
   } )
   $( "" ).click( e => exporter.save( context.data.model, context.data.anims, 
-                                                e.currentTarget.getAttribute("binary") == "true",
-                                                e.currentTarget.getAttribute("local") == "true" ) )
+                                     e.currentTarget.getAttribute("binary") == "true",
+                                     e.currentTarget.getAttribute("local") == "true" ) )
 
   $( "button.transform.position" ).click( e => viewport.transformer.setMode( "translate" ) )
   $( "button.transform.rotation" ).click( e => viewport.transformer.setMode( "rotate" ) )
