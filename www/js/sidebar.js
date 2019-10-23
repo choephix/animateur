@@ -272,12 +272,9 @@ export default
     let node = util.getByUuid( data.node.id )
     context.selection.all = data.selected
     context.selection.transformable = 
-    context.selection.last =
-    context.selection.node = node
+    context.selection.last = node
+    context.selection.type = "node"
     context.selection.dirty = true
-    context.viewport.transformer.attach( node )
-    // context.viewport.mixer.stopAllAction()
-    // context.viewport.mixer.currentAction.paused = true
   },
   onSelectProp( data ) 
   {
@@ -286,11 +283,9 @@ export default
     let prop = util.getByUuid( data.node.id )
     context.selection.all = data.selected
     context.selection.transformable = 
-    context.selection.last = 
-    context.selection.prop = prop
+    context.selection.last = prop
+    context.selection.type = "prop"
     context.selection.dirty = true
-    context.viewport.transformer.attach( prop )
-    context.viewport.animTPose()
   },
   onSelectAnim( data ) 
   {
@@ -299,11 +294,9 @@ export default
     let clip = context.data.anims.find( anim => anim.uuid === data.node.id )
     context.selection.all = data.selected
     context.selection.transformable = null
-    context.selection.last = 
-    context.selection.anim = clip
+    context.selection.last = clip
+    context.selection.type = "anim"
     context.selection.dirty = true
-    context.viewport.transformer.detach()
-    context.viewport.animPlay( clip )
   },
   update()
   {
@@ -345,7 +338,7 @@ class Row {
   // unconvertValue( n ) { return n }
   // setUnconvert( func ) { this.unconvertValue = func }
 
-  updateMaybe( vector ) {
+  update( vector ) {
     const subs = [ ..."xyz" ]
     subs.forEach( ( sub, i ) => {
       if ( ! $(this.fields[i]).is(":focus") )
@@ -389,6 +382,6 @@ const inspector =
   {
     if ( context.selection.transformable )
       for ( let property in this.rows )
-        this.rows[ property ].updateMaybe( context.selection.transformable[ property ] )
+        this.rows[ property ].update( context.selection.transformable[ property ] )
   }
 }

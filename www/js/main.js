@@ -117,8 +117,8 @@ function initialize()
   materials.initialize()
 
   const loadFromServer = filename => {
-    loadFromUrl( `/gltf/${ filename }.gltf` )
-    .then( gltf => {
+    const url = `https://github.com/choephix/herocom/releases/download/v0.0.0-test.2/${ filename }.glb`
+    loadFromUrl( url ).then( gltf => {
       onSceneLoaded( gltf.scene.children[ 0 ], gltf.animations )
       context.data.model.scale.setScalar( .01 )
     } )
@@ -130,7 +130,8 @@ function initialize()
   $.contextMenu( {
     selector: 'button.load-from-server', 
     trigger: 'left',
-    items: [ "captain", "gwendy", "default" ].mapToObject( o => [ o , { name : o, callback : () => loadFromServer( o ) } ] )
+    items: [ "hero-captain.2", "hero-captain-alternative", "hero-shield.10", "hero-witcha.2", "hero-ashi.1", "hero-torcher.1", "hero-gwendy.3", "hero-gunner",  ]
+            .mapToObject( o => [ o , { name : o, callback : () => loadFromServer( o ) } ] )
   } )
   $( "" ).click( e => exporter.save( context.data.model, context.data.anims, 
                                                 e.currentTarget.getAttribute("binary") == "true",
@@ -158,11 +159,11 @@ function initialize()
 
 function onFrame() {
   if ( context.data.dirty ) {
-    context.events.dispatch( "change.data" )
+    context.events.dispatch( "change.data", context.data )
     context.data.dirty = false
   }
   if ( context.selection.dirty ) {
-    context.events.dispatch( "change.selection" )
+    context.events.dispatch( "change.selection", context.selection )
     context.selection.dirty = false
   }
   requestAnimationFrame( () => onFrame() )

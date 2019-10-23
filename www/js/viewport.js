@@ -36,14 +36,6 @@ export default
   animTogglePause() {
     this.mixer.currentAction.paused = ! this.mixer.currentAction.paused
   },
-  animTPose() {
-    this.mixer.stopAllAction()
-    if ( this.mixer.currentAction ) {
-      this.mixer.currentAction.enabled = false
-      this.mixer.currentAction.weight = 0.0
-    }
-    this.mixer.currentAction = undefined
-  },
   setup()
   {
     this.clock.start()
@@ -101,6 +93,22 @@ export default
     
     this.grid = new THREE.GridHelper( 20, 20, 0x99CCFF, 0x4466CC )
     this.scene.add( this.grid )
+
+    /// /// /// /// ///
+
+    context.events.subscribe( "change.selection", () => {
+      
+      if ( context.selection.last.hasOwnProperty( "duration" ) )
+        this.animPlay( context.selection.last )
+      else
+      if ( context.selection.type == "prop" )
+        this.mixer.currentAction.paused = true
+
+      if ( context.selection.type == "prop" || context.selection.type == "node" )
+        this.transformer.attach( context.selection.last )
+      else
+        this.transformer.detach()
+    } )
 
     /// /// /// /// ///
 
