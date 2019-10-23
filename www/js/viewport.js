@@ -20,8 +20,8 @@ export default
   {
     this.characterModel = subject
     this.scene.add( subject )
-    // this.mixer = new THREE.AnimationMixer( subject )
-    this.mixer = new THREE.AnimationMixer( this.scene )
+    this.mixer = new THREE.AnimationMixer( subject )
+    // this.mixer = new THREE.AnimationMixer( this.scene )
   },
   animPlay( anim ) {
     this.mixer.stopAllAction()
@@ -54,9 +54,10 @@ export default
 
     this.scene.background = new THREE.Color( 0x224477 )
     
+    this.scene.add( this.clipEventPoint )
     this.clipEventPoint.name = "animateurEvents"
     this.clipEventPoint.add( new THREE.Mesh( new THREE.SphereBufferGeometry( .05, 12, 8 ), new THREE.MeshStandardMaterial({color:0xEE8800}) ) )
-    this.scene.add( this.clipEventPoint )
+    this.clipEventPoint.visible = false
     
     this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 

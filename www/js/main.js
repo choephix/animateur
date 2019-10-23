@@ -104,7 +104,8 @@ export const context =
       return this
     }
   },
-  animationBar : animani.animationBar
+  animationBar : animani.animationBar,
+  // ani : animani,
 }
 
 function initialize() 
@@ -115,9 +116,26 @@ function initialize()
   sidebar.setup()
   materials.initialize()
 
+  const loadFromServer = filename => {
+    loadFromUrl( `/gltf/${ filename }.gltf` )
+    .then( gltf => {
+      onSceneLoaded( gltf.scene.children[ 0 ], gltf.animations )
+      context.data.model.scale.setScalar( .01 )
+    } )
+  }
   $( "button.save" ).click( e => exporter.save( context.data.model, context.data.anims, 
                                                 e.currentTarget.getAttribute("binary") == "true",
                                                 e.currentTarget.getAttribute("local") == "true" ) )
+    
+  $.contextMenu( {
+    selector: 'button.load-from-server', 
+    trigger: 'left',
+    items: [ "captain", "gwendy", "default" ].mapToObject( o => [ o , { name : o, callback : () => loadFromServer( o ) } ] )
+  } )
+  $( "" ).click( e => exporter.save( context.data.model, context.data.anims, 
+                                                e.currentTarget.getAttribute("binary") == "true",
+                                                e.currentTarget.getAttribute("local") == "true" ) )
+
   $( "button.transform.position" ).click( e => viewport.transformer.setMode( "translate" ) )
   $( "button.transform.rotation" ).click( e => viewport.transformer.setMode( "rotate" ) )
   $( "button.transform.scale" ).click( e => viewport.transformer.setMode( "scale" ) )
@@ -259,16 +277,10 @@ function extractColors( model ) {
   let colors = util.findAll( model, o => o.material && o.material.color )
                 .map( o => o.material.color.getHexString() )
                 .toSet()
-  console.log( colors )
   colors.forEach( c => materials.pickr.setColor( c ) )
 }
 
 initialize()
-
-// loadFromUrl( "/gltf/captain.gltf" ).then( gltf => {
-//   onSceneLoaded( gltf )
-//   context.data.model.scale.setScalar( .01 )
-//  } )
 
 window.context = context
 window.util = util
