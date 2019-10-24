@@ -110,6 +110,20 @@ main {
   color: #FFFE;
   /* color: #29F; */
 }
+#animation-bar #events-slider .ui-slider-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FC09;
+}
+#animation-bar #events-slider .ui-slider-handle:hover {
+  color: #FC0E;
+}
+#animation-bar #events-slider .ui-slider-handle:hover::before {
+  color: #FC0E;
+  /* content: attr(""); */
+  /* content: "☠"; */
+}
 
 /*#endregion */
 /*#region * * * * * * * * DRAG-OVERs */

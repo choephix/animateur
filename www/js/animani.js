@@ -56,9 +56,10 @@ export default {
     } ),
 
     dom : $( "#animation-bar" ).ready( () => {
-      context.events.subscribe( "animation.play", action => 
-                                THIS.animationBar.onAnimationPlay( action ) )
+      context.events.subscribe( "animation.play", action => THIS.animationBar.onAnimationPlay( action ) )
       context.animationBar.onFrame()
+      $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
+        ( ui, i ) => $( ui ).text( ( i + 1 ).toString() ) )
     } ),
     onAnimationPlay( action ) 
     {
