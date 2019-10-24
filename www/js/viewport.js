@@ -11,7 +11,6 @@ export default
   scene : new THREE.Scene(),
   camera : new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 ),
   transformer: null,
-  clipEventPoint : new THREE.Object3D(),
   
   characterModel : new THREE.Group(),
   mixer : new THREE.AnimationMixer( null ),
@@ -44,11 +43,6 @@ export default
     this.camera.lookAt( new THREE.Vector3() )
 
     this.scene.background = new THREE.Color( 0x224477 )
-    
-    this.scene.add( this.clipEventPoint )
-    this.clipEventPoint.name = "animateurEvents"
-    this.clipEventPoint.add( new THREE.Mesh( new THREE.SphereBufferGeometry( .05, 12, 8 ), new THREE.MeshStandardMaterial({color:0xEE8800}) ) )
-    this.clipEventPoint.visible = false
     
     this.renderer = new THREE.WebGLRenderer( { canvas: canvasElem, antialias: true } )
 
