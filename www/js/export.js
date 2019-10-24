@@ -7,13 +7,12 @@ const exporter = new GLTFExporter()
 
 export default
 {
-  save: ( model, animations, binary, local ) => 
+  save: ( model, animations, userData, binary, local ) => 
   {
-
     // let exportee = new THREE.Scene()
     // exportee.add( model )
-    // exportee.userData = { message : "This worked, damnit!" }
     let exportee = model 
+    exportee.userData = userData
 
     exporter.parse( exportee, function ( data ) {
       const name = model.name || "LeScene"

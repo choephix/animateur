@@ -142,7 +142,8 @@ function initialize()
             [ "11972db4-98f0-4fd4-89c4-6d52d53021e6", "hero-gunner.glb" ],
            ].mapToObject( a => [ a[1] , { name : a[1], callback : () => loadFromServer( a[1], a[0] ) } ] )
   } )
-  $( "" ).click( e => exporter.save( context.data.model, context.data.anims, 
+  $( "button.save" ).click( e => exporter.save( context.data.model, context.data.anims, 
+                                     { animationsUserData : context.animani.data },
                                      e.currentTarget.getAttribute("binary") == "true",
                                      e.currentTarget.getAttribute("local") == "true" ) )
 
@@ -272,6 +273,8 @@ function onSceneLoaded( model, animations )
   playDefaultAnimation()
 
   context.data.props.forEach( prop => prop.visible = ! prop.userData.hidden )
+
+  context.animani.data = model.userData.animationsUserData || {}
 
   context.data.dirty = true
 }

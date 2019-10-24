@@ -4,10 +4,10 @@ import THIS from "./animani.js"
 const Animateur = {
   data : { }, /// uuid -> userdata ~
   getClipUserData( clip ) {
-    let udata = this.data[ clip.uuid ]
+    let udata = this.data[ clip.name ]
     if ( ! udata )
     {
-      this.data[ clip.uuid ] =
+      this.data[ clip.name ] =
       udata = {
         fadeTimes : [ 0.0 , clip.duration ],
         eventTimes : [ ]
@@ -18,7 +18,8 @@ const Animateur = {
 }
 
 export default { 
-  data : Animateur.data,
+  get data() { return Animateur.data },
+  set data( value ) { Animateur.data = value },
   animationBar : {
     sliderPlay : $( "#play-slider" ).slider({
       orientation: "horizontal",
