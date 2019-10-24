@@ -29,8 +29,6 @@ export default {
       slide: function( event, ui ) {
         context.viewport.mixer.currentAction.paused = true
         context.viewport.mixer.currentAction.time = ui.value
-        // const clip = context.viewport.mixer.currentAction.getClip()
-        // console.log( ui )
       },
     } ),
     sliderWeight : $( "#weight-slider" ).slider( {
@@ -44,6 +42,8 @@ export default {
         const clip = context.viewport.mixer.currentAction.getClip()
         findTrack( clip, TRACK_NAME_WEIGTH ).times[ 1 ] = reusable.weight[ 0 ]
         findTrack( clip, TRACK_NAME_WEIGTH ).times[ 2 ] = reusable.weight[ 1 ]
+        context.viewport.mixer.currentAction.paused = true
+        context.viewport.mixer.currentAction.time = ui.value
       },
     } ),
     sliderEvents : $( "#events-slider" ).slider( {
@@ -52,7 +52,11 @@ export default {
       min: 0.0,
       max: 10.0,
       step: .001,
-      values: reusable.events
+      values: reusable.events,
+      slide: function( event, ui ) {
+        context.viewport.mixer.currentAction.paused = true
+        context.viewport.mixer.currentAction.time = ui.value
+      },
     } ),
 
     dom : $( "#animation-bar" ).ready( () => {
@@ -72,11 +76,12 @@ export default {
       let track_weight = findTrack( clip, TRACK_NAME_WEIGTH )
       if ( ! track_weight ) {
         track_weight = new THREE.NumberKeyframeTrack( TRACK_NAME_WEIGTH, 
-                           [ 0.000, 0.250, 0.750, clip.duration ], [ 0.0, 1.0, 1.0, 0.0 ] )
+                           [ 0.000, 0.1, clip.duration - 0.1, clip.duration ], [ 0.0, 1.0, 1.0, 0.0 ],
+                           THREE.InterpolateSmooth )
         clip.tracks.push( track_weight )
       }
-      reusable.weight[ 0 ] = 0.1
-      reusable.weight[ 1 ] = clip.duration - 0.1
+      reusable.weight[ 0 ] = track_weight.times[ 1 ]
+      reusable.weight[ 1 ] = track_weight.times[ 2 ]
       $( "#weight-slider" ).slider({ values : reusable.weight })
 
       let track_events = findTrack( clip, TRACK_NAME_EVENTS )
