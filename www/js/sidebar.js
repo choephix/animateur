@@ -1,4 +1,4 @@
-import { context } from "./main.js"
+import { context, focusOnCharacter } from "./main.js"
 import util from "./util.js"
 
 const mapping = {
@@ -304,11 +304,17 @@ export default
     this.trees.nodes.settings.core.data = mapping.node( context.data.model )
     this.trees.props.settings.core.data = [ ...context.data.props.map( mapping.prop ) ]
     this.trees.anims.settings.core.data = [ ...context.data.anims.map( mapping.anim ) ]
-    this.refresh()
-  },
-  refresh() {
     for ( let key in this.trees )
       this.trees[key].refresh(true)
+
+    $("#subpanel-characters").toggle( context.characters.length > 1 )
+    $("#subpanel-characters .contents").empty()
+    context.characters.forEach( c => {
+      let button = $( `<button>${c.model.name}</button>` )
+      button.addClass("character-select")
+      button.click( e => focusOnCharacter( c ) )
+      $("#subpanel-characters .contents").append( button )
+    } )
   }
 }
 

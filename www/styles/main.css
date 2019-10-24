@@ -243,6 +243,9 @@ main {
 #subpanel-anims {
   flex-grow: 1;
 }
+#subpanel-characters .contents {
+  min-height: unset;
+}
 
 
 

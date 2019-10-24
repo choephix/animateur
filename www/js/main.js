@@ -1,4 +1,4 @@
-import viewport from './viewport.js'
+import viewport, { studioRigConfigurations } from './viewport.js'
 import sidebar from './sidebar.js'
 import materials from './materials.js'
 import animani from './animani.js'
@@ -19,6 +19,7 @@ export const context =
     anim : null,
     dirty : false,
   },
+  characters : [],
   data : {
     model : null,
     props : [],
@@ -124,9 +125,11 @@ function initialize()
     } )
   }
   $( "button.save" ).click( e => exporter.save( context.data.model, context.data.anims, 
-                                                e.currentTarget.getAttribute("binary") == "true",
-                                                e.currentTarget.getAttribute("local") == "true" ) )
-    
+                                     { animationsUserData : context.animani.data },
+                                     e.currentTarget.getAttribute("binary") == "true",
+                                     e.currentTarget.getAttribute("local") == "true" ) )
+  ///
+
   $.contextMenu( {
     selector: 'button.load-from-server', 
     trigger: 'left',
@@ -142,10 +145,6 @@ function initialize()
             [ "11972db4-98f0-4fd4-89c4-6d52d53021e6", "hero-gunner.glb" ],
            ].mapToObject( a => [ a[1] , { name : a[1], callback : () => loadFromServer( a[1], a[0] ) } ] )
   } )
-  $( "button.save" ).click( e => exporter.save( context.data.model, context.data.anims, 
-                                     { animationsUserData : context.animani.data },
-                                     e.currentTarget.getAttribute("binary") == "true",
-                                     e.currentTarget.getAttribute("local") == "true" ) )
 
   $( "button.transform.position" ).click( e => viewport.transformer.setMode( "translate" ) )
   $( "button.transform.rotation" ).click( e => viewport.transformer.setMode( "rotate" ) )
@@ -158,6 +157,13 @@ function initialize()
   new DropField( document.getElementById('subpanel-nodes') ).resolver( fileResolvers.model ).loaded( onCharacterLoaded )
   new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
   new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
+  
+  $.contextMenu( {
+    selector: 'button.pick-rig',
+    trigger: 'left',
+    items: studioRigConfigurations.map( c => 
+      { return { name : c.name , callback : () => context.viewport.rig.initialize( c ) } } )
+  } )
 
   /// /// /// /// ///
 
@@ -233,10 +239,10 @@ function onCharacterLoaded( model )
     propToBone[prop.uuid] = util.clipBoneName( prop.parent.name )
   context.data.props.length = 0
 
-  if ( context.data.model )
-    viewport.clear()
+  // if ( context.data.model )
+    // viewport.clear()
 
-  viewport.setModel( model )
+  viewport.setCharacter( model )
   context.data.model = model
   context.data.model.scale.copy( scale )
   
@@ -254,29 +260,47 @@ function onCharacterLoaded( model )
   context.data.dirty = true
 }
 
+function addCharacter( model, animations )
+{
+  let character = { model : model , animations : animations }
+  model.position.x = context.characters.length
+  context.characters.push( character )
+  context.data.dirty = true
+  return character
+}
+
+export function focusOnCharacter( character )
+{
+  console.log( context.characters )
+
+  // viewport.clear()
+  context.data.anims.length = 0
+  context.data.props.length = 0
+
+  context.viewport.rig.position.x = character.model.position.x
+  context.viewport.orbit.target.x = character.model.position.x
+  context.viewport.orbit.update()
+
+  viewport.setCharacter( character )
+  context.data.model = character.model
+  context.data.anims.push( ...character.animations )
+  refreshPropsList()
+
+  context.animani.data = character.model.userData.animationsUserData || {}
+
+  context.data.dirty = true
+}
+
 function onSceneLoaded( model, animations ) 
 {
   console.log( model, animations )
 
-  if ( context.data.model )
-  {
-    viewport.clear()
-    context.data.anims.length = 0
-    context.data.props.length = 0
-  }
-
-  viewport.setModel( model )
-  context.data.model = model
-  context.data.anims.push( ...animations )
-  refreshPropsList()
-  extractColors( model )
-  playDefaultAnimation()
-
+  let character = addCharacter( model, animations )
+  focusOnCharacter( character )
+  
   context.data.props.forEach( prop => prop.visible = ! prop.userData.hidden )
-
-  context.animani.data = model.userData.animationsUserData || {}
-
-  context.data.dirty = true
+  extractColors( character.model )
+  playDefaultAnimation()
 }
 
 function playDefaultAnimation() {

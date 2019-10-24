@@ -18,11 +18,15 @@
 <body>
 	<main id="pageMain">
     <div id="panel-navigation">
-			<div id="subpanel-properties" class="subpanel">
+			<div id="subpanel-characters" class="subpanel">
 				<header>
-					<h3>SELECTION</h3>
+					<h3>Characters</h3>
 					<button class="mini" onclick="context.data.dirty=true">🔃&#xFE0E;</button>
 				</header>
+				<div class="contents"></div>
+			</div>
+			<div id="subpanel-properties" class="subpanel">
+				<header><h3>SELECTION</h3></header>
 				<div class="contents">
 					<br/>
 					<input id="field-name" type="text"/>
@@ -83,6 +87,8 @@
 			<button binary="true"  local="true"  class="save">💿&#xFE0E;</button>
 			<button binary="false" local="true"  class="save">📀&#xFE0E;</button>
 			<button class="load-from-server">☁&#xFE0E;</button>
+			<separator></separator>
+			<button class="pick-rig">🌆&#xFE0E;</button>
 			<separator></separator>
 			<button class="transform position">✣&#xFE0E;</button>
 			<button class="transform rotation">↺&#xFE0E;</button>
