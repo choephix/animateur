@@ -81,7 +81,7 @@ const utils = {
       context.data.anims.splice( context.data.anims.indexOf( clip ), 1 )
     }
     context.data.dirty = true
-    context.viewport.animTPose()
+    context.viewport.mixer.stopAllAction()
   },
   cloneProp( prop ) {
     let clone = prop.clone()

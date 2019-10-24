@@ -1,26 +1,24 @@
 import { context } from "./main.js"
-// import util from "./util.js"
 import THIS from "./animani.js"
 
-const __ = {
-  KeyFrame : class {
-  },
-  KeyFrameTrack : class {
-    name = "untitled"
-    frames = []
-  },
-}
-
-const TRACK_NAME_WEIGTH = "animateur.clipWeight"
-const TRACK_NAME_EVENTS = "animateur.clipEvents"
-
-const findTrack = ( clip, name ) => clip.tracks.find( o => o.name === name )
-const reusable = {
-  weight : [ 0.000, 1.000 ],
-  events : [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN],
+const Animateur = {
+  data : { }, /// uuid -> userdata ~
+  getClipUserData( clip ) {
+    let udata = this.data[ clip.uuid ]
+    if ( ! udata )
+    {
+      this.data[ clip.uuid ] =
+      udata = {
+        fadeTimes : [ 0.0 , clip.duration ],
+        eventTimes : [ ]
+      }
+    }
+    return udata
+  }
 }
 
 export default { 
+  data : Animateur.data,
   animationBar : {
     sliderPlay : $( "#play-slider" ).slider({
       orientation: "horizontal",
@@ -37,11 +35,8 @@ export default {
       min: 0.0,
       max: 10.0,
       step: .001,
-      values: reusable.weight,
+      values: [ 0.000, 1.000 ],
       slide: function( event, ui ) {
-        const clip = context.viewport.mixer.currentAction.getClip()
-        findTrack( clip, TRACK_NAME_WEIGTH ).times[ 1 ] = reusable.weight[ 0 ]
-        findTrack( clip, TRACK_NAME_WEIGTH ).times[ 2 ] = reusable.weight[ 1 ]
         context.viewport.mixer.currentAction.paused = true
         context.viewport.mixer.currentAction.time = ui.value
       },
@@ -52,87 +47,54 @@ export default {
       min: 0.0,
       max: 10.0,
       step: .001,
-      values: reusable.events,
+      values: [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN],
       slide: function( event, ui ) {
         context.viewport.mixer.currentAction.paused = true
         context.viewport.mixer.currentAction.time = ui.value
       },
     } ),
-
     dom : $( "#animation-bar" ).ready( () => {
-      context.events.subscribe( "animation.play", action => THIS.animationBar.onAnimationPlay( action ) )
-      context.animationBar.onFrame()
+      context.events.subscribe( "animation.play", action => THIS.onAnimationPlay( action ) )
+      THIS.onFrame()
       $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
         ( ui, i ) => $( ui ).text( ( i + 1 ).toString() ) )
     } ),
-    onAnimationPlay( action ) 
-    {
-      context.data.model["clipWeight"] = 0.0
-      context.data.model["clipEvents"] = ''
-
-      const clip = action.getClip()
-      $( ".slider" ).slider( "option", "max", clip.duration )
-
-      let track_weight = findTrack( clip, TRACK_NAME_WEIGTH )
-      if ( ! track_weight ) {
-        track_weight = new THREE.NumberKeyframeTrack( TRACK_NAME_WEIGTH, 
-                           [ 0.000, 0.1, clip.duration - 0.1, clip.duration ], [ 0.0, 1.0, 1.0, 0.0 ],
-                           THREE.InterpolateSmooth )
-        clip.tracks.push( track_weight )
-      }
-      reusable.weight[ 0 ] = track_weight.times[ 1 ]
-      reusable.weight[ 1 ] = track_weight.times[ 2 ]
-      $( "#weight-slider" ).slider({ values : reusable.weight })
-
-      let track_events = findTrack( clip, TRACK_NAME_EVENTS )
-      if ( track_events ) {
-        $( "#events-slider" ).slider({ values : track_events.times })
-        $( "#events-slider" ).show()
-        $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
-          ( ui, i ) => $( ui ).toggle( i < track_events.times.length ) )
-      } else {
-        $( "#events-slider" ).hide()
-      }
-    },
-    addEvent() {
-      const clip = context.viewport.mixer.currentAction.getClip()
-      const time = context.viewport.mixer.currentAction.time
-      
-      const makeName = ( i ) => "event_" + i
-
-      let track = findTrack( clip, TRACK_NAME_EVENTS )
-      
-      if ( ! track ) {
-        track = new THREE.StringKeyframeTrack( TRACK_NAME_EVENTS, 
-                [ time ], [ makeName( 1 ) ], THREE.InterpolateDiscrete )
-        clip.tracks.push( track )
-      } else {
-        const times = new Float32Array( track.times.length + 1 )
-        times.set( track.times )
-        times.set( [ time ], track.times.length )  
-        track.times = times
-        track.values.push( makeName( times.length ) )
-      }
-      
-      $( "#events-slider" ).show()
-      $( "#events-slider" ).slider({ values : track.times })
-
-      $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
-        ( ui, i ) => $( ui ).toggle( i < track.times.length ) )
-    },
-    onFrame() {
-      const action = context.viewport.mixer.currentAction
-      $( this.dom ).toggle( !! action )
-      // $( ".selector" ).slider( "option", "disabled", !action )
-
-      if ( action && action.isRunning ) {
-        $( "#play-slider" ).slider( "value", action.time )
-      }
-
-      // $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
-      //   ( ui, i ) => $( ui ).toggle( ! isNaN( ui.value ) ) )
-
-      requestAnimationFrame( () => this.onFrame() )
+  },
+  onFrame() {
+    const action = context.viewport.mixer.currentAction
+    $( this.animationBar.dom ).toggle( !! action )
+    if ( action && action.isRunning ) {
+      $( "#play-slider" ).slider( "value", action.time )
     }
-  }
+    requestAnimationFrame( () => this.onFrame() )
+  },
+  onAnimationPlay( action ) 
+  {
+    const clip = action.getClip()
+    $( ".slider" ).slider( "option", "max", clip.duration )
+
+    const udata = Animateur.getClipUserData( clip )
+    
+    $( "#weight-slider" ).slider({ values : udata.fadeTimes })
+    $( "#events-slider" ).slider({ values : udata.eventTimes })
+
+    if ( udata.eventTimes.length ) {
+      $( "#events-slider" ).show()
+      $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
+        ( ui, i ) => $( ui ).toggle( i < udata.eventTimes.length ) )
+    } else {
+      $( "#events-slider" ).hide()
+    }
+  },
+  addEvent() {
+    const clip = context.viewport.mixer.currentAction.getClip()
+    const udata = Animateur.getClipUserData( clip )
+    // name : "event_" + ( udata.eventTimes.length + 1 ),
+    udata.eventTimes.push( context.viewport.mixer.currentAction.time )
+    
+    $( "#events-slider" ).show()
+    $( "#events-slider" ).slider({ values : udata.eventTimes })
+    $( "#events-slider" ).slider( "instance" ).handles.toArray().forEach( 
+      ( ui, i ) => $( ui ).toggle( i < udata.eventTimes.length ) )
+  },
 }

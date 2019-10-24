@@ -104,8 +104,7 @@ export const context =
       return this
     }
   },
-  animationBar : animani.animationBar,
-  // ani : animani,
+  animani : animani,
 }
 
 function initialize() 

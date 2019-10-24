@@ -1,7 +1,6 @@
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
 import { TransformControls } from 'https://threejs.org/examples/jsm/controls/TransformControls.js';
 import { context } from './main.js';
-import { TRACK_NAME_WEIGTH, TRACK_NAME_EVENTS } from './animani.js';
 
 const viewportElem = document.getElementById( "viewport" )
 const canvasElem = document.getElementById( "webgl-canvas" )
@@ -22,12 +21,6 @@ export default
     this.characterModel = subject
     this.scene.add( subject )
     this.mixer = new THREE.AnimationMixer( subject )
-    // this.mixer = new THREE.AnimationMixer( this.scene )
-
-    let ani = new THREE.Bone()
-    ani.name = "animateur"
-    ani[ TRACK_NAME_WEIGTH ] = 0.0
-    ani[ TRACK_NAME_EVENTS ] = ''
   },
   animPlay( anim ) {
     this.mixer.stopAllAction()
