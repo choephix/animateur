@@ -266,6 +266,15 @@ function addCharacter( model, animations )
   model.position.x = context.characters.length
   context.characters.push( character )
   context.data.dirty = true
+
+  model.traverse( o => {
+    if ( o.material && o.material.metalness !== undefined )
+    {
+      o.material.metalness = .0
+      o.material.roughness = .6
+    }
+  } )
+
   return character
 }
 
