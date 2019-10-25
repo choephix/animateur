@@ -4,10 +4,11 @@ import { context } from './main.js'
 
 import THIS from './viewport.js'
 
-const DEFAULT_RIG = 0 /// 0 1
+const DEFAULT_RIG = 1 /// 0 1
 
 const viewportElem = document.getElementById( "viewport" )
 const canvasElem = document.getElementById( "webgl-canvas" )
+const textureLoader = new THREE.TextureLoader()
 
 export const studioRigConfigurations = [
   {
@@ -37,11 +38,11 @@ export const studioRigConfigurations = [
     } ,
     lights : {
       ambient : [
-        { color : 0xffffff, intensity : 1.20 }
+        { color : 0xffffff, intensity : 0.70 }
       ] ,
       directional : [
-        { color : 0xffffff, intensity : .60, position : [-1, 0, 0 ] } ,
-        { color : 0xffffff, intensity : .90, position : [ 1, 1, 1 ] } ,
+        { color : 0xffffff, intensity : .40, position : [-1, 0,-1 ] } ,
+        { color : 0xffffff, intensity : .70, position : [ 1, 1, 1 ] } ,
       ] ,
     } ,
   } ,
@@ -75,6 +76,16 @@ class StudioRig extends THREE.Group
                     configuration.colors.grid_a, 
                     configuration.colors.grid_b )
     this.add( this.grid )
+
+    this.envMap = textureLoader.load( "assets/metal-5.png" )
+    this.envMap.mapping = THREE.SphericalReflectionMapping
+    this.envMap.encoding = THREE.sRGBEncoding
+
+    // this.envMap = textureLoader.load( "assets/shitroom.jpg" )
+    // this.envMap.mapping = THREE.EquirectangularReflectionMapping;
+    // this.envMap.magFilter = THREE.LinearFilter;
+    // this.envMap.minFilter = THREE.LinearMipmapLinearFilter;
+    // this.envMap.encoding = THREE.sRGBEncoding
   }
 }
 
@@ -92,6 +103,15 @@ export default
   {
     this.characterModel = character.model
     this.scene.add( character.model )
+
+    character.model.traverse( o => {
+      if ( o.material ) {
+        o.material.metalness = .25
+        o.material.roughness = .15
+        o.material.envMap = this.rig.envMap
+        o.material.envMapIntensity = 1.5
+      }
+    } )
 
     if ( ! character.looper ) {
       character.looper = {

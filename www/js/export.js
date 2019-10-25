@@ -11,7 +11,8 @@ export default
   {
     // let exportee = new THREE.Scene()
     // exportee.add( model )
-    let exportee = model 
+    let exportee = model .clone()
+    exportee.position.setScalar( 0 )
     exportee.userData = userData
 
     exporter.parse( exportee, function ( data ) {
