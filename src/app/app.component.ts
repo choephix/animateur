@@ -22,19 +22,25 @@ export class AppComponent {
     // new DropField( document.getElementById('subpanel-props') ).resolver( fileResolvers.props ).loaded( onPropLoaded )
     // new DropField( document.getElementById('subpanel-anims') ).resolver( fileResolvers.anims ).loaded( onAnimationsLoaded )
     
-    this.loador.loadZipFromLocalStorage( ( ...rest:any ) => this.onCharactersLoaded( ...rest ) )
+    //this.loador.loadZipFromLocalStorage( ( ...rest:any ) => this.onCharactersLoaded( ...rest ) )
+    this.loador.loadFromUrl( "/assets/examples/glb/hero-shield.glb" ).then( ( c:any ) => 
+      this.onCharactersLoaded( new Character( c.scene , c.animations ) ) )
+
+    const SHOW_STATS = false
     
-    var stats = new Stats()
-    stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-		stats.dom.style.setProperty("left", "unset")
-		stats.dom.style.setProperty("right", "48px")
-    document.body.appendChild( stats.dom )
-    function animate() {
-      stats.end()
-      stats.begin()
+    if ( SHOW_STATS ) {
+      var stats = new Stats()
+      stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+      stats.dom.style.setProperty("left", "unset")
+      stats.dom.style.setProperty("right", "48px")
+      document.body.appendChild( stats.dom )
+      function animate() {
+        stats.end()
+        stats.begin()
+        requestAnimationFrame( animate )
+      }
       requestAnimationFrame( animate )
     }
-    requestAnimationFrame( animate )
 
     /// @ts-ignore
     window.app = this ; window.context = context
