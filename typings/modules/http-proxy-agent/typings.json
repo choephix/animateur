@@ -1,9 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/types/npm-http-proxy-agent/b2cc033f660e62c3a7b8362898b16eefa3ad3939/typings.json",
-    "raw": "registry:npm/http-proxy-agent#1.0.0+20160723033700",
-    "main": "index.d.ts",
-    "name": "http-proxy-agent"
-  }
-}

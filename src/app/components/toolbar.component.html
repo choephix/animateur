@@ -1,0 +1,11 @@
+<div class="top">
+  <button *ngFor="let b of buttons" title="{{b.name}}" [class.selected]="context.viewMode===b.viewMode"
+    (click)="selectViewMode(b.viewMode)">
+    <i class="material-icons">{{b.icon}}</i>
+  </button>
+</div>
+<div class="filler"></div>
+<div class="bottom">
+  <!-- <button onclick="location.reload()"><i class="material-icons">autorenew</i></button> -->
+  <button class="options-menu"><i class="material-icons">menu</i></button>
+</div>

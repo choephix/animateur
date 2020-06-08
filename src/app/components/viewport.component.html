@@ -1,0 +1,16 @@
+<div class="contents">
+  <canvas id="webgl-canvas" [hidden]="!context.character"></canvas>
+  <div [hidden]="context.character">Drag files here</div>
+  <div class="overlay overlay-top-right">
+    <button class="transform position">✣&#xFE0E;</button>
+    <button class="transform rotation">↺&#xFE0E;</button>
+    <button class="transform scale">■&#xFE0E;</button>
+    <button class="transform space">🌐&#xFE0E;</button>
+  </div>
+  <!-- <div class="overlay overlay-top-left"> -->
+  <div class="overlay overlay-bottom-right">
+    <!-- <button class="select-character">💀&#xFE0E;</button> -->
+  </div>
+  <div class="loading" *ngIf="loador.isBusy"><h1>Loading</h1></div>
+  <div class="exporting" *ngIf="exportor.isBusy"><h1>Exporting...</h1></div>
+</div>

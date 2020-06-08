@@ -1,0 +1,106 @@
+
+#panel-toolbar {
+  background: #404040;
+  color: #999;
+}
+#panel-toolbar .separator {
+  height: 2px;
+  width: 100%;
+  background: #0005;
+  box-sizing: border-box;
+}
+#panel-toolbar button {
+  font-size: 24px;
+  height: 48px;
+  border: none;
+  background: none;
+  color: inherit;
+}
+#panel-toolbar button:hover {
+  color: #BBB;
+}
+#panel-toolbar button.selected {
+  color: #FFF;
+}
+#panel-toolbar button.disabled {
+  opacity: .2;
+  display: none;
+}
+
+
+
+
+tree-internal .tree .value-container {
+  color: #8f8f8f;
+  position: relative;
+}
+.subpanel .list-item.selected,
+tree-internal .tree .value-container.selected {
+  /* background: #006effe5; */
+  color: white;
+  font-weight: bold;
+}
+tree-internal .tree .value-container.selected .folding:before {
+  color: inherit !important;
+}
+tree-internal .tree .node-value {
+  z-index: 1;
+}
+tree-internal .tree .node-value:after {
+  content: none !important;
+  transition: none;
+  background: white;
+}
+
+tree-internal .tree .value-container.selected:before {
+  content: '';
+  background: #006effe5;
+  position: absolute;
+  left: -120px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+
+
+
+#subpanel-properties input {
+  color: #FFFB;
+  background: #FFF2;
+  border: none;
+  margin: 2px;
+  padding: 4px;
+}
+#subpanel-properties input:focus,
+#subpanel-properties .linked:focus-within input {
+  color: gold;
+  outline: 1px solid orange;
+}
+
+
+
+#animation-bar .buttons-bar button {
+  width:100%;
+  border: none;
+  background: none;
+  color: #FFF4;
+}
+#animation-bar .buttons-bar button:hover {
+  /* background: #FFF2; */
+  color: #FFFE;
+  /* color: #29F; */
+}
+#animation-bar .buttons-bar .button-play {
+  background-image: url("https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_play_circle_filled_white_48px-512.png");
+  background-image: url("https://www.fivestars.blog/assets/common/play-video.png");
+  background-size: 80px;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #FFF0;
+  opacity: .125;
+}
+#animation-bar .buttons-bar .button-play:hover {
+  color: #FFF0;
+  opacity: .250;
+}

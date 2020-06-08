@@ -1,0 +1,23 @@
+
+
+<div class="buttons-bar">
+  <button class="button-play" (click)="togglePause()">▶</button>
+  <!-- <button (click)="addEvent()">Add Event Yo!</button> -->
+  <!-- <div class="filler"><span class="timer"></span></div> -->
+</div>
+<div class="sliders">
+  <br/>
+  <nouislider id="slider-events" [config]="sliderConfig.events" #SliderEvents
+              [min]="0" [max]="action.duration" [(ngModel)]="action.events"
+              (slide)="handlers.change_events($event)"
+              [hidden]="!action.hasEvents"
+              ></nouislider>
+  <nouislider id="slider-weight" [config]="sliderConfig.weight"
+              [min]="0" [max]="action.duration" [(ngModel)]="action.weight"
+              ></nouislider>
+  <nouislider id="slider-play"   [config]="sliderConfig.play"   
+              [min]="0" [max]="action.duration" [(ngModel)]="action.time"
+              (slide)="handlers.change_play($event)"
+              ></nouislider>
+  <br/>
+</div>

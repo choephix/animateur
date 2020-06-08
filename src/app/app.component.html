@@ -1,0 +1,14 @@
+<main id="pageMain">
+  <div class="panes">
+    <app-toolbar id="panel-toolbar" class="toolbar-vertical"></app-toolbar>
+    <app-explorer class="pane" *ngIf="!! context.viewMode && context.characters.length">
+      
+    </app-explorer>
+    <div class="middle-pane">
+      <app-viewport id="viewport"></app-viewport>
+      <app-animation-bar id="animation-bar" class="bar-horizontal" *ngIf="context.characters.length"
+                         [hidden]="!context.character||!context.character.currentAction"></app-animation-bar>
+    </div>
+  </div>
+  <!-- <app-statusbar></app-statusbar> -->
+</main>

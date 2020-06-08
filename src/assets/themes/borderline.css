@@ -1,0 +1,57 @@
+
+#panel-toolbar separator {
+  height: 2px;
+  width: 2px;
+}
+#panel-toolbar button {
+  font-size: 28px;
+  height: 48px;
+  background: #444;
+  color: #CCC;
+  border: 1px solid #555;
+  margin: 1px;
+}
+#panel-toolbar button:hover {
+  background: #555;
+  border: 1px solid #666;
+}
+#panel-toolbar button.disabled {
+  opacity: .2;
+  display: none;
+}
+
+
+
+
+
+#subpanel-properties input {
+  color: gold;
+  background: #FFF2;
+  border: 1px solid #FFF3;
+  margin: 2px;
+  padding: 4px;
+}
+#subpanel-properties input:focus,
+#subpanel-properties .linked:focus-within input {
+  border: 1px solid orange;
+  outline:none;
+}
+
+#animation-bar .buttons-bar button {
+  width:100%;
+  border: 1px solid #FFF2;
+  background: #FFF1;
+  color: #FFF9;
+  /* height: 100%; */
+  cursor: pointer;
+  padding: 12px;
+  font-size: 20px;
+  font-weight: bolder;
+  margin: 1px;
+  display: list-item;
+}
+#animation-bar .buttons-bar button:hover {
+  background: #FFF2;
+  color: #FFFE;
+  /* color: #29F; */
+}

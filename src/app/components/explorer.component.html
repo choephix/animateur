@@ -1,0 +1,136 @@
+<!-- CHARACTERS -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'characters'">
+  <div class="subpanel">
+    <header><h3>Current Characters</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let c of context.characters" attr.uuid="{{c.uuid}}" 
+      class="list-item" [class.selected]="context.character === c"
+      (click)="main.focusOnCharacter( c )">{{c.name}}</li>
+    </ul>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'overview'">
+  <div id="subpanel-properties" class="subpanel">
+    <header><h3>Selection</h3></header>
+    <div class="contents">
+      <br />
+      <input id="field-name" type="text" [(ngModel)]="object.name"/>
+      <div class="i-vector-row position">
+        <input id="field-position-x" type="text" [(ngModel)]="object.position.x" />
+        <input id="field-position-y" type="text" [(ngModel)]="object.position.y" />
+        <input id="field-position-z" type="text" [(ngModel)]="object.position.z" />
+      </div>
+      <div class="i-vector-row rotation">
+        <input id="field-rotation-x" type="text" [(ngModel)]="object.rotation.x" />
+        <input id="field-rotation-y" type="text" [(ngModel)]="object.rotation.y" />
+        <input id="field-rotation-z" type="text" [(ngModel)]="object.rotation.z" />
+      </div>
+      <div class="i-vector-row scale linked">
+        <input id="field-scale-x" type="text" [(ngModel)]="object.scale.x" />
+        <input id="field-scale-y" type="text" [(ngModel)]="object.scale.y" />
+        <input id="field-scale-z" type="text" [(ngModel)]="object.scale.z" />
+      </div>
+      <br/>
+    </div>
+  </div>
+  <div id="subpanel-nodes" class="subpanel">
+    <header><h3>Model</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let o of context.character.model.children"
+      class="list-item" attr.uuid="{{o.uuid}}" [class.selected]="context.selection.last === o"
+      (click)="select(o,'node')">{{o.name||o.uuid}}</li>
+    </ul>
+  </div>
+  <div id="subpanel-props" class="subpanel" *ngIf="context.character">
+    <header><h3>Props</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let o of context.character.props" 
+      class="list-item" attr.uuid="{{o.uuid}}" [class.selected]="context.selection.last === o"
+      [hidden]="o.userData.hidden"
+      (click)="select(o,'prop')"><a>{{o.name||o.uuid}}</a></li>
+    </ul>
+  </div>
+  <div id="subpanel-anims" class="subpanel" *ngIf="context.character">
+    <header><h3>Animations</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let o of context.character.anims" 
+      class="list-item" attr.uuid="{{o.uuid}}" [class.selected]="context.selection.last === o"
+      (click)="select(o,'anim')">{{o.name||o.uuid}}</li>
+    </ul>
+  </div>
+</div>
+
+<!-- NODES -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'nodes'">
+  <header><h3>Model Nodes</h3></header>
+  <tree [tree]="tree_sceneNodes" 
+        (nodeSelected)="tree_sceneNodes.onNodeSelected($event)"
+        #tree__sceneNodes>
+  </tree>
+</div>
+
+<!-- BONES -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'bones'">
+  <div class="subpanel">
+    <header><h3>My Bones</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let bone of allBones" attr.uuid="{{bone.uuid}}" 
+      class="list-item" [class.selected]="context.selection.last === bone"
+      (click)="select(bone,'node')">{{bone.name}}</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ANIMATIONS -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'animations'">
+</div>
+
+<!-- MATERIALING -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'materials'">
+  <div class="subpanel">
+    <header><h3>All Materials</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let m of allMaterials" attr.uuid="{{m.uuid}}" 
+      class="list-item" [class.selected]="context.selection.last === m"
+      (click)="select(m,'mat')">{{m.name||m.uuid}}</li>
+    </ul>
+  </div>
+  <div class="filler"></div>
+  <div class="subpanel" *ngIf="!! material">
+    <header><h3> {{ material.name || material.uuid }} </h3></header>
+    <br/>
+    <nouislider id="slider-roughness" [config]="materialSliders.zeroToOne"
+                [min]="0" [max]="1" [(ngModel)]="material.roughness"
+    ></nouislider>
+    <br/>
+    <nouislider id="slider-metalness" [config]="materialSliders.zeroToOne"
+                [min]="0" [max]="1" [(ngModel)]="material.metalness"
+    ></nouislider>
+    <br/>
+    <nouislider id="slider-envMapIntensity" [config]="materialSliders.zeroToOne"
+                [min]="0" [max]="1" [(ngModel)]="material.envMapIntensity"
+    ></nouislider>
+    <br/>
+  </div>
+</div>
+
+<!-- STUDIO -->
+
+<div id="panel-navigation" *ngIf="context.viewMode === 'studio'">
+  <div class="subpanel">
+    <header><h3>Select Studio Rig</h3></header>
+    <ul class="contents list">
+      <li *ngFor="let config of scener.rigConfigurations"
+      class="list-item" [class.selected]="scener.rig.configuration === config"
+      (click)="scener.setupRig( config )">{{config.name}}</li>
+    </ul>
+  </div>
+</div>
