@@ -24,7 +24,7 @@
     "jquery": "^3.4.1",
     "jquery-contextmenu": "^2.9.0",
     "jstree": "^3.3.8",
-    "jszip": "^3.2.2",
+    "jszip": "^3.4.0",
     "ng2-nouislider": "^1.8.2",
     "ng2-tree": "^2.0.0-rc.11",
     "nouislider": "^14.0.3",
